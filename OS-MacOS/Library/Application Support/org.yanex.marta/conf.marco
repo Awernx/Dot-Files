@@ -1,0 +1,45 @@
+environment {
+    terminal "iTerm"
+}
+
+behavior {
+    actions {
+        core.trash.confirm false
+    }
+}
+
+setup {
+    actionBar [
+        "core.symlink"
+        "core.open.with"
+        "core.path"
+        "open.with.vscode.gadget"
+    ]
+}
+
+keyBindings {
+    "Control+P" "core.path"
+    "Control+E" "open.with.vscode.gadget"
+    "Control+L" "core.symlink"
+    "Control+T" "open.with.iterm.gadget"
+    "Return"    "core.rename"
+    "Cmd+O"     "core.open"
+}
+
+gadgets [
+    {
+        id "open.with.vscode.gadget"
+        name "Open in VS Code"
+        type "application"
+        application "Visual Studio Code"
+        "files" [ "${active.selection.paths}" ]
+    }
+    
+    {
+        id "open.with.iterm.gadget"
+        name "Open in iTerm2"
+        type "application"    
+        application "iTerm"
+        "files" [ "${active.folder.path}" ]
+    }
+]

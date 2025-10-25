@@ -1,0 +1,86 @@
+# 🅲 🅷 🅰 🅽 🅳 🅴 🆁
+# -----------------------------
+# Chander's espanso match file
+# 
+# Location: ~/Library/Application Support/espanso/match/base.yml
+
+matches:
+
+  # -----------------------------------------------------
+  #  Simple text expansions
+  # -----------------------------------------------------
+  - trigger: ":inr"
+    replace: "₹"
+
+  - trigger: ":pls"
+    replace: "Please let me know if you have any questions or need additional information."
+
+  - trigger: ":thx"
+    replace: "Thanks,\nChander"
+
+  # -----------------------------------------------------
+  #  Complex expansions of fields - date, IP, etc.
+  # -----------------------------------------------------
+  - trigger: ":date"
+    replace: "{{mydate}}"
+    vars:
+      - name: mydate
+        type: date
+        params:
+          format: "%m/%d/%Y"
+
+  # Public IP address
+  - trigger: ":pip"
+    replace: "{{output}}"
+    vars:
+      - name: output
+        type: shell
+        params:
+          cmd: "curl 'https://api.ipify.org'"
+
+  # -----------------------------------------------------
+  #  Salesforce specific text expansions
+  # -----------------------------------------------------
+  - trigger: ":cr"
+    replace: "cramamurthy"
+
+  - trigger: ":csf"
+    replace: "cramamurthy@salesforce.com"
+
+  # -----------------------------------------------------
+  #  Personal
+  # -----------------------------------------------------
+
+  # Full Name
+  - trigger: ":name"
+    replace: "Chander Ramamurthy"
+
+  # First Preferred Name
+  - trigger: ":fpn"
+    replace: "Chander"
+
+  # First Legal Name
+  - trigger: ":fln"
+    replace: "Chandrasekar"
+
+  # Last Legal Name
+  - trigger: ":lln"
+    replace: "Ramamurthy"
+ 
+  - trigger: ":addr"
+    replace: "2216 Stanmore Ln, Plano, TX 75025"
+
+  - trigger: ":ph"
+    replace: "2148142550"
+
+  - trigger: ":cgm"
+    replace: "chander@gmail.com"
+
+  - trigger: ":agm"
+    replace: "awernx@gmail.com"
+
+  - trigger: ":nda"
+    replace: "notifydallas@aol.com"
+
+  - trigger: ":cme"
+    replace: "chander.ramamurthy@me.com"

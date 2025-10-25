@@ -1,0 +1,12 @@
+# 🅲 🅷 🅰 🅽 🅳 🅴 🆁
+# -------------------------------------
+# Chander's espanso configuration file
+# 
+# Location: ~/Library/Application Support/espanso/config/default.yml
+
+# Double-pressing Toggle Key disables Espanso, 
+# preventing any expansion
+toggle_key: RIGHT_ALT
+
+# Shortcut to open Search Bar
+search_shortcut: SHIFT+ALT+SPACE

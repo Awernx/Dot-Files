@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# 🅲 🅷 🅰 🅽 🅳 🅴 🆁
+# ----------------------------------------
+# Prints currently used ports in the host
+
+SCRIPTS_FOLDER=$(dirname "$(readlink -f -- "$0")")
+PORTS_COMMAND="ss -tupln | awk -f $SCRIPTS_FOLDER/listening-ports.awk | column -t"
+
+if [ -z "$1" ]; then
+    eval $PORTS_COMMAND
+else
+    eval "$PORTS_COMMAND | grep --color=auto $1"
+fi

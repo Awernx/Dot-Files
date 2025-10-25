@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# 🅲 🅷 🅰 🅽 🅳 🅴 🆁
+# --------------------------------
+# Prints all/specific process ids
+
+COMMAND="ps -eo pid,args"
+
+if [ -z "$1" ]; then
+    eval $COMMAND
+else
+    PROCESS=$(echo $1 | sed 's/^\s*./[&]/')  #decorate the first character with [ ]
+    eval "$COMMAND | grep --color=auto $PROCESS"
+fi

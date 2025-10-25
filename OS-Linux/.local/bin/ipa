@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# 🅲 🅷 🅰 🅽 🅳 🅴 🆁
+# ----------------------------------------
+# Prints private and public IP addresses
+
+SCRIPTS_FOLDER=$(dirname "$(readlink -f -- "$0")")
+
+printf "\n${bold}🏠 Internal: ${normal}"
+
+## Internal IP
+if hash ip 2>/dev/null; then
+    ip address | awk -f $SCRIPTS_FOLDER/ip-address.awk
+else
+    printf "${bold} ERROR ${normal}-> 'ip' tool is not available\n"
+fi
+
+## External IP
+printf "\n${bold}🌐 External: ${normal} \n"
+echo "      IP v4:" $(dig -4 TXT +short o-o.myaddr.l.google.com @ns1.google.com | tr -d '"')
+echo "      IP v6:" $(dig -6 TXT +short o-o.myaddr.l.google.com @ns1.google.com | tr -d '"')

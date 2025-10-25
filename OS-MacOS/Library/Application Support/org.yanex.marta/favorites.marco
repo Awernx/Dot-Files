@@ -1,0 +1,20 @@
+"Chander's Personal Docs" "${user.documents}/Sensitive_Family_Documents/Chander"
+"Tech & Work Stuff" "${user.documents}/Personal_Backups/Chander"
+
+Separator1 null
+
+"Library - Application Support" "${user.library}/Application Support"
+"Library - Preferences" "${user.library}/Preferences"
+"System Applications" "${all.applications}"
+"Local Applications" "${user.applications}"
+
+Separator2 null
+
+"XDG Locations" {
+    ".config" "~/.config"
+    ".ssh" "~/.ssh"
+    ".local" "~/.local"
+}
+
+Home "~"
+Svalbard "/Volumes/Svalbard"
