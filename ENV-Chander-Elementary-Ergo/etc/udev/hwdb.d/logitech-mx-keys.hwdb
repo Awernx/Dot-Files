@@ -1,0 +1,17 @@
+# 🅲 🅷 🅰 🅽 🅳 🅴 🆁
+# -------------------------------------------------------------------------------
+# UPower Hardware DB addon that fixes Logitech MX keyboard showing up as a mouse
+#
+# References
+#  https://gitlab.freedesktop.org/upower/upower/-/issues/128
+#  https://github.com/systemd/systemd/blob/aed42a4b4daf396ed528b29efbf41d1ad6a856d2/hwdb.d/60-input-id.hwdb
+
+## Instructions
+# 1. Copy this file to /etc/udev/hwdb.d/ folder
+# 2. sudo systemd-hwdb update
+# 3. sudo udevadm trigger /dev/input/event*
+# 4. Preferably restart machine
+
+# Register Logitech MX Keys
+id-input:modalias:input:b0003v046Dp408Ae0111*
+ ID_INPUT_MOUSE=0

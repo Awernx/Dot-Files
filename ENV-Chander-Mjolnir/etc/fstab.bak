@@ -1,0 +1,15 @@
+#!/bin/sh
+
+# 🅲 🅷 🅰 🅽 🅳 🅴 🆁
+# -------------------
+# FSTAB file on mjolnir
+#
+# Location: /etc/fstab 
+
+/dev/disk/by-id/dm-uuid-LVM-7umSafzav2Zv32JBR4GQrNJyrQXe7EJzk8Gz3QDMGJ8Ktv8VvekHnGwH6LMKSySh / ext4 defaults 0 1
+/dev/disk/by-uuid/8e92a70f-6281-432d-acc6-ebd4cc15e857 /boot ext4 defaults 0 1
+/dev/disk/by-uuid/E039-7BD6 /boot/efi vfat defaults 0 1
+/swap.img   none    swap    sw  0   0
+
+# Svalbard SSD mount
+/dev/sdb1   /mnt/svalbard   ext4    defaults    0    0

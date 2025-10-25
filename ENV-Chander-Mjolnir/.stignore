@@ -1,0 +1,41 @@
+# 🅲 🅷 🅰 🅽 🅳 🅴 🆁
+# ----------------------------------------------
+# Syncthing ignore file
+# Location: Root of folders being synced
+# https://docs.syncthing.net/users/ignoring.html
+
+################################################
+# Programs & Tools generated files and folders
+################################################
+
+# Backblaze artifacts
+*~
+.*.swp
+sync.*
+.bzvol
+
+# MEGASync artifacts
+Rubbish
+.debris
+
+# FreeFileSync artifacts
+.sync.ffs_db*
+
+################################################
+# OS generated files
+################################################
+
+# Windows artifacts
+(?d)$RECYCLE.BIN
+(?d)System Volume Information
+(?d)desktop.ini
+(?d)ehthumbs.db
+(?d)Thumbs.db
+
+# MacOS artifacts
+(?d)._.DS_Store*
+(?d).DS_Store
+(?d).localized
+
+# Linux artifacts
+(?d).Trash*

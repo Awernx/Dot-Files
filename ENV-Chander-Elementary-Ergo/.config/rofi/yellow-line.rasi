@@ -1,0 +1,44 @@
+* {
+    background-color: #282828;
+    border-color:     #eb0000;
+    text-color:       #fabd2f;
+    font:             "Times New Roman 10";
+}
+
+window {
+    anchor:     north;
+    location:   north;
+    width:      100%;
+    padding:    6px;
+    children:   [ horibox ];
+}
+
+horibox {
+    orientation: horizontal;
+    children:   [ prompt, entry, listview ];
+}
+
+listview {
+    layout:  horizontal;
+    spacing: 25px;
+    lines:   100;
+}
+
+entry {
+    expand: false;
+    width:  15em;
+}
+
+element {
+    padding: 2px 2px;
+}
+
+element selected {
+    background-color: #fabd2f;
+    text-color:       #282828;
+}
+
+element-text, element-icon {
+  background-color: inherit;
+  text-color: inherit;
+}

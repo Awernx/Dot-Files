@@ -1,0 +1,32 @@
+{
+    "type": "script",
+    "description": "Visual Studio Code",
+    "store": {},
+    "modes": [
+        3
+    ],
+    "usageCount": 21,
+    "prompt": false,
+    "omitTrigger": false,
+    "showInTrayMenu": false,
+    "abbreviation": {
+        "abbreviations": [],
+        "backspace": true,
+        "ignoreCase": false,
+        "immediate": false,
+        "triggerInside": false,
+        "wordChars": "[\\w]"
+    },
+    "hotkey": {
+        "modifiers": [
+            "<alt>",
+            "<ctrl>",
+            "<super>"
+        ],
+        "hotKey": "v"
+    },
+    "filter": {
+        "regex": null,
+        "isRecursive": false
+    }
+}

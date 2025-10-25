@@ -1,0 +1,7 @@
+# 🅲 🅷 🅰 🅽 🅳 🅴 🆁
+# ----------------------------------
+# Scheduled tasks on missioncontrol
+
+# Check for external DNS address change, and update DyDns if changed
+# Twice every hour at 25 and 55 minutes past the hour between 6AM and 10 PM
+25,55 6-22 * * * dash /home/chander/Workspace/dydns/dns-updater.sh >> /home/chander/Workspace/dydns/dns.log

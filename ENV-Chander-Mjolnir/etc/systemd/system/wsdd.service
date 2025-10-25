@@ -1,0 +1,21 @@
+# 🅲 🅷 🅰 🅽 🅳 🅴 🆁
+# ---------------------------------------------------------
+# Service descriptor for running wsdd as a systemd service
+# WSDD helps Windows discover mjolnir in its network
+# 
+# Location: /etc/systemd/system/wsdd.service
+
+[Unit]
+Description=Web Services Dynamic Discovery host daemon
+Documentation=man:wsdd(8)
+
+; Start after the network has been configured
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/wsdd --hostname Mjolnir --shortlog --preserve-case --workgroup blisshighway
+
+[Install]
+WantedBy=multi-user.target
