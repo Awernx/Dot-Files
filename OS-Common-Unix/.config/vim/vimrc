@@ -24,3 +24,18 @@ set statusline+=%2*\ row:%l/%*%1*%L%*%2*\ %2*\ \col:%v\ %*
 set statusline +=%7*\|%*
 set statusline+=%2*\ ASCII:%b\ %*  " ascii
 set statusline +=%7*\|%*
+
+" XDG section
+" ---------------------------------------------------------
+" Use XDG defaults if not exported 
+if empty($XDG_STATE_HOME)
+  let $XDG_STATE_HOME = $HOME . '/.local/state'
+endif
+
+" Ensure the directory exists
+call mkdir($XDG_STATE_HOME . '/vim', 'p', 0700)
+
+" Tell Vim where to write viminfo
+if has('viminfo')
+  let &viminfofile = $XDG_STATE_HOME . '/vim/viminfo'
+endif

@@ -1,26 +1,19 @@
-DOT_FILES_LOCATION  = $$HOME/Workspace/Dot-Files
-DESTINATON_LOCATION = $$HOME
-IGNORE_LIST         = "\.DS_Store"
-STOW_COMMAND        = stow --dir=$(DOT_FILES_LOCATION) --target=$(DESTINATON_LOCATION) --ignore='\.DS_Store' --stow
-UNSTOW_COMMAND      = stow --dir=$(DOT_FILES_LOCATION) --target=$(DESTINATON_LOCATION) --delete
+DEFAULT_IGNORE_LIST      = '(\.DS_Store|Makefile$)'
+DOT_FILES_LOCATION       = $$HOME/Workspace/Dot-Files
+STOW_COMMAND_PREFIX_ROOT = stow --dir=$(DOT_FILES_LOCATION) --target=/
+STOW_COMMAND_PREFIX_HOME = stow --dir=$(DOT_FILES_LOCATION) --target=$$HOME/
 
-CHANDER-MBP-PACKAGES = OS-Common-Unix OS-MacOS ENV-Chander-MBP
-
-.PHONY: all chander-mbp clean-chander-mbp
+.PHONY: all stow-chander-mbp 
 
 .SILENT:
 
 all:
-	@echo "⚠️ Please specify a target. Available targets:"
-	@echo "  chander-mbp        Stow dot-files for Chander's MacBook Pro"
-	@echo "  clean-chander-mbp  Unstow dot-files for Chander's MacBook Pro"
+	echo "Please specify a target. Available targets:"
+	echo "  stow-chander-mbp   Stow dot-files for Chander's MacBook Pro"
 
-chander-mbp:
+stow-chander-mbp: PACKAGES    = OS-Common-Unix OS-MacOS ENV-Chander-MBP
+stow-chander-mbp: IGNORE_LIST = '\.DS_Store|com\.googlecode\.iterm2\.plist|Makefile'
+stow-chander-mbp:
 	printf "\r\033[K🧹 Stowing Chander-MBP"
-	$(STOW_COMMAND) $(CHANDER-MBP-PACKAGES)
+	$(STOW_COMMAND_PREFIX_HOME) --ignore=$(IGNORE_LIST) --stow $(PACKAGES)
 	printf "\r\033[K✅ Chander-MBP Dot-Files stowed successfully\n"
-
-clean-chander-mbp:
-	printf "\r\033[K🧹 Unstowing Chander-MBP"
-	$(UNSTOW_COMMAND) $(CHANDER-MBP-PACKAGES)
-	printf "\r\033[K✅ Chander-MBP Dot-Files unstowed successfully\n"
