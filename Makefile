@@ -33,7 +33,7 @@ stow-mjolnir:
 		--stow OS-Common-Unix OS-Linux ENV-Chander-Mjolnir
 
 	sudo $(STOW_COMMAND_PREFIX_ROOT) \
-		--ignore='\.config' \
+		--ignore='(\.config|\.bashrc)' \
 		--stow ENV-Chander-Mjolnir
 
 	printf "✅ Mjolnir Dot-Files stowed successfully\n"
