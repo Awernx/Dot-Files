@@ -1,6 +1,6 @@
 #!/usr/bin/env fish
 
-# IMPORTANT: Do not load this script for non-interactive shells
+# Stop loading this script for non-interactive shells
 if not status is-interactive
     exit 0
 end

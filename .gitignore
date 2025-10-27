@@ -4,5 +4,9 @@
 # Temporary AutoKey reference artifacts 
 **/autokey-automation-scripts/Samples
 
-# VIM History file
+# VIM artifacts
 .netrwhist
+
+# Yazi artifacts
+**/yazi/package.toml
+**/yazi/flavors
