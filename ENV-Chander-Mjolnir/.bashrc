@@ -5,11 +5,13 @@ case $- in
       *) return;;
 esac
 
-# Move bash history file to XDG directory
-history_location=~/.local/state/bash
+# Move bash & less history file to XDG directory
+history_location=~/.local/state/history
 mkdir -p $history_location
-export HISTFILE=$history_location/history
+
 export HISTCONTROL=ignoreboth:erasedups
+export HISTFILE=$history_location/bash_history
+export LESSHISTFILE=$history_location/less_history
 
 # Add Homebrew to the PATH, required for fish, fzf, etc.
 export PATH=$PATH:/home/linuxbrew/.linuxbrew/bin
