@@ -3,5 +3,4 @@ if status is-interactive
     mcfly init fish                   | source
     direnv hook fish                  | source
     zoxide init fish                  | source
-    broot --print-shell-function fish | source
 end

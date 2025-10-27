@@ -15,7 +15,6 @@ set -Ux XDG_CONFIG_HOME $HOME/.config
 set -Ux XDG_DATA_HOME   $HOME/.local/share
 set -Ux XDG_CACHE_HOME  $HOME/.cache
 
-
 set --export --global HOST_SHORT_NAME (hostname -s) 
 set --export --global TITLE_PREFIX ''
 set --export TITLE ''
@@ -63,16 +62,15 @@ if type -q zoxide
     alias cd z
 end
 
-if type -q broot
-  function launch_broot
-      br -gDSP --sort-by-type-dirs-first --cmd :toggle_preview; clear
+if type -q yazi
+  function y
+    set tmp (mktemp -t "yazi-cwd.XXXXXX")
+    yazi $argv --cwd-file="$tmp"
+    if read -z cwd < "$tmp"; and [ -n "$cwd" ]; and [ "$cwd" != "$PWD" ]
+      builtin cd -- "$cwd"
+    end
+    rm -f -- "$tmp"
   end
-
-  #Replace 'll' alias with broot
-  alias ll launch_broot
-  
-  # Bind Ctrl + B to broot for a quick preview of current folder
-  bind \cb launch_broot
 end
 
 ############################################################################

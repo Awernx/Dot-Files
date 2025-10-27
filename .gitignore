@@ -3,3 +3,6 @@
 
 # Temporary AutoKey reference artifacts 
 **/autokey-automation-scripts/Samples
+
+# VIM History file
+.netrwhist
