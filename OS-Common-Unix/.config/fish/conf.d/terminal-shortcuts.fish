@@ -14,7 +14,8 @@ set -Ux XDG_CONFIG_HOME $HOME/.config
 set -Ux XDG_DATA_HOME   $HOME/.local/share
 set -Ux XDG_CACHE_HOME  $HOME/.cache
 
-set --export --global HOST_SHORT_NAME (hostname -s) 
+set --export --global HOST_FULL_NAME  (hostname -f)
+set --export --global HOST_SHORT_NAME (hostname -s)
 set --export --global TITLE_PREFIX ''
 set --export TITLE ''
 
@@ -42,16 +43,16 @@ end
 ############################################################################
 ##  Aliases
 ############################################################################
-alias ls         l
-alias clear      '/usr/bin/clear; commandline -f repaint; terminal_colors'
-alias ttymode    'set --export --global TTY_MODE 1'
-alias guimode    'set --erase --global TTY_MODE'
-alias root       'sudo -i'
-alias de         'direnv edit .'
-alias da         'direnv allow '
-alias gs         'git status'
-alias pull       'git pull'
-alias gclean     'git fetch --prune'
+alias ls      l
+alias clear   '/usr/bin/clear; commandline -f repaint; terminal_colors'
+alias ttymode 'set --export --global TTY_MODE 1'
+alias guimode 'set --erase --global TTY_MODE'
+alias root    'sudo -i'
+alias de      'direnv edit .'
+alias da      'direnv allow '
+alias gs      'git status'
+alias pull    'git pull'
+alias gclean  'git fetch --prune'
 
 if type -q bat
     alias cat 'bat --color=always'
@@ -101,12 +102,11 @@ function fish_prompt
 end
 
 function fish_right_prompt
-  set --local HOST_DESC $HOST_SHORT_NAME
-  echo -ns (set_color -o $fish_color_host_remote) "$OS_ICON $HOST_DESC" (set_color normal)
+  echo -ns (set_color -o $fish_color_host_remote) "$OS_ICON $HOST_SHORT_NAME" (set_color normal)
 end
 
 function this
-  echo -ns '        Host: ' (set_color -o) (hostname -f) (set_color normal) \n
+  echo -ns '        Host: ' (set_color -o) $HOST_FULL_NAME (set_color normal) \n
   echo -ns '          OS: ' (set_color -o) $OS (set_color normal) \n
 
   if test -n "$BASE_OS"
@@ -166,7 +166,7 @@ function register_script
     end
 end
 
-function fish_greeting  
+function fish_greeting
   # Skip and return if logging in under a remote SSH session
   if set --query SSH_CLIENT; or set --query SSH_TTY;
     ssh_terminal_colors
@@ -201,7 +201,7 @@ end
 function default_terminal_colors
   # Inspired by Ivo's ANSI Color script
   # Source: http://crunchbang.org/forums/viewtopic.php?pid=134749#p134749
-  echo 
+  echo
   echo -ns (set_color red)   ' ██████  ' (set_color green)   ' ██████  ' (set_color yellow)   '   ██████' (set_color blue)   ' ██████  ' (set_color magenta)   '   ██████' (set_color cyan)   '   ██████' \n
   echo -ns (set_color red)   ' ████████' (set_color green)   ' ██    ██' (set_color yellow)   ' ██      ' (set_color blue)   ' ██    ██' (set_color magenta)   ' ██████  ' (set_color cyan)   ' ████████' \n
   echo -ns (set_color brred) ' ██  ████' (set_color brgreen) ' ██  ████' (set_color bryellow) ' ████    ' (set_color brblue) ' ████  ██' (set_color brmagenta) ' ████    ' (set_color brcyan) ' █████   ' \n
@@ -210,7 +210,7 @@ function default_terminal_colors
 end
 
 function ssh_terminal_colors
-  echo 
+  echo
   echo -ns '╔═╗╔═╗╦ ╦  ┌─┐┌─┐┌─┐┌─┐┬┌─┐┌┐┌ ' (set_color red)   ' ▄▄ ' (set_color green)   '▄▄ ' (set_color yellow)   '▄▄ ' (set_color blue)   '▄▄ ' (set_color magenta)   '▄▄ ' (set_color cyan)   '▄▄ ' (set_color normal)\n
   echo -ns '╚═╗╚═╗╠═╣  └─┐├┤ └─┐└─┐││ ││││ ' \n
   echo -ns '╚═╝╚═╝╩ ╩  └─┘└─┘└─┘└─┘┴└─┘┘└┘ ' (set_color brred) ' ▀▀ ' (set_color brgreen) '▀▀ ' (set_color bryellow) '▀▀ ' (set_color brblue) '▀▀ ' (set_color brmagenta) '▀▀ ' (set_color brcyan) '▀▀ ' (set_color normal)\n
