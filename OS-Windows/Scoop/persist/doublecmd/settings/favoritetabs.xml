@@ -3,8 +3,8 @@
   <FavoriteTabsList>
     <FavoriteTabs UniqueID="{0139F2F8-2186-40BB-AA82-41A305BE7DEC}" Name="Apps &amp; Programs - Scoop &amp; Program Files" DestLeft="0" DestRight="1" ExistingKeep="5" SaveDirHistory="False"/>
     <FavoriteTabs UniqueID="{D5F9B770-2A02-412F-AB74-D9F7129294F9}" Name="C: - Home - BK1 (E:)" DestLeft="0" DestRight="1" ExistingKeep="5" SaveDirHistory="False"/>
-    <FavoriteTabs UniqueID="{FA6DCCF7-A0D4-4F94-B560-46DAFA51FBB8}" Name="XDG Folders" DestLeft="0" DestRight="1" ExistingKeep="5" SaveDirHistory="False"/>
-    <FavoriteTabs UniqueID="{1962FA66-CB19-4370-A17F-074022B6A741}" Name="APPDATA - Local, Roaming and LocalLow" DestLeft="0" DestRight="1" ExistingKeep="5" SaveDirHistory="False"/>
+    <FavoriteTabs UniqueID="{1962FA66-CB19-4370-A17F-074022B6A741}" Name="APPDATA and Scoop Persist" DestLeft="0" DestRight="1" ExistingKeep="5" SaveDirHistory="False"/>
+    <FavoriteTabs UniqueID="{3CBD472E-52CA-4E5D-BBFB-B22ABDF350F9}" Name="Linux" DestLeft="0" DestRight="1" ExistingKeep="5" SaveDirHistory="False"/>
   </FavoriteTabsList>
   <ActualTabs>
     <GUIDD5F9B770-2A02-412F-AB74-D9F7129294F9>
@@ -146,7 +146,7 @@
         </Tab>
       </Left>
       <Right>
-        <ActiveTab>0</ActiveTab>
+        <ActiveTab>2</ActiveTab>
         <Tab>
           <FileView Type="columns">
             <Sortings>
@@ -189,79 +189,29 @@
             </ColumnsView>
           </FileView>
         </Tab>
+        <Tab>
+          <FileView Type="columns">
+            <Sortings>
+              <Sorting>
+                <Direction>1</Direction>
+                <Function>12</Function>
+              </Sorting>
+            </Sortings>
+            <History>
+              <Entry Active="True">
+                <FileSource Type="FileSystem"/>
+                <Paths>
+                  <Path>C:\Users\chand\Workspace\</Path>
+                </Paths>
+              </Entry>
+            </History>
+            <ColumnsView>
+              <ColumnsSet>Default</ColumnsSet>
+            </ColumnsView>
+          </FileView>
+        </Tab>
       </Right>
     </GUID0139F2F8-2186-40BB-AA82-41A305BE7DEC>
-    <GUIDFA6DCCF7-A0D4-4F94-B560-46DAFA51FBB8>
-      <Left>
-        <ActiveTab>0</ActiveTab>
-        <Tab>
-          <FileView Type="columns">
-            <Sortings>
-              <Sorting>
-                <Direction>1</Direction>
-                <Function>12</Function>
-              </Sorting>
-            </Sortings>
-            <History>
-              <Entry Active="True">
-                <FileSource Type="FileSystem"/>
-                <Paths>
-                  <Path>C:\Users\chand\.config\</Path>
-                </Paths>
-              </Entry>
-            </History>
-            <ColumnsView>
-              <ColumnsSet>Default</ColumnsSet>
-            </ColumnsView>
-          </FileView>
-        </Tab>
-      </Left>
-      <Right>
-        <ActiveTab>0</ActiveTab>
-        <Tab>
-          <FileView Type="columns">
-            <Sortings>
-              <Sorting>
-                <Direction>1</Direction>
-                <Function>12</Function>
-              </Sorting>
-            </Sortings>
-            <History>
-              <Entry Active="True">
-                <FileSource Type="FileSystem"/>
-                <Paths>
-                  <Path>C:\Users\chand\.ssh\</Path>
-                </Paths>
-              </Entry>
-            </History>
-            <ColumnsView>
-              <ColumnsSet>Default</ColumnsSet>
-            </ColumnsView>
-          </FileView>
-        </Tab>
-        <Tab>
-          <FileView Type="columns">
-            <Sortings>
-              <Sorting>
-                <Direction>1</Direction>
-                <Function>12</Function>
-              </Sorting>
-            </Sortings>
-            <History>
-              <Entry Active="True">
-                <FileSource Type="FileSystem"/>
-                <Paths>
-                  <Path>C:\Users\chand\</Path>
-                </Paths>
-              </Entry>
-            </History>
-            <ColumnsView>
-              <ColumnsSet>Default</ColumnsSet>
-            </ColumnsView>
-          </FileView>
-        </Tab>
-      </Right>
-    </GUIDFA6DCCF7-A0D4-4F94-B560-46DAFA51FBB8>
     <GUID1962FA66-CB19-4370-A17F-074022B6A741>
       <Left>
         <ActiveTab>0</ActiveTab>
@@ -307,9 +257,6 @@
             </ColumnsView>
           </FileView>
         </Tab>
-      </Left>
-      <Right>
-        <ActiveTab>1</ActiveTab>
         <Tab>
           <FileView Type="columns">
             <Sortings>
@@ -352,7 +299,123 @@
             </ColumnsView>
           </FileView>
         </Tab>
+      </Left>
+      <Right>
+        <ActiveTab>0</ActiveTab>
+        <Tab>
+          <FileView Type="columns">
+            <Sortings>
+              <Sorting>
+                <Direction>1</Direction>
+                <Function>12</Function>
+              </Sorting>
+            </Sortings>
+            <History>
+              <Entry Active="True">
+                <FileSource Type="FileSystem"/>
+                <Paths>
+                  <Path>C:\Users\chand\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\</Path>
+                </Paths>
+              </Entry>
+            </History>
+            <ColumnsView>
+              <ColumnsSet>Default</ColumnsSet>
+            </ColumnsView>
+          </FileView>
+        </Tab>
+        <Tab>
+          <FileView Type="columns">
+            <Sortings>
+              <Sorting>
+                <Direction>1</Direction>
+                <Function>12</Function>
+              </Sorting>
+            </Sortings>
+            <History>
+              <Entry Active="True">
+                <FileSource Type="FileSystem"/>
+                <Paths>
+                  <Path>C:\Users\chand\Workspace\</Path>
+                </Paths>
+              </Entry>
+            </History>
+            <ColumnsView>
+              <ColumnsSet>Default</ColumnsSet>
+            </ColumnsView>
+          </FileView>
+        </Tab>
+        <Tab>
+          <FileView Type="columns">
+            <Sortings>
+              <Sorting>
+                <Direction>1</Direction>
+                <Function>12</Function>
+              </Sorting>
+            </Sortings>
+            <History>
+              <Entry Active="True">
+                <FileSource Type="FileSystem"/>
+                <Paths>
+                  <Path>C:\Users\chand\AppData\Local\Programs\Scoop\persist\</Path>
+                </Paths>
+              </Entry>
+            </History>
+            <ColumnsView>
+              <ColumnsSet>Default</ColumnsSet>
+            </ColumnsView>
+          </FileView>
+        </Tab>
       </Right>
     </GUID1962FA66-CB19-4370-A17F-074022B6A741>
+    <GUID3CBD472E-52CA-4E5D-BBFB-B22ABDF350F9>
+      <Left>
+        <ActiveTab>0</ActiveTab>
+        <Tab>
+          <FileView Type="columns">
+            <Sortings>
+              <Sorting>
+                <Direction>1</Direction>
+                <Function>12</Function>
+              </Sorting>
+            </Sortings>
+            <History>
+              <Entry Active="True">
+                <FileSource Type="FileSystem"/>
+                <Paths>
+                  <Path>C:\Users\chand\AppData\Local\Programs\Scoop\persist\msys2\home\chand\</Path>
+                </Paths>
+              </Entry>
+            </History>
+            <ColumnsView>
+              <ColumnsSet>Default</ColumnsSet>
+            </ColumnsView>
+          </FileView>
+        </Tab>
+      </Left>
+      <Right>
+        <ActiveTab>0</ActiveTab>
+        <Tab>
+          <FileView Type="columns">
+            <Sortings>
+              <Sorting>
+                <Direction>1</Direction>
+                <Function>12</Function>
+              </Sorting>
+            </Sortings>
+            <History>
+              <Entry Active="True">
+                <FileSource Type="FileSystem"/>
+                <Paths>
+                  <Path>C:\Users\chand\</Path>
+                </Paths>
+              </Entry>
+            </History>
+            <ColumnsView>
+              <ColumnsSet>Default</ColumnsSet>
+            </ColumnsView>
+          </FileView>
+        </Tab>
+      </Right>
+    </GUID3CBD472E-52CA-4E5D-BBFB-B22ABDF350F9>
   </ActualTabs>
 </doublecmd>

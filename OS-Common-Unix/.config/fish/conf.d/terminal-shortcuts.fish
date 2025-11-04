@@ -14,8 +14,11 @@ set -Ux XDG_CONFIG_HOME $HOME/.config
 set -Ux XDG_DATA_HOME   $HOME/.local/share
 set -Ux XDG_CACHE_HOME  $HOME/.cache
 
-set --export --global HOST_FULL_NAME  (hostname -f)
-set --export --global HOST_SHORT_NAME (hostname -s)
+if not set -q HOST_FULL_NAME
+    set --export --global HOST_FULL_NAME  (hostname -f)
+    set --export --global HOST_SHORT_NAME (hostname -s)
+end
+
 set --export --global TITLE_PREFIX ''
 set --export TITLE ''
 

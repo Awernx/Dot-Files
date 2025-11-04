@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<doublecmd DCVersion="1.1.23 gamma" ConfigVersion="15">
+<doublecmd DCVersion="1.1.29 gamma" ConfigVersion="15">
   <Toolbars>
     <MainToolbar>
       <Row>
@@ -158,13 +158,13 @@
   </Toolbars>
   <MainWindow>
     <Position Save="True">
-      <Left>177</Left>
-      <Top>58</Top>
-      <Width>1286</Width>
-      <Height>848</Height>
+      <Left>1085</Left>
+      <Top>0</Top>
+      <Width>1278</Width>
+      <Height>980</Height>
       <PixelsPerInch>96</PixelsPerInch>
       <Maximized>False</Maximized>
-      <Splitter>45.9169054441261</Splitter>
+      <Splitter>50</Splitter>
     </Position>
   </MainWindow>
   <Language>
@@ -709,7 +709,7 @@
     <DfltRightGoTo>1</DfltRightGoTo>
     <DfltKeep>5</DfltKeep>
     <DfltSaveDirHistory>False</DfltSaveDirHistory>
-    <FavTabsLastUniqueID>{1962FA66-CB19-4370-A17F-074022B6A741}</FavTabsLastUniqueID>
+    <FavTabsLastUniqueID>{FA6DCCF7-A0D4-4F94-B560-46DAFA51FBB8}</FavTabsLastUniqueID>
   </FavoriteTabsOptions>
   <Lua>
     <PathToLibrary>lua5.1.dll</PathToLibrary>
@@ -739,7 +739,7 @@
           <Title>Name</Title>
           <Unique>B6463A25-DCF2-400F-898D-AD14073B1924</Unique>
           <FuncString>[DC().GETFILENAMENOEXT{}]</FuncString>
-          <Width>303</Width>
+          <Width>357</Width>
           <Align>0</Align>
           <Font>
             <Name>default</Name>
