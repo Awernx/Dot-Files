@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <doublecmd>
   <FavoriteTabsList>
-    <FavoriteTabs UniqueID="{0139F2F8-2186-40BB-AA82-41A305BE7DEC}" Name="Apps &amp; Programs - Scoop &amp; Program Files" DestLeft="0" DestRight="1" ExistingKeep="5" SaveDirHistory="False"/>
-    <FavoriteTabs UniqueID="{D5F9B770-2A02-412F-AB74-D9F7129294F9}" Name="C:\ - Svalbard &amp; MEGA" DestLeft="0" DestRight="1" ExistingKeep="5" SaveDirHistory="False"/>
-    <FavoriteTabs UniqueID="{3CBD472E-52CA-4E5D-BBFB-B22ABDF350F9}" Name="Linux" DestLeft="0" DestRight="1" ExistingKeep="5" SaveDirHistory="False"/>
-    <FavoriteTabs UniqueID="{1962FA66-CB19-4370-A17F-074022B6A741}" Name="AppData (Local &amp; Roaming) - Scoop Persist, Workspace, Startup" DestLeft="0" DestRight="1" ExistingKeep="5" SaveDirHistory="False"/>
+    <FavoriteTabs UniqueID="{1962FA66-CB19-4370-A17F-074022B6A741}" Name="AppData - Scoop Persist, Workspace" DestLeft="0" DestRight="1" ExistingKeep="5" SaveDirHistory="False"/>
+    <FavoriteTabs UniqueID="{0139F2F8-2186-40BB-AA82-41A305BE7DEC}" Name="Program Files - Scoop Apps &amp; Startup" DestLeft="0" DestRight="1" ExistingKeep="5" SaveDirHistory="False"/>
+    <FavoriteTabs UniqueID="{D5F9B770-2A02-412F-AB74-D9F7129294F9}" Name="Svalbard - MEGA, C:\" DestLeft="0" DestRight="1" ExistingKeep="5" SaveDirHistory="False"/>
+    <FavoriteTabs UniqueID="{3CBD472E-52CA-4E5D-BBFB-B22ABDF350F9}" Name="XDG - Linux" DestLeft="0" DestRight="1" ExistingKeep="5" SaveDirHistory="False"/>
   </FavoriteTabsList>
   <ActualTabs>
     <GUIDD5F9B770-2A02-412F-AB74-D9F7129294F9>
@@ -101,28 +101,7 @@
     </GUIDD5F9B770-2A02-412F-AB74-D9F7129294F9>
     <GUID0139F2F8-2186-40BB-AA82-41A305BE7DEC>
       <Left>
-        <ActiveTab>0</ActiveTab>
-        <Tab>
-          <FileView Type="columns">
-            <Sortings>
-              <Sorting>
-                <Direction>1</Direction>
-                <Function>12</Function>
-              </Sorting>
-            </Sortings>
-            <History>
-              <Entry Active="True">
-                <FileSource Type="FileSystem"/>
-                <Paths>
-                  <Path>C:\Users\chand\AppData\Local\Programs\Scoop\apps\</Path>
-                </Paths>
-              </Entry>
-            </History>
-            <ColumnsView>
-              <ColumnsSet>Default</ColumnsSet>
-            </ColumnsView>
-          </FileView>
-        </Tab>
+        <ActiveTab>2</ActiveTab>
         <Tab>
           <FileView Type="columns">
             <Sortings>
@@ -144,30 +123,6 @@
             </ColumnsView>
           </FileView>
         </Tab>
-        <Tab>
-          <FileView Type="columns">
-            <Sortings>
-              <Sorting>
-                <Direction>1</Direction>
-                <Function>12</Function>
-              </Sorting>
-            </Sortings>
-            <History>
-              <Entry Active="True">
-                <FileSource Type="FileSystem"/>
-                <Paths>
-                  <Path>C:\Users\chand\AppData\Local\</Path>
-                </Paths>
-              </Entry>
-            </History>
-            <ColumnsView>
-              <ColumnsSet>Default</ColumnsSet>
-            </ColumnsView>
-          </FileView>
-        </Tab>
-      </Left>
-      <Right>
-        <ActiveTab>2</ActiveTab>
         <Tab>
           <FileView Type="columns">
             <Sortings>
@@ -210,6 +165,9 @@
             </ColumnsView>
           </FileView>
         </Tab>
+      </Left>
+      <Right>
+        <ActiveTab>0</ActiveTab>
         <Tab>
           <FileView Type="columns">
             <Sortings>
@@ -222,7 +180,29 @@
               <Entry Active="True">
                 <FileSource Type="FileSystem"/>
                 <Paths>
-                  <Path>C:\Users\chand\Workspace\</Path>
+                  <Path>C:\Users\chand\AppData\Local\Programs\Scoop\apps\</Path>
+                </Paths>
+              </Entry>
+            </History>
+            <ColumnsView>
+              <ColumnsSet>Default</ColumnsSet>
+            </ColumnsView>
+          </FileView>
+          <Title>Scoop Apps</Title>
+        </Tab>
+        <Tab>
+          <FileView Type="columns">
+            <Sortings>
+              <Sorting>
+                <Direction>1</Direction>
+                <Function>12</Function>
+              </Sorting>
+            </Sortings>
+            <History>
+              <Entry Active="True">
+                <FileSource Type="FileSystem"/>
+                <Paths>
+                  <Path>C:\Users\chand\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\</Path>
                 </Paths>
               </Entry>
             </History>
@@ -314,7 +294,7 @@
               <Entry Active="True">
                 <FileSource Type="FileSystem"/>
                 <Paths>
-                  <Path>C:\Users\chand\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\</Path>
+                  <Path>C:\Users\chand\AppData\Local\Programs\Scoop\persist\</Path>
                 </Paths>
               </Entry>
             </History>
@@ -322,6 +302,7 @@
               <ColumnsSet>Default</ColumnsSet>
             </ColumnsView>
           </FileView>
+          <Title>Scoop Persist</Title>
         </Tab>
         <Tab>
           <FileView Type="columns">
@@ -336,27 +317,6 @@
                 <FileSource Type="FileSystem"/>
                 <Paths>
                   <Path>C:\Users\chand\Workspace\</Path>
-                </Paths>
-              </Entry>
-            </History>
-            <ColumnsView>
-              <ColumnsSet>Default</ColumnsSet>
-            </ColumnsView>
-          </FileView>
-        </Tab>
-        <Tab>
-          <FileView Type="columns">
-            <Sortings>
-              <Sorting>
-                <Direction>1</Direction>
-                <Function>12</Function>
-              </Sorting>
-            </Sortings>
-            <History>
-              <Entry Active="True">
-                <FileSource Type="FileSystem"/>
-                <Paths>
-                  <Path>C:\Users\chand\AppData\Local\Programs\Scoop\persist\</Path>
                 </Paths>
               </Entry>
             </History>
@@ -391,6 +351,90 @@
             </ColumnsView>
           </FileView>
         </Tab>
+        <Tab>
+          <FileView Type="columns">
+            <Sortings>
+              <Sorting>
+                <Direction>1</Direction>
+                <Function>12</Function>
+              </Sorting>
+            </Sortings>
+            <History>
+              <Entry Active="True">
+                <FileSource Type="FileSystem"/>
+                <Paths>
+                  <Path>C:\Users\chand\.config\</Path>
+                </Paths>
+              </Entry>
+            </History>
+            <ColumnsView>
+              <ColumnsSet>Default</ColumnsSet>
+            </ColumnsView>
+          </FileView>
+        </Tab>
+        <Tab>
+          <FileView Type="columns">
+            <Sortings>
+              <Sorting>
+                <Direction>1</Direction>
+                <Function>12</Function>
+              </Sorting>
+            </Sortings>
+            <History>
+              <Entry Active="True">
+                <FileSource Type="FileSystem"/>
+                <Paths>
+                  <Path>C:\Users\chand\.local\</Path>
+                </Paths>
+              </Entry>
+            </History>
+            <ColumnsView>
+              <ColumnsSet>Default</ColumnsSet>
+            </ColumnsView>
+          </FileView>
+        </Tab>
+        <Tab>
+          <FileView Type="columns">
+            <Sortings>
+              <Sorting>
+                <Direction>1</Direction>
+                <Function>12</Function>
+              </Sorting>
+            </Sortings>
+            <History>
+              <Entry Active="True">
+                <FileSource Type="FileSystem"/>
+                <Paths>
+                  <Path>C:\Users\chand\.cache\</Path>
+                </Paths>
+              </Entry>
+            </History>
+            <ColumnsView>
+              <ColumnsSet>Default</ColumnsSet>
+            </ColumnsView>
+          </FileView>
+        </Tab>
+        <Tab>
+          <FileView Type="columns">
+            <Sortings>
+              <Sorting>
+                <Direction>1</Direction>
+                <Function>12</Function>
+              </Sorting>
+            </Sortings>
+            <History>
+              <Entry Active="True">
+                <FileSource Type="FileSystem"/>
+                <Paths>
+                  <Path>C:\Users\chand\.ssh\</Path>
+                </Paths>
+              </Entry>
+            </History>
+            <ColumnsView>
+              <ColumnsSet>Default</ColumnsSet>
+            </ColumnsView>
+          </FileView>
+        </Tab>
       </Left>
       <Right>
         <ActiveTab>0</ActiveTab>
@@ -407,6 +451,90 @@
                 <FileSource Type="FileSystem"/>
                 <Paths>
                   <Path>C:\Users\chand\AppData\Local\Programs\Scoop\apps\msys2\current\</Path>
+                </Paths>
+              </Entry>
+            </History>
+            <ColumnsView>
+              <ColumnsSet>Default</ColumnsSet>
+            </ColumnsView>
+          </FileView>
+        </Tab>
+        <Tab>
+          <FileView Type="columns">
+            <Sortings>
+              <Sorting>
+                <Direction>1</Direction>
+                <Function>12</Function>
+              </Sorting>
+            </Sortings>
+            <History>
+              <Entry Active="True">
+                <FileSource Type="FileSystem"/>
+                <Paths>
+                  <Path>C:\Users\chand\AppData\Local\Programs\Scoop\apps\msys2\current\etc\</Path>
+                </Paths>
+              </Entry>
+            </History>
+            <ColumnsView>
+              <ColumnsSet>Default</ColumnsSet>
+            </ColumnsView>
+          </FileView>
+        </Tab>
+        <Tab>
+          <FileView Type="columns">
+            <Sortings>
+              <Sorting>
+                <Direction>1</Direction>
+                <Function>12</Function>
+              </Sorting>
+            </Sortings>
+            <History>
+              <Entry Active="True">
+                <FileSource Type="FileSystem"/>
+                <Paths>
+                  <Path>C:\Users\chand\AppData\Local\Programs\Scoop\apps\msys2\current\usr\</Path>
+                </Paths>
+              </Entry>
+            </History>
+            <ColumnsView>
+              <ColumnsSet>Default</ColumnsSet>
+            </ColumnsView>
+          </FileView>
+        </Tab>
+        <Tab>
+          <FileView Type="columns">
+            <Sortings>
+              <Sorting>
+                <Direction>1</Direction>
+                <Function>12</Function>
+              </Sorting>
+            </Sortings>
+            <History>
+              <Entry Active="True">
+                <FileSource Type="FileSystem"/>
+                <Paths>
+                  <Path>C:\Users\chand\AppData\Local\Programs\Scoop\apps\msys2\current\var\</Path>
+                </Paths>
+              </Entry>
+            </History>
+            <ColumnsView>
+              <ColumnsSet>Default</ColumnsSet>
+            </ColumnsView>
+          </FileView>
+        </Tab>
+        <Tab>
+          <FileView Type="columns">
+            <Sortings>
+              <Sorting>
+                <Direction>1</Direction>
+                <Function>12</Function>
+              </Sorting>
+            </Sortings>
+            <History>
+              <Entry Active="True">
+                <FileSource Type="FileSystem"/>
+                <Paths>
+                  <Path>C:\Users\chand\AppData\Local\Programs\Scoop\apps\msys2\current\opt\</Path>
                 </Paths>
               </Entry>
             </History>

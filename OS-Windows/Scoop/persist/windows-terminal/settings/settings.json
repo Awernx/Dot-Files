@@ -1,163 +1,152 @@
 {
-    "$help": "https://aka.ms/terminal-documentation",
-    "$schema": "https://aka.ms/terminal-profiles-schema",
-    "actions": 
-    [
-        {
-            "command": "paste",
-            "id": "User.paste"
-        },
-        {
-            "command": 
-            {
-                "action": "copy",
-                "singleLine": false
-            },
-            "id": "User.copy.644BA8F2"
-        },
-        {
-            "command": 
-            {
-                "action": "splitPane",
-                "split": "auto",
-                "splitMode": "duplicate"
-            },
-            "id": "User.splitPane.A6751878"
-        },
-        {
-            "command": "find",
-            "id": "User.find"
-        }
-    ],
-    "alwaysShowNotificationIcon": false,
-    "alwaysShowTabs": false,
-    "copyFormatting": "none",
-    "copyOnSelect": false,
-    "defaultProfile": "{63ac87a8-4308-4a13-b566-a197f845fdab}",
-    "keybindings": 
-    [
-        {
-            "id": "User.find",
-            "keys": "ctrl+shift+f"
-        },
-        {
-            "id": "User.paste",
-            "keys": "ctrl+v"
-        },
-        {
-            "id": "User.copy.644BA8F2",
-            "keys": "ctrl+c"
-        },
-        {
-            "id": "User.splitPane.A6751878",
-            "keys": "alt+shift+d"
-        }
-    ],
-    "newTabMenu": 
-    [
-        {
-            "type": "remainingProfiles"
-        }
-    ],
-    "profiles": 
+  "$help": "https://aka.ms/terminal-documentation",
+  "$schema": "https://aka.ms/terminal-profiles-schema",
+  "actions": [
     {
-        "defaults": {},
-        "list": 
-        [
-            {
-                "colorScheme": "GruvBox",
-                "commandline": "C:/Users/chand/AppData/Local/Programs/Scoop/shims/msys2.cmd -use-full-path -defterm -here -no-start -msys -shell fish",
-                "font": 
-                {
-                    "face": "Consolas",
-                    "size": 10
-                },
-                "guid": "{63ac87a8-4308-4a13-b566-a197f845fdab}",
-                "hidden": false,
-                "icon": "C:/Users/chand/AppData/Local/Programs/Scoop/apps/msys2/current/msys2.ico",
-                "name": "Msys2",
-                "opacity": 100,
-                "startingDirectory": "C:\\Users\\chand",
-                "useAcrylic": true
-            },
-            {
-                "colorScheme": "matrix",
-                "commandline": "cmd /k \"C:\\Users\\chand\\Workspace\\Windows-DotFiles\\CommandLine\\windows-terminal-shortcuts.cmd",
-                "elevate": true,
-                "font": 
-                {
-                    "face": "Consolas",
-                    "size": 10,
-                    "weight": "semi-light"
-                },
-                "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
-                "hidden": false,
-                "name": "Command Prompt"
-            },
-            {
-                "colorScheme": "Campbell Powershell",
-                "elevate": false,
-                "font": 
-                {
-                    "face": "Consolas",
-                    "size": 10,
-                    "weight": "semi-light"
-                },
-                "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
-                "hidden": false,
-                "name": "Windows PowerShell"
-            }
-        ]
+      "command": "paste",
+      "id": "User.paste"
     },
-    "schemes": 
-    [
-        {
-            "name": "GruvBox",
-            "background": "#282828",
-            "black": "#282828",
-            "blue": "#458588",
-            "brightBlack": "#928374",
-            "brightBlue": "#83A598",
-            "brightCyan": "#8EC07C",
-            "brightGreen": "#B8BB26",
-            "brightPurple": "#D3869B",
-            "brightRed": "#FB4934",
-            "brightWhite": "#EBDBB2",
-            "brightYellow": "#FABD2F",
-            "cursorColor": "#FFFFFF",
-            "cyan": "#689D6A",
-            "foreground": "#EBDBB2",
-            "green": "#98971A",
-            "purple": "#B16286",
-            "red": "#CC241D",
-            "selectionBackground": "#FFFFFF",
-            "white": "#A89984",
-            "yellow": "#D79921"
+    {
+      "command": {
+        "action": "copy",
+        "singleLine": false
+      },
+      "id": "User.copy.644BA8F2"
+    },
+    {
+      "command": {
+        "action": "splitPane",
+        "split": "auto",
+        "splitMode": "duplicate"
+      },
+      "id": "User.splitPane.A6751878"
+    },
+    {
+      "command": "find",
+      "id": "User.find"
+    }
+  ],
+  "alwaysShowNotificationIcon": false,
+  "alwaysShowTabs": false,
+  "copyFormatting": "none",
+  "copyOnSelect": false,
+  "defaultProfile": "{63ac87a8-4308-4a13-b566-a197f845fdab}",
+  "keybindings": [
+    {
+      "id": "User.find",
+      "keys": "ctrl+shift+f"
+    },
+    {
+      "id": "User.paste",
+      "keys": "ctrl+v"
+    },
+    {
+      "id": "User.copy.644BA8F2",
+      "keys": "ctrl+c"
+    },
+    {
+      "id": "User.splitPane.A6751878",
+      "keys": "alt+shift+d"
+    }
+  ],
+  "newTabMenu": [
+    {
+      "type": "remainingProfiles"
+    }
+  ],
+  "profiles": {
+    "defaults": {},
+    "list": [
+      {
+        "colorScheme": "GruvBox",
+        "commandline": "C:/Users/chand/AppData/Local/Programs/Scoop/shims/msys2.cmd -use-full-path -defterm -here -no-start -msys -shell fish",
+        "font": {
+          "face": "Consolas",
+          "size": 10
         },
-        {
-            "name": "matrix",
-            "background": "#0F191C",
-            "black": "#0F191C",
-            "blue": "#3F5242",
-            "brightBlack": "#688060",
-            "brightBlue": "#4F7E7E",
-            "brightCyan": "#C1FF8A",
-            "brightGreen": "#90D762",
-            "brightPurple": "#11FF25",
-            "brightRed": "#2FC079",
-            "brightWhite": "#678C61",
-            "brightYellow": "#FAFF00",
-            "cursorColor": "#384545",
-            "cyan": "#50B45A",
-            "foreground": "#82D967",
-            "green": "#82D967",
-            "purple": "#409931",
-            "red": "#23755A",
-            "selectionBackground": "#18282E",
-            "white": "#507350",
-            "yellow": "#FFD700"
-        }
-    ],
-    "theme": "system",
-    "themes": []
+        "guid": "{63ac87a8-4308-4a13-b566-a197f845fdab}",
+        "hidden": false,
+        "icon": "C:/Users/chand/AppData/Local/Programs/Scoop/apps/msys2/current/msys2.ico",
+        "name": "Msys2",
+        "opacity": 100,
+        "startingDirectory": "C:\\Users\\chand",
+        "useAcrylic": true
+      },
+      {
+        "colorScheme": "matrix",
+        "commandline": "cmd /k \"C:\\Users\\chand\\Workspace\\Dot-Files\\OS-Windows\\.config\\cmd\\windows-terminal-shortcuts.cmd",
+        "elevate": true,
+        "font": {
+          "face": "Consolas",
+          "size": 10,
+          "weight": "semi-light"
+        },
+        "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
+        "hidden": false,
+        "name": "Command Prompt"
+      },
+      {
+        "colorScheme": "Campbell Powershell",
+        "elevate": false,
+        "font": {
+          "face": "Consolas",
+          "size": 10,
+          "weight": "semi-light"
+        },
+        "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
+        "hidden": false,
+        "name": "Windows PowerShell"
+      }
+    ]
+  },
+  "schemes": [
+    {
+      "name": "GruvBox",
+      "background": "#282828",
+      "black": "#282828",
+      "blue": "#458588",
+      "brightBlack": "#928374",
+      "brightBlue": "#83A598",
+      "brightCyan": "#8EC07C",
+      "brightGreen": "#B8BB26",
+      "brightPurple": "#D3869B",
+      "brightRed": "#FB4934",
+      "brightWhite": "#EBDBB2",
+      "brightYellow": "#FABD2F",
+      "cursorColor": "#FFFFFF",
+      "cyan": "#689D6A",
+      "foreground": "#EBDBB2",
+      "green": "#98971A",
+      "purple": "#B16286",
+      "red": "#CC241D",
+      "selectionBackground": "#FFFFFF",
+      "white": "#A89984",
+      "yellow": "#D79921"
+    },
+    {
+      "name": "matrix",
+      "background": "#0F191C",
+      "black": "#0F191C",
+      "blue": "#3F5242",
+      "brightBlack": "#688060",
+      "brightBlue": "#4F7E7E",
+      "brightCyan": "#C1FF8A",
+      "brightGreen": "#90D762",
+      "brightPurple": "#11FF25",
+      "brightRed": "#2FC079",
+      "brightWhite": "#678C61",
+      "brightYellow": "#FAFF00",
+      "cursorColor": "#384545",
+      "cyan": "#50B45A",
+      "foreground": "#82D967",
+      "green": "#82D967",
+      "purple": "#409931",
+      "red": "#23755A",
+      "selectionBackground": "#18282E",
+      "white": "#507350",
+      "yellow": "#FFD700"
+    }
+  ],
+  "theme": "system",
+  "themes": []
 }
