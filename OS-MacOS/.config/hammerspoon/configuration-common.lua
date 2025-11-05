@@ -291,8 +291,7 @@ end
 
 local vsWorkspaceLauncher = function(choice)
     if not choice then return end
-    local shell_command = "/opt/homebrew/bin/zed " .. choice["subText"]
-    hs.execute(shell_command)
+    hs.execute('open -a Zed ' .. choice["subText"])
 end
 
 local vscodeImage = hs.image.imageFromURL("https://zed.dev/_next/static/media/stable-app-logo.9b5f959f.png")
