@@ -9,9 +9,6 @@ if not status is-interactive
     exit 0
 end
 
-
-set -Ux MAC_CACHE_HOME $HOME/Library/Caches
-
 set --export --global OS_ICON ''
 set --export --global OS $OS_ICON ' ' (sw_vers -productName) ' ' (sw_vers -productVersion) ' ' (grep -oE 'SOFTWARE LICENSE AGREEMENT FOR macOS [A-Z]*[a-z]*' '/System/Library/CoreServices/Setup Assistant.app/Contents/Resources/en.lproj/OSXSoftwareLicense.rtf' | awk -F 'macOS ' '{print $NF}')
 
@@ -25,7 +22,7 @@ abbr clear-network-cache 'sudo dscacheutil -flushcache; sudo killall -HUP mDNSRe
 function ipa
     print_internal_ip_addresses    
 
-    echo -ns '🌐 External:                              ' \n
+    echo -ns '🌐 External:' \n
     echo -ns '      IP v4: ' (set_color -o) (dig -4 TXT +short o-o.myaddr.l.google.com @ns1.google.com | tr -d '"') (set_color normal) \n
     echo -ns '      IP v6: ' (set_color -o) (dig -6 TXT +short o-o.myaddr.l.google.com @ns1.google.com | tr -d '"') (set_color normal) \n
 end
