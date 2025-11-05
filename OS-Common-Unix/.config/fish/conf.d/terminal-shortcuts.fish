@@ -105,7 +105,9 @@ function fish_prompt
 end
 
 function fish_right_prompt
-  echo -ns (set_color -o $fish_color_host_remote) "$OS_ICON $HOST_SHORT_NAME" (set_color normal)
+    if not set -q LIGHT_PROMPT
+        echo -ns (set_color -o $fish_color_host_remote) "$OS_ICON $HOST_SHORT_NAME" (set_color normal)
+    end
 end
 
 function this
@@ -143,7 +145,6 @@ function fish_title
   else
     echo -ns $TITLE
   end
-
 end
 
 function update
@@ -185,7 +186,11 @@ function fish_greeting
 end
 
 function terminal_colors
-  # Display host banner if it has been set
+  if set -q LIGHT_PROMPT
+    return
+  end
+
+ # Display host banner if it has been set
   if set -q HOST_BANNER
     if type -q lolcat
       echo $HOST_BANNER | lolcat
