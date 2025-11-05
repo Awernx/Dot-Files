@@ -1,0 +1,45 @@
+// Zed settings
+// Reference: https://zed.dev/docs/configuring-zed
+{
+    "icon_theme": "Colored Zed Icons Theme Dark",
+    "ui_font_size": 15.0,
+    "buffer_font_size": 14.0,
+    "theme": {
+        "mode": "system",
+        "light": "Gruvbox Dark Soft",
+        "dark": "One Dark"
+    },
+    "terminal": {
+        "dock": "bottom",
+        "copy_on_select": true,
+        "blinking": "on",
+        "cursor_shape": "bar",
+        "env": { "LIGHT_PROMPT": "true" },
+        "shell": {
+            "with_arguments": {
+                "program": "fish",
+                "args": ["--interactive"]
+            }
+        }
+    },
+    "load_direnv": "direct",
+    "indent_guides": {
+        "enabled": true,
+        "coloring": "indent_aware"
+    },
+    "tab_size": 4,
+    "minimap": {
+        "show": "always",
+        "thumb": "hover",
+        "thumb_border": "full",
+        "current_line_highlight": "all"
+    },
+    "tabs": {
+        "activate_on_close": "left_neighbour",
+        "close_position": "right",
+        "file_icons": true,
+        "git_status": true,
+        "show_close_button": "hover",
+        "show_diagnostics": "all"
+    }
+}
