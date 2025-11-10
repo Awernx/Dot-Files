@@ -8,30 +8,33 @@ end
 #------------------------------------------------------------------------------------------
 # Global variables
 #------------------------------------------------------------------------------------------
-set --export --universal GIT_REPOS ~/Workspace/Machine-Settings ~/Workspace/Linux-DotFiles
-set --global FILES_HOME ~/Workspace/Machine-Settings/mjolnir
-set --export --global HOST_BANNER "\
+set --export --universal GIT_REPOS ~/Workspace/Dot-Files
+set --export --global    HOST_BANNER "\
 
   ▄▄▄▄███▄▄▄▄        ▄█  ▄██████▄   ▄█       ███▄▄▄▄    ▄█     ▄████████
 ▄██▀▀▀███▀▀▀██▄     ███ ███    ███ ███       ███▀▀▀██▄ ███    ███    ███
 ███   ███   ███     ███ ███    ███ ███       ███   ███ ███▌   ███    ███
 ███   ███   ███     ███ ███    ███ ███       ███   ███ ███▌  ▄███▄▄▄▄██▀
-███   ███   ███     ███ ███    ███ ███       ███   ███ ███▌ ▀▀███▀▀▀▀▀  
+███   ███   ███     ███ ███    ███ ███       ███   ███ ███▌ ▀▀███▀▀▀▀▀
 ███   ███   ███     ███ ███    ███ ███       ███   ███ ███  ▀███████████
 ███   ███   ███     ███ ███    ███ ███▌    ▄ ███   ███ ███    ███    ███
  ▀█   ███   █▀  █▄ ▄███  ▀██████▀  █████▄▄██  ▀█   █▀  █▀     ███    ███
-                ▀▀▀▀▀▀             ▀                          ███    ███    
+                ▀▀▀▀▀▀             ▀                          ███    ███
 "
 
 #------------------------------------------------------------------------------------------
 # Abbreviations
 #------------------------------------------------------------------------------------------
-abbr sleep 'systemctl suspend'
-
 # Check if Wake-On-Lan is enabled
 # Refer here to understand output --> https://askubuntu.com/questions/1267124/wake-on-lan-issues
-abbr wol 'sudo ethtool eno1 | grep Wake'
+abbr wol   'sudo ethtool eno1 | grep Wake'
+abbr sleep 'systemctl suspend'
 
+#------------------------------------------------------------------------------------------
+# Aliases
+#------------------------------------------------------------------------------------------
+alias tinn_log  'less +F /var/log/tintinnabulator/runtime.log'
+alias tinn_stat 'systemctl status tintinnabulator.service'
 #------------------------------------------------------------------------------------------
 # Function to back up Google Drive & MEGA artifacts in to Svalbard
 #------------------------------------------------------------------------------------------
@@ -56,7 +59,7 @@ function bk_cloud
     rclone sync --include 'Family*/**' google-drive: $gdrive_folder
 
     echo -ne 'Backing up Google Drive to Svalbard' \r
-    rsync -ah --delete $gdrive_folder/'Family Documents'/ $svalbard_documents_folder/Google_Drive_Documents/    
+    rsync -ah --delete $gdrive_folder/'Family Documents'/ $svalbard_documents_folder/Google_Drive_Documents/
 
     echo '✅ Google Drive backed up successfully       '
 
