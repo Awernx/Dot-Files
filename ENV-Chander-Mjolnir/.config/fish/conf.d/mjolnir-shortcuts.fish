@@ -25,19 +25,57 @@ set --export --global    HOST_BANNER "\
 #------------------------------------------------------------------------------------------
 # Abbreviations
 #------------------------------------------------------------------------------------------
-# Check if Wake-On-Lan is enabled
-# Refer here to understand output --> https://askubuntu.com/questions/1267124/wake-on-lan-issues
-abbr wol   'sudo ethtool eno1 | grep Wake'
+abbr vol   'amixer -c 0 get Master'
+abbr wol   'sudo ethtool eno1 | grep Wake' # Understand output https://askubuntu.com/questions/1267124/wake-on-lan-issues
 abbr sleep 'systemctl suspend'
 
 #------------------------------------------------------------------------------------------
 # Aliases
 #------------------------------------------------------------------------------------------
+alias tinn_vol  'amixer -c 0 set Master 100%'
 alias tinn_log  'less +F /var/log/tintinnabulator/runtime.log'
 alias tinn_stat 'systemctl status tintinnabulator.service'
+
 #------------------------------------------------------------------------------------------
-# Function to back up Google Drive & MEGA artifacts in to Svalbard
+# Functions
 #------------------------------------------------------------------------------------------
+
+function tinn_upgrade
+    set -l  tinn_directory         ~/Workspace/Tintinnabulator
+    set -l  current_directory      (pwd)
+    set -l  tinn_install_directory /tmp/tinn
+    set -l  last_run_id_file       $tinn_install_directory/.last_run_id
+    set -l  last_run_id            ''
+    set -fx DIRENV_LOG_FORMAT      ''
+
+    cd $tinn_directory # gh needs to run within the specific repo
+    set -l recent_run_id          (direnv exec $tinn_directory gh run list --limit 1 --json databaseId --jq '.[0].databaseId')
+
+    if test -f "$last_run_id_file"
+        set last_run_id (cat "$last_run_id_file")
+    else
+        mkdir -p $tinn_install_directory
+    end
+
+    if test "$recent_run_id" = "$last_run_id"
+        echo "Tintinnabulator is already on the latest version"
+        cd $current_directory # Return to the previous directory
+        return 0
+    end
+
+    echo "New version available; Downloading..."
+    direnv exec $tinn_directory gh run download --dir $tinn_install_directory $recent_run_id --pattern "*.deb"
+
+    cd $current_directory # Return to the previous directory
+
+    set -l deb_file (find $tinn_install_directory -type f -name "*.deb") # because gh download creates a sub-directory
+    sudo apt install -qq -y $deb_file
+
+    find $tinn_install_directory  -mindepth 1 -maxdepth 1  -type d -exec rm -rf {} \; # delete all directories inside
+    echo $recent_run_id > $last_run_id_file
+end
+
+# Back up Google Drive & MEGA artifacts in to Svalbard
 function bk_cloud
 
     # Start mega-sync is its not running
