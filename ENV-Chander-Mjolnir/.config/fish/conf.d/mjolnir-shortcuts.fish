@@ -25,14 +25,14 @@ set --export --global    HOST_BANNER "\
 #------------------------------------------------------------------------------------------
 # Abbreviations
 #------------------------------------------------------------------------------------------
-abbr vol   'amixer -c 0 get Master'
+abbr vol   'wpctl get-volume @DEFAULT_AUDIO_SINK@'
 abbr wol   'sudo ethtool eno1 | grep Wake' # Understand output https://askubuntu.com/questions/1267124/wake-on-lan-issues
 abbr sleep 'systemctl suspend'
 
 #------------------------------------------------------------------------------------------
 # Aliases
 #------------------------------------------------------------------------------------------
-alias tinn_vol  'amixer -c 0 set Master 100%'
+alias tinn_vol  'wpctl set-volume @DEFAULT_AUDIO_SINK@ 1.0'
 alias tinn_log  'less +F /var/log/tintinnabulator/runtime.log'
 alias tinn_stat 'systemctl status tintinnabulator.service'
 
