@@ -1,6 +1,7 @@
 // Zed settings
 // Reference: https://zed.dev/docs/configuring-zed
 {
+    "disable_ai": true,
     "icon_theme": "Colored Zed Icons Theme Dark",
     "ui_font_size": 15.0,
     "buffer_font_size": 14.0,
