@@ -9,30 +9,15 @@ export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_CACHE_HOME="$HOME/.cache"
 
-# formatting
-reset=$(tput sgr0)
-bold=$(tput bold)
-dim=$(tput dim)
-
-# foreground colors
-blackf=$(tput setaf 0)
-redf=$(tput setaf 1)
-greenf=$(tput setaf 2)
-yellowf=$(tput setaf 3)
-bluef=$(tput setaf 4)
-purplef=$(tput setaf 5)
-cyanf=$(tput setaf 6)
-whitef=$(tput setaf 7)
-
-# bright foreground colors
-blackb=$(tput setaf 8)
-redb=$(tput setaf 9)
-greenb=$(tput setaf 10)
-yellowb=$(tput setaf 11)
-blueb=$(tput setaf 12)
-purpleb=$(tput setaf 13)
-cyanb=$(tput setaf 14)
-whiteb=$(tput setaf 15)
+# Color Controls        # Foreground Colors            # Bright Foreground Colors
+reset=$(tput sgr0)      blackf=$(tput setaf 0)         blackb=$(tput setaf 8)
+bold=$(tput bold)       redf=$(tput setaf 1)           redb=$(tput setaf 9)
+dim=$(tput dim)         greenf=$(tput setaf 2)         greenb=$(tput setaf 10)
+                        yellowf=$(tput setaf 3)        yellowb=$(tput setaf 11)
+                        bluef=$(tput setaf 4)          blueb=$(tput setaf 12)
+                        purplef=$(tput setaf 5)        purpleb=$(tput setaf 13)
+                        cyanf=$(tput setaf 6)          cyanb=$(tput setaf 14)
+                        whitef=$(tput setaf 7)         whiteb=$(tput setaf 15)
 
 gui_shell_indicator="🅱 🅰 🆂 🅷 "
 
@@ -76,12 +61,6 @@ fi
 # Ctrl + L to 'clear' command
 bind -x '"\C-l": "clear; echo "'
 
-# Ctrl + B --> launch 'broot' if it is installed
-if type broot &> /dev/null
-then 
-    bind -x '"\C-b": "broot"'
-fi
-
 ############################################################################
 ##  Functions 
 ############################################################################
@@ -108,6 +87,17 @@ terminal_colors() {
  ${redf} ${reset}${redb}▀▀▀ ${reset} ${greenf} ${reset}${greenb}▀▀▀ ${reset} ${yellowf} ${reset}${yellowb}▀▀▀ ${reset} ${bluef} ${reset}${blueb}▀▀▀ ${reset} ${purplef} ${reset}${purpleb}▀▀▀ ${reset} ${cyanf} ${reset}${cyanb}▀▀▀ ${reset}
 EOF
 }
+
+# Add shortcut to Yazi - if available
+if type yazi &> /dev/null; then
+    y() {
+    	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+    	yazi "$@" --cwd-file="$tmp"
+    	IFS= read -r -d '' cwd < "$tmp"
+    	[ -n "$cwd" ] && [ "$cwd" != "$PWD" ] && builtin cd -- "$cwd"
+    	rm -f -- "$tmp"
+    }
+fi
 
 set_prompt() {
     LAST_RUN_COMMAND_STATUS=$?
