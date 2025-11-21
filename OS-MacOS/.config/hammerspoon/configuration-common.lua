@@ -88,6 +88,14 @@ function hyperBind(shortcutKey, applicationName)
     )
 end
 
+function hyperBindFile(shortcutKey, fileLocation)
+    hs.hotkey.bind(hyper, shortcutKey,
+        function()
+            hs.execute("open " .. fileLocation)
+        end
+    )
+end
+
 -- Application launchers
 -- Ctrl + Alt + Cmd + .....
 ----------------------------------------------------------------------------------
@@ -103,7 +111,9 @@ hyperBind("O", "md.obsidian")
 hyperBind("P", "com.apple.Passwords")
 hyperBind("T", "com.googlecode.iterm2")
 hyperBind("V", "dev.zed.Zed")
-hyperBind("Y", "com.hicknhacksoftware.MacPass")
+
+hyperBindFile("Y", "~/Documents/KitchenSink/Srivatsas.kdbx")
+hyperBindFile("U", "~/Documents/Personal_Backups/Chander/Sillarai\\ LLC/Sillarai.kdbx")
 
 -- ********************************************************************************
 --                               Finders Section
