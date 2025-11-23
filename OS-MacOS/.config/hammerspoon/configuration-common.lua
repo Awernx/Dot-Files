@@ -112,8 +112,8 @@ hyperBind("P", "com.apple.Passwords")
 hyperBind("T", "com.googlecode.iterm2")
 hyperBind("V", "dev.zed.Zed")
 
-hyperBindFile("Y", "~/Documents/KitchenSink/Srivatsas.kdbx")
-hyperBindFile("U", "~/Documents/Personal_Backups/Chander/Sillarai\\ LLC/Sillarai.kdbx")
+hyperBindFile("Y", "~/MEGA/Kitchen\\ Sink/Srivatsas.kdbx")
+hyperBindFile("U", "~/MEGA/Personal\\ Backups/Chander/Sillarai\\ LLC/Sillarai.kdbx")
 
 -- ********************************************************************************
 --                               Finders Section
@@ -133,10 +133,11 @@ end
 bindDirectory("E", "~")
 bindDirectory("W", "~/Workspace")
 bindDirectory("J", "~/Downloads")
-bindDirectory("K", "~/Documents/KitchenSink")
-bindDirectory("T", "~/Documents/-TEMP-")
-bindDirectory("S", "~/Documents/Sensitive_Family_Documents")
-bindDirectory("P", "~/Documents/Personal_Backups/Chander")
+bindDirectory("K", "~/MEGA/Kitchen\\ Sink")
+bindDirectory("T", "~/MEGA/-TEMP-")
+bindDirectory("D", "~/MEGA/Sensitive\\ Family\\ Documents")
+bindDirectory("P", "~/MEGA/Personal\\ Backups/Chander")
+bindDirectory("S", "/Volumes/Svalbard")
 
 -- ********************************************************************************
 --                         Text Expanders Sections

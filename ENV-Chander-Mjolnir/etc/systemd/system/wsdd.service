@@ -15,7 +15,7 @@ Wants=network-online.target
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/wsdd --hostname Mjolnir --shortlog --preserve-case --workgroup blisshighway
+ExecStart=/usr/bin/wsdd --hostname Mjolnir --shortlog --preserve-case --interface eno1 --workgroup blisshighway
 
 [Install]
 WantedBy=multi-user.target
