@@ -10,17 +10,18 @@ if not status is-interactive
 end
 
 # XDG (Just in case they're not set already)
-set -Ux XDG_CONFIG_HOME $HOME/.config
-set -Ux XDG_DATA_HOME   $HOME/.local/share
-set -Ux XDG_CACHE_HOME  $HOME/.cache
+set --export --universal XDG_CONFIG_HOME $HOME/.config
+set --export --universal XDG_DATA_HOME   $HOME/.local/share
+set --export --universal XDG_CACHE_HOME  $HOME/.cache
+set --export --universal GIT_REPOS       $HOME/Workspace/Dot-Files
 
 if not set -q HOST_FULL_NAME
     set --export --global HOST_FULL_NAME  (hostname -f)
     set --export --global HOST_SHORT_NAME (hostname -s)
 end
 
+set --export --global TITLE ''
 set --export --global TITLE_PREFIX ''
-set --export TITLE ''
 
 ############################################################################
 ## Abbreviations
@@ -173,7 +174,6 @@ end
 function fish_greeting
   # Skip and return if logging in under a remote SSH session
   if set --query SSH_CLIENT; or set --query SSH_TTY;
-    ssh_terminal_colors
     return
   end
 
@@ -186,6 +186,7 @@ function fish_greeting
 end
 
 function terminal_colors
+  # If LIGHT_PROMPT is requested, skip banner rendering and return
   if set -q LIGHT_PROMPT
     return
   end
@@ -199,8 +200,9 @@ function terminal_colors
     end
   end
 
+  # If running under SSH, only render the HOST BANNER and skip terminal colors
   if set --query SSH_CLIENT; or set --query SSH_TTY;
-    ssh_terminal_colors
+    return
   else
     default_terminal_colors
   end
@@ -215,11 +217,4 @@ function default_terminal_colors
   echo -ns (set_color brred) ' ██  ████' (set_color brgreen) ' ██  ████' (set_color bryellow) ' ████    ' (set_color brblue) ' ████  ██' (set_color brmagenta) ' ████    ' (set_color brcyan) ' █████   ' \n
   echo -ns (set_color brred) ' ██    ██' (set_color brgreen) ' ██████  ' (set_color bryellow) ' ████████' (set_color brblue) ' ██████  ' (set_color brmagenta) ' ████████' (set_color brcyan) ' ██      ' \n
   echo -ns (set_color normal)
-end
-
-function ssh_terminal_colors
-  echo
-  echo -ns '╔═╗╔═╗╦ ╦  ┌─┐┌─┐┌─┐┌─┐┬┌─┐┌┐┌ ' (set_color red)   ' ▄▄ ' (set_color green)   '▄▄ ' (set_color yellow)   '▄▄ ' (set_color blue)   '▄▄ ' (set_color magenta)   '▄▄ ' (set_color cyan)   '▄▄ ' (set_color normal)\n
-  echo -ns '╚═╗╚═╗╠═╣  └─┐├┤ └─┐└─┐││ ││││ ' \n
-  echo -ns '╚═╝╚═╝╩ ╩  └─┘└─┘└─┘└─┘┴└─┘┘└┘ ' (set_color brred) ' ▀▀ ' (set_color brgreen) '▀▀ ' (set_color bryellow) '▀▀ ' (set_color brblue) '▀▀ ' (set_color brmagenta) '▀▀ ' (set_color brcyan) '▀▀ ' (set_color normal)\n
 end
