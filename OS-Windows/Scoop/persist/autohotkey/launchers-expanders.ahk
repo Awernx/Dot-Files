@@ -42,7 +42,7 @@ ActivateOrLaunch(windowName, executableLocation)
 {
     SetTitleMatchMode 2
     if WinExist(windowName)
-        WinActivate       
+        WinActivate
     else
         Run executableLocation
 }
@@ -60,24 +60,25 @@ OpenFolder(folderName)
 }
 
 UserHomeDirectory := EnvGet("UserProfile")
+MegaDirectory := A_MyDocuments . "\MEGA"
 
-; Ctrl + Shift + J  --> Downloads 
+; Ctrl + Shift + J  --> Downloads
 ^+J:: OpenFolder(UserHomeDirectory . "\Downloads")
 
 ; Ctrl + Shift + W  --> Workspace
 ^+W:: OpenFolder(UserHomeDirectory . "\Workspace")
 
 ; Ctrl + Shift + K  --> Kitchen Sink
-^+K:: OpenFolder(A_MyDocuments . "\KitchenSink")
+^+K:: OpenFolder(MegaDirectory . "\Kitchen Sink")
 
 ; Ctrl + Shift + P  --> Personal Backups
-^+P:: OpenFolder(A_MyDocuments . "\Personal Backups")
+^+P:: OpenFolder(MegaDirectory . "\Personal Backups")
 
 ; Ctrl + Shift + S  --> Sensitive Family Documents
-^+S:: OpenFolder(A_MyDocuments . "\Sensitive Family Docs")
+^+S:: OpenFolder(MegaDirectory . "\Sensitive Family Documents")
 
 ; Ctrl + Shift + T  --> -TEMP-
-^+T:: OpenFolder(A_MyDocuments . "\-TEMP-")
+^+T:: OpenFolder(MegaDirectory . "\-TEMP-")
 
 ; ========================================================
 ;       Actions --> Ctrl + Alt + .....
