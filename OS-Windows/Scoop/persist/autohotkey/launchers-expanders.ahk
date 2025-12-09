@@ -32,8 +32,8 @@ ScoopAppsDirectory := EnvGet("LocalAppData") . "\Programs\scoop\apps"
 ; Ctrl + Alt + Win + B ---> Browser
 ^!#B::Run A_ProgramFiles . "\Mozilla Firefox\firefox.exe"
 
-; Ctrl + Alt + Win + V ---> Visual Studio Code
-^!#V:: ActivateOrLaunch("Visual Studio Code", EnvGet("LocalAppData") . "\Programs\Microsoft VS Code\Code.exe")
+; Ctrl + Alt + Win + V ---> Zed Editor
+^!#V:: ActivateOrLaunch("Zed", ScoopAppsDirectory . "\zed\current\Zed.exe")
 
 ; Ctrl + Alt + Win + Y ---> KeePass
 ^!#Y:: ActivateOrLaunch("Keepass", "KeePass.exe")
