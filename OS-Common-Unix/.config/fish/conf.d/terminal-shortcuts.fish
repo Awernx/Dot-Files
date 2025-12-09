@@ -132,7 +132,7 @@ end
 
 function fnd
   if count $argv > /dev/null
-    find . -iname '*'$argv'*' -type f
+    find . -iname '*'$argv'*' -type f -printf "\"%p\"\n"
   end
 end
 
