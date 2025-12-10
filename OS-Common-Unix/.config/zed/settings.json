@@ -42,5 +42,8 @@
         "git_status": true,
         "show_close_button": "hover",
         "show_diagnostics": "all"
+    },
+    "file_types": {
+        "Shell Script": ["env*"] // Treat ".env" and ".enrc" files as Shell Script for syntax highlighting
     }
 }
