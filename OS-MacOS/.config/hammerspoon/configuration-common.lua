@@ -109,9 +109,9 @@ hyperBind("M", "com.apple.mail")
 hyperBind("N", "com.apple.Notes")
 hyperBind("O", "md.obsidian")
 hyperBind("P", "com.apple.Passwords")
-hyperBind("T", "com.googlecode.iterm2")
 hyperBind("V", "dev.zed.Zed")
 
+hyperBindFile("T", "~/Workspace/Dot-Files/OS-MacOS/Miscellaneous/Chander\\ Gruvbox\\ Dark.terminal")
 hyperBindFile("Y", "~/MEGA/Kitchen\\ Sink/Srivatsas.kdbx")
 hyperBindFile("U", "~/MEGA/Personal\\ Backups/Chander/Sillarai\\ LLC/Sillarai.kdbx")
 

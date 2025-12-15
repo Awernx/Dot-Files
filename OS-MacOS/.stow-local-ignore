@@ -1,2 +1,11 @@
+# MacOS files
 \.DS_Store
+
+# Marta
+org\.yanex\.marta
+
+# iTerm2
 com\.googlecode\.iterm2\.plist
+
+# Miscellaneous folder
+^Miscellaneous$
