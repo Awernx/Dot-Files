@@ -20,6 +20,7 @@ if not set -q HOST_FULL_NAME
     set --export --global HOST_SHORT_NAME (hostname -s)
 end
 
+set --export fish_color_cwd brcyan
 set --export --global TITLE ''
 set --export --global TITLE_PREFIX ''
 
@@ -88,21 +89,20 @@ function fish_prompt
   set --local last_run_command_status $status
   set --local STATUS_INDICATOR ''
   if [ $last_run_command_status -gt 0 ]
-    set STATUS_INDICATOR ' ('$last_run_command_status')'
+    set STATUS_INDICATOR ' ‼️ ' $last_run_command_status
   end
 
   set --local FISH_INDICATOR 🐟
   set --local PROMPT_INDICATOR ' ➤ '
 
   if test -n "$TTY_MODE"
-      set FISH_INDICATOR '<º)))><'
+      set FISH_INDICATOR 'FISH'
       set PROMPT_INDICATOR ' >> '
   end
 
   printf "\n"
-  echo -ns (set_color -o $fish_color_operator) $FISH_INDICATOR (set_color normal) ' '
-  echo -ns '[' (set_color -o $fish_color_redirection) $SHLVL (set_color normal) '] '
-  echo -ns (set_color $fish_color_cwd) (pwd) (set_color $fish_color_error) $STATUS_INDICATOR (set_color normal) $PROMPT_INDICATOR
+  echo -ns (set_color --bold $fish_color_operator) $SHLVL (set_color normal)  ┊ (set_color $fish_color_operator) $FISH_INDICATOR ' '
+  echo -ns (set_color $fish_color_cwd) (pwd) (set_color --bold $fish_color_error) $STATUS_INDICATOR (set_color brwhite) $PROMPT_INDICATOR (set_color normal)
 end
 
 function fish_right_prompt
