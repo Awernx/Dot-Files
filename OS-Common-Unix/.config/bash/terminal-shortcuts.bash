@@ -30,7 +30,6 @@ alias ...='cd ../..'
 alias grep='grep --color=always'
 alias path='echo -e ${PATH//:/\\n}'
 alias ping='ping -c 5 -s.2'
-alias clear='/usr/bin/clear; terminal_colors'
 alias ttymode='export TTY_MODE=1; set_prompt'
 alias guimode='unset TTY_MODE; set_prompt'
 alias root='sudo -i'
@@ -58,8 +57,15 @@ fi
 ##  Key bindings 
 ############################################################################
 
+cls() {
+    clear
+    terminal_colors
+    echo
+    root_prefix
+}
+
 # Ctrl + L to 'clear' command
-bind -x '"\C-l": "clear; echo "'
+bind -x '"\C-l": "cls"'
 
 ############################################################################
 ##  Functions 
@@ -81,10 +87,9 @@ terminal_colors() {
     # Source: http://linuxbbq.org/bbs/viewtopic.php?f=4&t=1656#p33189     
     cat << EOF
 
- ${redf}███${reset}${redb}▄ ${reset} ${greenf}███${reset}${greenb}▄ ${reset} ${yellowf}███${reset}${yellowb}▄ ${reset} ${bluef}███${reset}${blueb}▄ ${reset} ${purplef}███${reset}${purpleb}▄ ${reset} ${cyanf}███${reset}${cyanb}▄ ${reset}
- ${redf}███${reset}${redb}█ ${reset} ${greenf}███${reset}${greenb}█ ${reset} ${yellowf}███${reset}${yellowb}█ ${reset} ${bluef}███${reset}${blueb}█ ${reset} ${purplef}███${reset}${purpleb}█ ${reset} ${cyanf}███${reset}${cyanb}█ ${reset}
- ${redf}███${reset}${redb}█ ${reset} ${greenf}███${reset}${greenb}█ ${reset} ${yellowf}███${reset}${yellowb}█ ${reset} ${bluef}███${reset}${blueb}█ ${reset} ${purplef}███${reset}${purpleb}█ ${reset} ${cyanf}███${reset}${cyanb}█ ${reset}
- ${redf} ${reset}${redb}▀▀▀ ${reset} ${greenf} ${reset}${greenb}▀▀▀ ${reset} ${yellowf} ${reset}${yellowb}▀▀▀ ${reset} ${bluef} ${reset}${blueb}▀▀▀ ${reset} ${purplef} ${reset}${purpleb}▀▀▀ ${reset} ${cyanf} ${reset}${cyanb}▀▀▀ ${reset}
+${blackf}████${reset}${blackb}████${reset} ${redf}████${reset}${redb}████${reset} ${greenf}████${reset}${greenb}████${reset} ${yellowf}████${reset}${yellowb}████${reset} ${bluef}████${reset}${blueb}████${reset} ${purplef}████${reset}${purpleb}████${reset} ${cyanf}████${reset}${cyanb}████${reset} ${whitef}████${reset}${whiteb}████${reset}
+${blackf}████${reset}${blackb}████${reset} ${redf}████${reset}${redb}████${reset} ${greenf}████${reset}${greenb}████${reset} ${yellowf}████${reset}${yellowb}████${reset} ${bluef}████${reset}${blueb}████${reset} ${purplef}████${reset}${purpleb}████${reset} ${cyanf}████${reset}${cyanb}████${reset} ${whitef}████${reset}${whiteb}████${reset}
+${blackf}████${reset}${blackb}████${reset} ${redf}████${reset}${redb}████${reset} ${greenf}████${reset}${greenb}████${reset} ${yellowf}████${reset}${yellowb}████${reset} ${bluef}████${reset}${blueb}████${reset} ${purplef}████${reset}${purpleb}████${reset} ${cyanf}████${reset}${cyanb}████${reset} ${whitef}████${reset}${whiteb}████${reset}
 EOF
 }
 
@@ -99,39 +104,44 @@ if type yazi &> /dev/null; then
     }
 fi
 
+root_prefix() {
+    if [[ $EUID -eq 0 ]]; then
+        cat <<'EOF'
+╦═╗╔═╗╔═╗╔╦╗
+╠╦╝║ ║║ ║ ║
+╩╚═╚═╝╚═╝ ╩
+EOF
+    fi
+}
+
 set_prompt() {
-    LAST_RUN_COMMAND_STATUS=$?
-    STATUS_INDICATOR=''
+    local LAST_RUN_COMMAND_STATUS=$?
+
+    local STATUS_INDICATOR=''
     if [ ${LAST_RUN_COMMAND_STATUS} -gt 0 ]
     then
-        STATUS_INDICATOR=' ('${LAST_RUN_COMMAND_STATUS}')'
+        STATUS_INDICATOR=' ‼️ ${LAST_RUN_COMMAND_STATUS}'
     fi
 
-    PROMPT_INDICATOR=">>"
-    if [[ $EUID -eq 0 ]]; then
-        PROMPT_INDICATOR="!!"
-        PREFIX="╦═╗╔═╗╔═╗╔╦╗ 
-╠╦╝║ ║║ ║ ║   
-╩╚═╚═╝╚═╝ ╩
-"
-    fi
-
+    local PROMPT_INDICATOR=">>"
     if [[ -z $TTY_MODE ]]; then
         PROMPT_INDICATOR="➤"
-        if [[ $EUID -eq 0 ]]; then
-            PROMPT_INDICATOR="⚠️"
-        fi
     fi
 
-    if [[ -z $TTY_MODE ]] && ([[ -z $SHELL_INDICATOR ]] || [[ $gui_shell_indicator == $SHELL_INDICATOR ]]) ; then
+    local NEWLINE="\n"
+    if [[ $EUID -eq 0 ]]; then
+        echo
+        root_prefix
+        NEWLINE=""
+    fi
+
+    local SHELL_INDICATOR="BASH"
+    if [[ -z $TTY_MODE ]]; then
         SHELL_INDICATOR=$gui_shell_indicator
-    else
-        SHELL_INDICATOR="B.A.S.H"
     fi
 
-    SHELL_LEVEL="[${cyanb}${bold}$SHLVL${reset}] "
-
-    PS1="\n${PREFIX}${yellowb}${bold}$SHELL_INDICATOR${reset} $SHELL_LEVEL${dim}\$(pwd)${redb}${STATUS_INDICATOR}${reset} ${bold}$PROMPT_INDICATOR${reset} "
+    SHELL_LEVEL="${blueb}${bold}$SHLVL${reset}"
+    PS1="$NEWLINE$SHELL_LEVEL┊${yellowb}$SHELL_INDICATOR ${reset}${cyanb}\$(pwd)${redb}${STATUS_INDICATOR}${reset} ${bold}$PROMPT_INDICATOR${reset} "
 }
 
 ##  Startup actions
