@@ -54,7 +54,7 @@ then
 fi
 
 ############################################################################
-##  Key bindings 
+##  Key bindings
 ############################################################################
 
 cls() {
@@ -120,7 +120,7 @@ set_prompt() {
     local STATUS_INDICATOR=''
     if [ ${LAST_RUN_COMMAND_STATUS} -gt 0 ]
     then
-        STATUS_INDICATOR=' ‼️ ${LAST_RUN_COMMAND_STATUS}'
+        STATUS_INDICATOR=" ‼️ ${LAST_RUN_COMMAND_STATUS}"
     fi
 
     local PROMPT_INDICATOR=">>"
