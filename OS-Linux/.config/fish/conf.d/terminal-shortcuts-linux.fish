@@ -13,7 +13,26 @@ if not set -q OS_ICON
     set --export --global OS_ICON '🐧'
 end
 
-set --export --global OS $OS_ICON ' ' (lsb_release -d | awk -F : '{print $2}' | string trim)
+# Evaluate OS
+if not set -q OS
+    cat /etc/os-release | string replace -r '^([^#]\w+)=(.*)' 'set $1 $2' | source
+
+    # Convert VERSION_CODENAME to Title Case
+    if set -q VERSION_CODENAME
+        set -l words (string match -r '\S+' -- $VERSION_CODENAME)
+        set -l result
+        for w in $words
+            set result $result (string upper (string sub -l 1 -- $w))(string sub -s 2 -- $w)
+        end
+        set VERSION_CODENAME (string join ' ' -- $result)
+    end
+
+    if not string match -qi "*$VERSION_CODENAME*" "$VERSION"
+        set --export --global OS "🐧 $NAME $VERSION ($VERSION_CODENAME)"
+    else
+        set --export --global OS "🐧 $NAME $VERSION"
+    end
+end
 
 ## Abbreviations-----------------------
 abbr shutdown 'sudo /sbin/shutdown -h now'

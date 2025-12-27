@@ -7,7 +7,7 @@
 # ElementaryOS files shortcut
 alias open "io.elementary.files"
 
-set --export --global BASE_OS (awk -F '=' '$1 == "UBUNTU_VERSION" {gsub(/"/, ""); BASE=$2} END {printf "Ubuntu %s", BASE}' /etc/os-release)
+set --export --global BASE_OS (awk -F '=' '$1 == "UBUNTU_VERSION" {gsub(/"/, ""); BASE=$2} END {printf "🐧 Ubuntu %s", BASE}' /etc/os-release)
 
 function bootstrap
     echo 'Setting up Clock'
