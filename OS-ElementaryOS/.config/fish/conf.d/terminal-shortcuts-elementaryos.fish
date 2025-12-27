@@ -1,4 +1,3 @@
-
 #!/usr/bin/env fish
 
 # 🅲 🅷 🅰 🅽 🅳 🅴 🆁
@@ -11,13 +10,14 @@ alias open "io.elementary.files"
 set --export --global BASE_OS (awk -F '=' '$1 == "UBUNTU_VERSION" {gsub(/"/, ""); BASE=$2} END {printf "Ubuntu %s", BASE}' /etc/os-release)
 
 function bootstrap
-    echo 'Setting up elementaryos (g)settings'
+    echo 'Setting up Clock'
     # Clock settings
     gsettings set io.elementary.desktop.wingpanel.datetime clock-show-weekday true
     gsettings set io.elementary.desktop.wingpanel.datetime clock-show-seconds true
     gsettings set io.elementary.desktop.wingpanel.datetime clock-format '12h'
 
     # Special keys tray settings
+    echo 'Setting up Tray icons'
     gsettings set io.elementary.wingpanel.keyboard numlock true
     gsettings set io.elementary.wingpanel.keyboard capslock true
 
@@ -25,6 +25,7 @@ function bootstrap
     gsettings set io.elementary.files.preferences singleclick-select true
 
     # Terminal settings
+    echo 'Setting up Terminal icons & colors'
     gsettings set io.elementary.terminal.settings cursor-shape 'I-Beam'
 
     # Gruvbox color theme
@@ -34,7 +35,6 @@ function bootstrap
 
     # echo
     # echo 'Setting up Logitech MX Keys'
-    # sudo ln -sf $home_folder/etc/udev/hwdb.d/logitech-mx-keys.hwdb /etc/udev/hwdb.d/
     # sudo systemd-hwdb update
     # sudo udevadm trigger /dev/input/event*
     # echo 'Note: Restart computer to complete MX Keys set'
