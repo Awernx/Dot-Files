@@ -16,6 +16,7 @@ all:
 	echo "Please specify a target. Available targets:"
 	echo "  stow-mbp        Stow dot-files for Chander's MacBook Pro"
 	echo "  stow-mjolnir    Stow dot-files for Mjolnir Linux machine"
+	echo "  stow-sath       Stow dot-files for Sath (Elementary) machine"
 
 # *****************************************************************************
 # Chander's MBP Stow Target
@@ -37,3 +38,12 @@ stow-mjolnir:
 		--stow ENV-Chander-Mjolnir
 
 	printf "✅ Mjolnir Dot-Files stowed successfully\n"
+
+# *****************************************************************************
+# Sath Stow Target
+# *****************************************************************************
+stow-sath:
+	$(STOW_COMMAND_PREFIX_HOME) \
+		--stow OS-Common-Unix OS-Linux OS-ElementaryOS ENV-Chander-Sath
+
+	printf "✅ Sath Dot-Files stowed successfully\n"
