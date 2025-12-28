@@ -1,7 +1,9 @@
 if status is-interactive
-    /home/linuxbrew/.linuxbrew/bin/brew shellenv | source
-    fzf --fish                                   | source
-    mcfly init fish                              | source
-    direnv hook fish                             | source
-    zoxide init fish                             | source
+    set --local brew_binaries "/home/linuxbrew/.linuxbrew/bin"
+
+    $brew_binaries/brew   shellenv  | source
+    $brew_binaries/fzf    --fish    | source
+    $brew_binaries/mcfly  init fish | source
+    $brew_binaries/direnv hook fish | source
+    $brew_binaries/zoxide init fish | source
 end
