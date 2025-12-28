@@ -12,6 +12,12 @@ end
 set --export --global OS_ICON ''
 set --export --global OS $OS_ICON ' ' (sw_vers -productName) ' ' (sw_vers -productVersion) ' ' (grep -oE 'SOFTWARE LICENSE AGREEMENT FOR macOS [A-Z]*[a-z]*' '/System/Library/CoreServices/Setup Assistant.app/Contents/Resources/en.lproj/OSXSoftwareLicense.rtf' | awk -F 'macOS ' '{print $NF}')
 
+# Initialize homebrew ENV before registering aliases to enable identification of brew-installed binaries
+set --local homebrew_location '/opt/homebrew/bin/brew'
+if test -f $homebrew_location
+    $homebrew_location shellenv | source
+end
+
 ## Abbreviations-----------------------
 abbr ports               'sudo lsof -PiTCP -sTCP:LISTEN'
 abbr clean               'brew autoremove && brew cleanup --prune=all && brew doctor'
@@ -20,7 +26,7 @@ abbr clear-favicon-cache 'rm -rf ~/Library/Safari/Favicon\ Cache/'
 abbr clear-network-cache 'sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder'
 
 function ipa
-    print_internal_ip_addresses    
+    print_internal_ip_addresses
 
     echo -ns '🌐 External:' \n
     echo -ns '      IP v4: ' (set_color -o) (dig -4 TXT +short o-o.myaddr.l.google.com @ns1.google.com | tr -d '"') (set_color normal) \n
@@ -56,7 +62,7 @@ function print_internal_ip_addresses
     set -l SC (scutil --nwi | string collect)
     set -l NS (networksetup -listallhardwareports | string collect)
 
-    # Get adapter list 
+    # Get adapter list
     set -l adapters (printf '%s\n' "$SC" | awk '
         /^Network interfaces:/ {
             for (i=3; i<=NF; i++) print $i
