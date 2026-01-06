@@ -101,7 +101,7 @@ function fish_prompt
   end
 
   printf "\n"
-  echo -ns (set_color --bold $fish_color_operator) $SHLVL (set_color normal)  ┊ (set_color $fish_color_operator) $FISH_INDICATOR ' '
+  echo -ns (set_color --bold brmagenta) $SHLVL (set_color normal)  ┊ (set_color $fish_color_operator) $FISH_INDICATOR ' '
   echo -ns (set_color $fish_color_cwd) (pwd) (set_color --bold $fish_color_error) $STATUS_INDICATOR (set_color brwhite) $PROMPT_INDICATOR (set_color normal)
 end
 

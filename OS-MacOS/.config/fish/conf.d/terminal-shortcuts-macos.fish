@@ -52,10 +52,13 @@ end
 ##  Internal IP address & adapter info -----------------
 function print_internal_ip_addresses
     if not type -q scutil
-        echo "scutil not found" >&2; return 1
+        echo "scutil not found" >&2;
+        return 1
     end
+
     if not type -q networksetup
-        echo "networksetup not found" >&2; return 1
+        echo "networksetup not found" >&2;
+        return 1
     end
 
     # Collect outputs into single strings we can reuse
@@ -110,9 +113,9 @@ function print_internal_ip_addresses
         set -l port (string split -m1 '|' "$port_mac")[1]
         set -l mac  (string split -m1 '|' "$port_mac")[2]
 
-        echo -ns '    Adapter: ' (set_color -o) $port ' ['$iface']' (set_color normal) \n
-        echo -ns '      IP v4: ' (set_color -o) $ipv4               (set_color normal) \n
-        echo -ns '      IP v6: ' (set_color -o) $ipv6               (set_color normal) \n
-        echo -ns '        MAC: ' (set_color -o) $mac                (set_color normal) \n\n
+        echo -ns '    Adapter: ' (set_color -o blue) $port ' ['$iface']' (set_color normal) \n
+        echo -ns '      IP v4: ' (set_color -o)      $ipv4               (set_color normal) \n
+        echo -ns '      IP v6: ' (set_color -o)      $ipv6               (set_color normal) \n
+        echo -ns '        MAC: ' (set_color -o)      $mac                (set_color normal) \n\n
     end
 end
