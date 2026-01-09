@@ -32,9 +32,9 @@ alias ll='ls -AgFth --color=never --group-directories-first'
 
 alias app='dash /opt/sillarai_network/app_control.sh'
 
-alias drm='docker image rm -f'                            # Remove a specific image (pass image id)
-alias dclean='docker container prune; docker image prune' # Remove stopped containers & orphaned images
-alias dpurge='docker system prune -a --volumes'           # Full cleanup (images, containers, volumes)
+alias drm='docker image rm -f'                              # Remove a specific image (pass image id)
+alias dclean='docker image prune --force; docker container prune --force; docker network prune --force' # Removes dangling images, stopped containers and unused networks
+alias dpurge='docker system prune --all --volumes --force'  # "dclean" + unused images and anonymous volumes
 
 ############################################################################
 ##  Key bindings
@@ -51,8 +51,8 @@ dhelp() {
     printf '\n🐳 DOCKER shortcuts\n\n'
     printf 'dl     --> Lists all images and containers\n'
     printf 'drm    --> Removes a specific image - pass image id as param\n'
-    printf 'dclean --> Removes stopped containers & orphaned images\n'
-    printf 'dpurge --> Cleans up all images/containers/volumes - USE WITH CAUTION\n'
+    printf 'dclean --> Removes dangling images, stopped containers and unused networks \n'
+    printf 'dpurge --> All of "dclean" + unused images and anonymous volumes \n'
 }
 
 this() {
@@ -71,6 +71,10 @@ dl() {
     printf '\n🐳 C O N T A I N E R S\n'
     printf '==========================================================================\n'
     docker container ls -a
+
+    printf '\n🛜 N E T W O R K S\n'
+    printf '==========================================================================\n'
+    docker network ls
 }
 
 terminal_colors() {
