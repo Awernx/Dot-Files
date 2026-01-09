@@ -94,30 +94,28 @@ end
 
 # Back up Google Drive & MEGA artifacts in to Svalbard
 function backup-cloud
-    # Ensure MEGA is Synced
+    set --local svalbard_docs_folder /mnt/svalbard/Documents
+    set --local mega_folder          (realpath ~/'Cloud/Mega')
+    set --local gdrive_folder        (realpath ~/'Cloud/GoogleDrive')
+    set --local rsync_command        rsync --archive --human-readable --delete
+
+    # --------- MEGA Backup Section ------------------------------------
+    # Ensure MEGA is synced
     mega-status
 
-    set -l svalbard_root_folder /mnt/svalbard
-    set -l svalbard_documents_folder $svalbard_root_folder/Documents
+    echo -ne 'Backing up MEGASync to Svalbard' \r
+    $rsync_command $mega_folder/KitchenSink/                $svalbard_docs_folder/KitchenSink
+    $rsync_command $mega_folder/Personal_Backups/           $svalbard_docs_folder/Personal_Backups/
+    $rsync_command $mega_folder/Sensitive_Family_Documents/ $svalbard_docs_folder/Sensitive_Family_Documents/
+
+    echo '✅ MEGASync backed up successfully           '
 
     # --------- Google Drive Backup Section ----------------------------
-    set -l gdrive_folder (realpath ~/'Cloud/GoogleDrive')
-
     echo -ne 'Fetching contents from Google Drive' \r
     rclone sync --include 'Family*/**' google-drive: $gdrive_folder
 
     echo -ne 'Backing up Google Drive to Svalbard' \r
-    rsync -ah --delete $gdrive_folder/'Family Documents'/ $svalbard_documents_folder/Google_Drive_Documents/
+    $rsync_command $gdrive_folder/'Family Documents'/ $svalbard_docs_folder/Google_Drive_Documents/
 
     echo '✅ Google Drive backed up successfully       '
-
-    # --------- MEGA Backup Section ------------------------------------
-    set -l mega_folder (realpath ~/'Cloud/Mega')
-
-    echo -ne 'Backing up MEGASync to Svalbard' \r
-    rsync -ah --delete $mega_folder/Sensitive_Family_Documents/ $svalbard_documents_folder/Sensitive_Family_Documents/
-    rsync -ah --delete $mega_folder/Personal_Backups/ $svalbard_documents_folder/Personal_Backups/
-    rsync -ah --delete $mega_folder/KitchenSink/ $svalbard_documents_folder/KitchenSink
-
-    echo '✅ MEGASync backed up successfully           '
 end
