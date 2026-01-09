@@ -74,19 +74,30 @@ function tinn_upgrade
     echo $recent_run_id > $last_run_id_file
 end
 
-# Back up Google Drive & MEGA artifacts in to Svalbard
-function bk_cloud
-
-    # Start mega-sync is its not running
+function mega-status
     if not pgrep -x mega-cmd-server > /dev/null
-        echo -ne 'Starting MEGASync ...' \r
-        /usr/bin/mega-sync
-        sleep 2
+        echo -ne 'MEGASync is not running; Starting it now '
+        /usr/bin/mega-sync > /dev/null 2>&1
     end
 
-    echo '✅ MEGASync is running                       '
+    while true
+        set current_status (mega-sync --output-cols=STATUS 2>/dev/null | grep -E 'Synced|Pending|Syncing|Processing|NONE' | tail -n 1 | xargs)
+        if test "$current_status" = "Synced"
+            echo -e "\r\033[K✅ MEGA is synced"
+            break
+        end
 
-        set -l svalbard_root_folder /mnt/svalbard
+        printf "\rWaiting for MEGA to complete sync... Current Status: %s" $current_status
+        sleep 1 # Wait for a second
+    end
+end
+
+# Back up Google Drive & MEGA artifacts in to Svalbard
+function backup-cloud
+    # Ensure MEGA is Synced
+    mega-status
+
+    set -l svalbard_root_folder /mnt/svalbard
     set -l svalbard_documents_folder $svalbard_root_folder/Documents
 
     # --------- Google Drive Backup Section ----------------------------
