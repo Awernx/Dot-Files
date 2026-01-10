@@ -5,7 +5,9 @@ Svalbard [- Interesting name! ℹ️](https://en.wikipedia.org/wiki/Svalbard_Glo
 
 The external Svalbard SSD  must be mounted adding the following FSTAB entry in the ```/etc/fstab``` file.
 
-```/dev/sdb2	/mnt/svalbard 	ntfs	defaults    0    0```
+```bash
+/dev/sdb2	/mnt/svalbard 	ntfs	defaults    0    0
+```
 
 > The current mjolnir **FSTAB** file is [available here for quick reference](./etc/fstab.bak)
 

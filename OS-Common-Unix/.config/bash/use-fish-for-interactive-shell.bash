@@ -2,7 +2,11 @@
 
 # 🅲 🅷 🅰 🅽 🅳 🅴 🆁
 # -----------------------------------------
-# Script that will drop to fish shell on interactive login, but continue with bash for non-interactive sessions.
+# Script that will continue with BASH for non-interactive sessions.
+# But drop to Fish shell only if all of the following are true
+# 1) On interactive login
+# 2) Parent process is not Fish
+#
 # Source this file in your .bashrc - preferably at the beginning
 
 # Credit and reference: https://wiki.archlinux.org/title/Fish#Setting_fish_as_interactive_shell_only

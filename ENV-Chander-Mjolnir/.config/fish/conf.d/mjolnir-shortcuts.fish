@@ -8,7 +8,7 @@ end
 #------------------------------------------------------------------------------------------
 # Global variables
 #------------------------------------------------------------------------------------------
-set --export --global    HOST_BANNER "\
+set --export --global HOST_BANNER "\
 
   ▄▄▄▄███▄▄▄▄        ▄█  ▄██████▄   ▄█       ███▄▄▄▄    ▄█     ▄████████
 ▄██▀▀▀███▀▀▀██▄     ███ ███    ███ ███       ███▀▀▀██▄ ███    ███    ███
@@ -40,43 +40,47 @@ alias tinn_stat 'systemctl status tintinnabulator.service'
 #------------------------------------------------------------------------------------------
 
 function tinn_upgrade
-    set -l  tinn_directory         ~/Workspace/Tintinnabulator
-    set -l  current_directory      (pwd)
-    set -l  tinn_install_directory /tmp/tinn
-    set -l  last_run_id_file       $tinn_install_directory/.last_run_id
-    set -l  last_run_id            ''
-    set -fx DIRENV_LOG_FORMAT      ''
+    # Turn off 'direnv' logs during this upgrade process
+    set --function --export DIRENV_LOG_FORMAT ''
 
-    cd $tinn_directory # gh needs to run within the specific repo
-    set -l recent_run_id          (direnv exec $tinn_directory gh run list --limit 1 --json databaseId --jq '.[0].databaseId')
+    set --local tinn_directory         ~/Workspace/Tintinnabulator
+    set --local tinn_install_directory /tmp/tinn
+    set --local current_directory      (pwd)
+    set --local last_run_id_file       $tinn_install_directory/.last_run_id
+    set --local last_run_id            ''
 
     if test -f "$last_run_id_file"
         set last_run_id (cat "$last_run_id_file")
     else
-        mkdir -p $tinn_install_directory
+        mkdir --parents $tinn_install_directory
     end
 
+    cd $tinn_directory # gh needs to run within the specific repo
+    set --local recent_run_id (direnv exec $tinn_directory gh run list --limit 1 --json databaseId --jq '.[0].databaseId')
+
     if test "$recent_run_id" = "$last_run_id"
-        echo "Tintinnabulator is already on the latest version"
+        echo "✅ Tintinnabulator is already on the latest version"
         cd $current_directory # Return to the previous directory
         return 0
     end
 
-    echo "New version available; Downloading..."
+    echo "New version of Tintinnabulator available; Downloading..."
     direnv exec $tinn_directory gh run download --dir $tinn_install_directory $recent_run_id --pattern "*.deb"
-
     cd $current_directory # Return to the previous directory
 
-    set -l deb_file (find $tinn_install_directory -type f -name "*.deb") # because gh download creates a sub-directory
-    sudo apt install -qq -y $deb_file
+    set --local deb_file (find $tinn_install_directory -type f -name "*.deb") # because gh download creates a sub-directory
+    sudo apt install -qq --yes $deb_file
 
     find $tinn_install_directory  -mindepth 1 -maxdepth 1  -type d -exec rm -rf {} \; # delete all directories inside
     echo $recent_run_id > $last_run_id_file
 end
 
-function mega-status
-    if not pgrep -x mega-cmd-server > /dev/null
-        echo -ne 'MEGASync is not running; Starting it now '
+# Performs 2 functions
+# 1) Starts MEGASync if it's not already running
+# 2) Waits until the sync has completed
+function wait-for-mega-sync
+    if not pgrep --exact mega-cmd-server > /dev/null
+        echo -ne '⚠️ MEGASync is not running; Starting it now '
         /usr/bin/mega-sync > /dev/null 2>&1
     end
 
@@ -101,7 +105,7 @@ function backup-cloud
 
     # --------- MEGA Backup Section ------------------------------------
     # Ensure MEGA is synced
-    mega-status
+    wait-for-mega-sync
 
     echo -ne 'Backing up MEGASync to Svalbard' \r
     $rsync_command $mega_folder/KitchenSink/                $svalbard_docs_folder/KitchenSink
