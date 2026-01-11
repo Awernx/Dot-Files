@@ -51,6 +51,19 @@ then
     alias -g -- --help='--help 2>&1 | bat --language=help --style=plain'
 fi
 
+if type yazi &> /dev/null
+then
+    function y() {
+    	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+    	command yazi "$@" --cwd-file="$tmp"
+    	IFS= read -r -d '' cwd < "$tmp"
+    	[ -n "$cwd" ] && [ "$cwd" != "$PWD" ] && builtin cd -- "$cwd"
+    	rm -f -- "$tmp"
+        # Restore cursor to I-beam
+        printf '\e[5 q'
+    }
+fi
+
 this() {
 	printf "        User: ${bold}$USER${normal}\n"
 	printf "    Hostname: ${bold}$HOST${normal}\n"

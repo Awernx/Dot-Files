@@ -62,6 +62,19 @@ then
     alias bat="bat --style=grid,numbers,header-filesize"
 fi
 
+if type yazi &> /dev/null
+then
+    function y() {
+    	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+    	command yazi "$@" --cwd-file="$tmp"
+    	IFS= read -r -d '' cwd < "$tmp"
+    	[ -n "$cwd" ] && [ "$cwd" != "$PWD" ] && builtin cd -- "$cwd"
+    	rm -f -- "$tmp"
+        # Restore cursor to I-beam
+        printf '\e[5 q'
+    }
+fi
+
 ############################################################################
 ##  Key bindings
 ############################################################################
