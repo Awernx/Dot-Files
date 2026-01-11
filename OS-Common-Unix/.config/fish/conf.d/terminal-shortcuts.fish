@@ -60,13 +60,14 @@ alias pull    'git pull'
 alias gclean  'git fetch --prune'
 
 if type -q bat
-    set --export --universal MANPAGER "sh -c 'col -bx | bat -l man -p'"
+    set --export --universal MANROFFOPT "-c"
+    set --export --universal MANPAGER   "sh -c 'col -bx | bat -l man -p'"
 
     alias cat 'bat --plain --paging=never'
-    alias bat 'bat --style=numbers'
+    alias bat 'bat --style=grid,numbers,header-filesize'
 
-    abbr --add --position anywhere -- --help '--help | bat -plhelp'
     abbr --add --position anywhere -- -h '-h | bat -plhelp'
+    abbr --add --position anywhere -- --help '--help | bat -plhelp'
 end
 
 if type -q zoxide
@@ -74,14 +75,14 @@ if type -q zoxide
 end
 
 if type -q yazi
-  function y
-    set tmp (mktemp -t "yazi-cwd.XXXXXX")
-    yazi $argv --cwd-file="$tmp"
-    if read -z cwd < "$tmp"; and [ -n "$cwd" ]; and [ "$cwd" != "$PWD" ]
-      builtin cd -- "$cwd"
+    function y
+        set tmp (mktemp -t "yazi-cwd.XXXXXX")
+        yazi $argv --cwd-file="$tmp"
+        if read -z cwd < "$tmp"; and [ -n "$cwd" ]; and [ "$cwd" != "$PWD" ]
+            builtin cd -- "$cwd"
+        end
+        rm -f -- "$tmp"
     end
-    rm -f -- "$tmp"
-  end
 end
 
 ############################################################################

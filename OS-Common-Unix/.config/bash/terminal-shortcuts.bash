@@ -55,7 +55,11 @@ fi
 
 if type bat &> /dev/null
 then
-    alias cat="bat --style=plain --color=always"
+    export MANROFFOPT="-c"
+    export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+
+    alias cat="bat --plain --paging=never"
+    alias bat="bat --style=grid,numbers,header-filesize"
 fi
 
 ############################################################################

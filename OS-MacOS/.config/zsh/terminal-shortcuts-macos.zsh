@@ -38,6 +38,19 @@ then
     alias cd="z"
 fi
 
+if type bat &> /dev/null
+then
+    export MANROFFOPT="-c"
+    export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+
+    alias cat="bat --plain --paging=never"
+    alias bat="bat --style=grid,numbers,header-filesize"
+
+    # Global ZSH alias override for 'help' option
+    alias -g -- -h='-h 2>&1 | bat --language=help --style=plain'
+    alias -g -- --help='--help 2>&1 | bat --language=help --style=plain'
+fi
+
 this() {
 	printf "        User: ${bold}$USER${normal}\n"
 	printf "    Hostname: ${bold}$HOST${normal}\n"
