@@ -60,7 +60,13 @@ alias pull    'git pull'
 alias gclean  'git fetch --prune'
 
 if type -q bat
-    alias cat 'bat --color=always'
+    set --export --universal MANPAGER "sh -c 'col -bx | bat -l man -p'"
+
+    alias cat 'bat --plain --paging=never'
+    alias bat 'bat --style=numbers'
+
+    abbr --add --position anywhere -- --help '--help | bat -plhelp'
+    abbr --add --position anywhere -- -h '-h | bat -plhelp'
 end
 
 if type -q zoxide

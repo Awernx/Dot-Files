@@ -22,7 +22,7 @@ dim=$(tput dim)         greenf=$(tput setaf 2)         greenb=$(tput setaf 10)
 gui_shell_indicator="🅱 🅰 🆂 🅷 "
 
 ############################################################################
-##  Aliases 
+##  Aliases
 ############################################################################
 alias ..='cd ..'
 alias ...='cd ../..'
@@ -36,7 +36,7 @@ alias root='sudo -i'
 alias ls='l'
 
 if type eza &> /dev/null
-then 
+then
     LS_COMMAND='eza -almM --classify=always --color-scale=size --group-directories-first --sort=name --time-style=long-iso'
     alias l="${LS_COMMAND}"
     alias ll="${LS_COMMAND} -ghU@"
@@ -44,12 +44,17 @@ then
 else
     # No . & .. folders
     # long format, classify, sort by time, readable file sizes
-    alias l='ls -AgFth --color=always --group-directories-first'
-    alias ll='ls -AgFth --color=never --group-directories-first'
+    alias l="ls -AgFth --color=always --group-directories-first"
+    alias ll="ls -AgFth --color=never --group-directories-first"
+fi
+
+if type zoxide &> /dev/null
+then
+    alias cd="z"
 fi
 
 if type bat &> /dev/null
-then 
+then
     alias cat="bat --style=plain --color=always"
 fi
 
@@ -68,7 +73,7 @@ cls() {
 bind -x '"\C-l": "cls"'
 
 ############################################################################
-##  Functions 
+##  Functions
 ############################################################################
 this() {
     printf "        Host: ${bold}$HOSTNAME${reset}\n"
@@ -84,7 +89,7 @@ title() {
 
 terminal_colors() {
     # Author: GekkoP
-    # Source: http://linuxbbq.org/bbs/viewtopic.php?f=4&t=1656#p33189     
+    # Source: http://linuxbbq.org/bbs/viewtopic.php?f=4&t=1656#p33189
     cat << EOF
 
 ${blackf}████${reset}${blackb}████${reset} ${redf}████${reset}${redb}████${reset} ${greenf}████${reset}${greenb}████${reset} ${yellowf}████${reset}${yellowb}████${reset} ${bluef}████${reset}${blueb}████${reset} ${purplef}████${reset}${purpleb}████${reset} ${cyanf}████${reset}${cyanb}████${reset} ${whitef}████${reset}${whiteb}████${reset}
