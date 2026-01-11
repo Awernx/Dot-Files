@@ -45,8 +45,8 @@ end
 
 ##  Set sane defaults on macOS --------
 function sane-defaults
-    echo 'Changing hammerspoon\'s config location to be XDG compliant'
     defaults write org.hammerspoon.Hammerspoon MJConfigFile "~/.config/hammerspoon/init.lua"
+    defaults write com.apple.Terminal AutoMarkPromptLines -bool NO
 end
 
 ##  Internal IP address & adapter info -----------------

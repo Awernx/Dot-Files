@@ -5,3 +5,8 @@ export HISTFILE=$XDG_STATE_HOME/zsh/history
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
 source ~/.config/zsh/terminal-shortcuts-macos.zsh
+
+eval "$(fzf    --zsh)"
+eval "$(mcfly  init zsh)"
+eval "$(direnv hook zsh)"
+eval "$(zoxide init zsh)"
