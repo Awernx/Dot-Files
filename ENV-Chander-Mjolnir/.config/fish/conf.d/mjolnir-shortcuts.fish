@@ -31,15 +31,15 @@ abbr sleep 'systemctl suspend'
 #------------------------------------------------------------------------------------------
 # Aliases
 #------------------------------------------------------------------------------------------
-alias tinn_vol  'wpctl set-volume @DEFAULT_AUDIO_SINK@ 1.0'
-alias tinn_log  'less +F /var/log/tintinnabulator/runtime.log'
-alias tinn_stat 'systemctl status tintinnabulator.service'
+alias tinn-vol  'wpctl set-volume @DEFAULT_AUDIO_SINK@ 1.0'
+alias tinn-log  'less +F /var/log/tintinnabulator/runtime.log'
+alias tinn-stat 'systemctl status tintinnabulator.service'
 
 #------------------------------------------------------------------------------------------
 # Functions
 #------------------------------------------------------------------------------------------
 
-function tinn_upgrade
+function tinn-upgrade
     set --local tinn_directory         ~/Workspace/Tintinnabulator
     set --local tinn_install_directory /tmp/tinn
     set --local current_directory      (pwd)
@@ -98,10 +98,27 @@ function tinn_upgrade
    	printf "\r\033[K✅ Tintinnabulator has been upgraded to the newest version\n"
 end
 
+# List all tinn_ shortcuts
+function mj-help
+    printf '\n🐳 Tintinnabulator shorcuts\n'
+    printf '----------------------------------------------------------------\n'
+    printf 'vol          --> Gets current volume level \n'
+    printf 'wol          --> Prints Wake-On-Lan status \n'
+    printf 'sleep        --> Suspends the system \n\n'
+
+    printf 'tinn-vol     --> Sets system volume to max level  \n'
+    printf 'tinn-log     --> Tails Tinn runtime log \n'
+    printf 'tinn-stat    --> Prints system.d status for Tinn service \n'
+    printf 'tinn-upgrade --> Upgrades Tinn to the latest version from GitHub \n\n'
+
+    printf 'mega-synch   --> Starts MEGASync & waits until synced \n'
+    printf 'backup-cloud --> Back up GDrive & MEGA artifacts to Svalbard \n'
+end
+
 # Performs 2 functions
 # 1) Starts MEGASync if it's not already running
 # 2) Waits until the sync has completed
-function wait-for-mega-sync
+function mega-synch
     if not pgrep --exact mega-cmd-server > /dev/null
         echo -ne '⚠️ MEGASync is not running; Starting it now '
         /usr/bin/mega-sync > /dev/null 2>&1
@@ -119,7 +136,7 @@ function wait-for-mega-sync
     end
 end
 
-# Back up Google Drive & MEGA artifacts in to Svalbard
+# Back up Google Drive & MEGA artifacts to Svalbard
 function backup-cloud
     set --local svalbard_docs_folder /mnt/svalbard/Documents
     set --local mega_folder          (realpath ~/'Cloud/Mega')
@@ -128,7 +145,7 @@ function backup-cloud
 
     # --------- MEGA Backup Section ------------------------------------
     # Ensure MEGA is synced
-    wait-for-mega-sync
+    mega-synch
 
     echo -ne 'Backing up MEGASync to Svalbard' \r
     $rsync_command $mega_folder/KitchenSink/                $svalbard_docs_folder/KitchenSink
