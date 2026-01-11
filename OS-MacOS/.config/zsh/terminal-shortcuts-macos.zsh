@@ -30,7 +30,12 @@ then
     alias ll="${LS_COMMAND} -ghU@"
     alias lt="${LS_COMMAND} --tree"
 else
-    alias l='ls -AgFthG'
+    alias l="ls -AgFthG"
+fi
+
+if type zoxide &> /dev/null
+then
+    alias cd="z"
 fi
 
 this() {

@@ -100,7 +100,7 @@ end
 
 # List all tinn_ shortcuts
 function mj-help
-    printf '\n🐳 Tintinnabulator shorcuts\n'
+    printf '\nMjolnir shorcuts\n'
     printf '----------------------------------------------------------------\n'
     printf 'vol          --> Gets current volume level \n'
     printf 'wol          --> Prints Wake-On-Lan status \n'
