@@ -43,36 +43,17 @@ function tinn-upgrade
     set --local tinn_directory         ~/Workspace/Tintinnabulator
     set --local tinn_install_directory /tmp/tinn
     set --local current_directory      (pwd)
-    set --local last_run_id_file       $tinn_install_directory/.last_run_id
-    set --local last_run_id            ''
     set --local exec_command           env DIRENV_LOG_FORMAT="" direnv exec $tinn_directory
+    set --local current_version        (dpkg-query -W -f='${Version}\n' tintinnabulator)
 
-    if test -f "$last_run_id_file"
-        set last_run_id (/usr/bin/cat "$last_run_id_file")
-    else
-       	printf "\r\033[KCould not find a record of previous download"
-        mkdir --parents $tinn_install_directory
-    end
+    rm -rf $tinn_install_directory # just in case previous run did not exit cleanly
+    mkdir --parents $tinn_install_directory
 
-    set --local recent_run_id (
-        begin
-            cd $tinn_directory # gh needs to run within the specific repo
-            $exec_command gh run list --limit 1 --json databaseId --jq '.[0].databaseId'
-            cd $current_directory
-        end
-    )
-
-    if test "$recent_run_id" = "$last_run_id"
-       	printf "\r\033[K✅ Tintinnabulator is already the newest version\n"
-        return 0
-    end
-
-   	printf "\r\033[KDownloading the latest version from GitHub\r"
-
+   	printf "\r\033[KDownloading latest Tintinnabulator release from GitHub ...\r"
     set --local download_output (
         begin
             cd $tinn_directory # gh needs to run within the specific repo
-            $exec_command gh run download --dir /tmp/tinn $recent_run_id --pattern "*.deb" 2>&1
+            $exec_command gh release download --pattern "*.deb" --dir $tinn_install_directory 2>&1
         end
     )
 
@@ -80,21 +61,24 @@ function tinn-upgrade
 
     cd $current_directory
     if test $status_code -ne 0
-        if string match -q "*no valid artifacts found to download*" "$download_output"
-           	printf "\r\033[K⚠️  Error: Debian package for GitHub run [%s] has expired or does not exist\n" $recent_run_id
-            return 1
-        else
-           	printf "\r\033[K⚠️  Debian package download failed - %s \n" $download_output
-            return 1
-        end
+       	printf "\r\033[K⚠️  Debian package download failed - %s \n" $download_output
+        rm -rf $tinn_install_directory
+        return 1
     end
 
-   	printf "\r\033[KInstalling ...\r"
-    set --local deb_file (find $tinn_install_directory -type f -name "*.deb") # because gh download creates a sub-directory
+    set --local deb_file    (find $tinn_install_directory -type f -name "*.deb")
+    set --local new_version (echo $deb_file | sed -E 's/^[^_]+_([^_]+)_.+\.deb$/\1/')
+
+    if test "$current_version" = "$new_version"
+       	printf "\r\033[K✅ Tintinnabulator is already the newest version\n"
+        rm -rf $tinn_install_directory
+        return 0
+    end
+
+   	printf "\r\033[KInstalling new version of Tintinnabulator...\r"
     sudo apt-get install -qq --yes $deb_file > /dev/null
 
-    find $tinn_install_directory  -mindepth 1 -maxdepth 1  -type d -exec rm -rf {} \; # delete all directories inside
-    echo $recent_run_id > $last_run_id_file
+    rm -rf $tinn_install_directory
    	printf "\r\033[K✅ Tintinnabulator has been upgraded to the newest version\n"
 end
 
