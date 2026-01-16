@@ -191,8 +191,8 @@ hs.hotkey.bind(super, "R",
 )
 
 -- Mute Microphone and display a band on screen
--- Ctrl + Alt + -
-hs.hotkey.bind(super, "-",
+-- Ctrl + Alt + .
+hs.hotkey.bind(super, ".",
     function()
         mic = hs.audiodevice.defaultInputDevice()
         if (mic:inputMuted()) then
@@ -203,7 +203,7 @@ hs.hotkey.bind(super, "-",
         else
             mic:setMuted(true)
 
-            micMuteStatusLineColor = { ["red"] = 1, ["blue"] = 0, ["green"] = 0, ["alpha"] = 0.8 }
+            micMuteStatusLineColor = { ["red"] = 1, ["blue"] = 0, ["green"] = 0, ["alpha"] = 1 }
             max = hs.screen.primaryScreen():fullFrame()
             micMuteStatusLine = hs.drawing.rectangle(hs.geometry.rect(max.x, max.y, max.w, max.h))
             micMuteStatusLine:setStrokeColor(micMuteStatusLineColor)
