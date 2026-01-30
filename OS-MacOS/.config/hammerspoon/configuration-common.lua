@@ -139,7 +139,7 @@ bindDirectory("P", "~/MEGA/Personal\\ Backups/Chander")
 bindDirectory("S", "/Volumes/Svalbard")
 
 -- ********************************************************************************
---                         Text Expanders Sections
+--                         Text Expanders Section
 -- ********************************************************************************
 function expandText(shortcutKey, text)
     hs.hotkey.bind(expander, shortcutKey,
@@ -149,8 +149,18 @@ function expandText(shortcutKey, text)
     )
 end
 
+-- Expansion shortcuts
+-- Shift + Cmd + .......
+----------------------------------------------------------------------------------
+function loadPassword()
+    local data = hs.plist.read(os.getenv("HOME") .. "/.local/state/awernx/.ragasiyam")
+    return data and data["AccountPassword"] or ""
+end
+
+expandText("P", loadPassword())
+
 -- ********************************************************************************
---                            Actions Sections
+--                            Actions Section
 -- ********************************************************************************
 
 -- Unformatted Paste from Clipboard
