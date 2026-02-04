@@ -22,13 +22,13 @@ function upgrade
   apt --yes full-upgrade
 
   if type -q flatpak
-    echo 
+    echo
     echo "Upgrading 'Flatpak' packages"
     flatpak update
   end
 
   if type -q brew
-    echo 
+    echo
     echo "Upgrading 'Homebrew' packages"
     brew update
     brew upgrade --formula
@@ -43,11 +43,11 @@ function clean
   apt --yes clean
 
   if type -q brew
-    echo 
+    echo
     echo "Cleaning 'Homebrew' packages"
+    brew doctor
     brew autoremove
     brew cleanup --prune=all
-    brew doctor
   end
 
 end

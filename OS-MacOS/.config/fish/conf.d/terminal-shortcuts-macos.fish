@@ -20,10 +20,20 @@ end
 
 ## Abbreviations-----------------------
 abbr ports               'sudo lsof -PiTCP -sTCP:LISTEN'
-abbr clean               'brew autoremove && brew cleanup --prune=all && brew doctor'
-abbr upgrade             'brew update && brew upgrade --greedy'
 abbr clear-favicon-cache 'rm -rf ~/Library/Safari/Favicon\ Cache/'
 abbr clear-network-cache 'sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder'
+
+function upgrade
+    brew update
+    brew upgrade --formula
+    brew upgrade --cask --greedy
+end
+
+function clean
+    brew doctor
+    brew autoremove
+    brew cleanup --prune=all
+end
 
 function ipa
     print_internal_ip_addresses

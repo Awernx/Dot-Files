@@ -8,27 +8,23 @@ DOT_FILES_LOCATION       := $$HOME/Workspace/Dot-Files
 STOW_COMMAND_PREFIX_ROOT := $(STOW_PATH) --dir=$(DOT_FILES_LOCATION) --target=/
 STOW_COMMAND_PREFIX_HOME := $(STOW_PATH) --dir=$(DOT_FILES_LOCATION) --target=$$HOME
 
-.PHONY: all stow-mbp stow-mjolnir
-
 .SILENT:
 
-all:
-	echo "Please specify a target. Available targets:"
-	echo "  stow-mbp        Stow dot-files for Chander's MacBook Pro"
-	echo "  stow-mjolnir    Stow dot-files for Mjolnir Linux machine"
-	echo "  stow-sath       Stow dot-files for Sath (Elementary) machine"
+.PHONY: all
+all: help
 
-# *****************************************************************************
-# Chander's MBP Stow Target
-# *****************************************************************************
-stow-mbp:
+.PHONY: help
+help:
+	echo "Please specify a target. Available targets are listed below:"
+	grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2}'
+
+.PHONY: stow-mbp
+stow-mbp: ## Stow dot-files for Chander's MacBook Pro
 	$(STOW_COMMAND_PREFIX_HOME) --stow OS-Common-Unix OS-MacOS ENV-Chander-MBP
 	printf "✅ Chander's MBP Dot-Files stowed successfully\n"
 
-# *****************************************************************************
-# Mjolnir Stow Target
-# *****************************************************************************
-stow-mjolnir:
+.PHONY: stow-mjolnir
+stow-mjolnir: ## Stow dot-files for Mjolnir Linux machine
 	$(STOW_COMMAND_PREFIX_HOME) \
 		--ignore='etc' \
 		--stow OS-Common-Unix OS-Linux ENV-Chander-Mjolnir
@@ -39,10 +35,8 @@ stow-mjolnir:
 
 	printf "✅ Mjolnir Dot-Files stowed successfully\n"
 
-# *****************************************************************************
-# Sath Stow Target
-# *****************************************************************************
-stow-sath:
+.PHONY: stow-sath
+stow-sath: ## Stow dot-files for Sath (Elementary) machine
 	$(STOW_COMMAND_PREFIX_HOME) \
 		--stow OS-Common-Unix OS-Linux OS-ElementaryOS ENV-Chander-Sath
 
