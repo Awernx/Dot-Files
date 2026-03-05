@@ -32,7 +32,7 @@ abbr sleep 'systemctl suspend'
 # Aliases
 #------------------------------------------------------------------------------------------
 alias tinn-vol  'wpctl set-volume @DEFAULT_AUDIO_SINK@ 1.0'
-alias tinn-log  'less +F /var/log/tintinnabulator/runtime.log'
+alias tinn-log  'less +F /var/log/tintinnabulator/runtime.log | fzf --reverse --tac'
 alias tinn-stat 'systemctl status tintinnabulator.service'
 
 #------------------------------------------------------------------------------------------

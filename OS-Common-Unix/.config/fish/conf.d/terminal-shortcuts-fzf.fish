@@ -9,87 +9,209 @@ if not status is-interactive
     exit 0
 end
 
-set --global fzf_global_options \
-    --height=1% \
-    --reverse \
-    --info=hidden \
-    --border \
-    --margin=1 \
-    --padding=1 \
-    --bind 'p:toggle-preview'
+# Miminal style; short window with a border
+# '+' key toggle preview
+# Filter option is at the top, with the list reversed - recent results at the top
+set --global fzf_common_options --height=1% --reverse --info=hidden --border --margin=1 --padding=1 --bind '+:toggle-preview' --style minimal
 
-function kl --description 'Pick a process to kill (supports kill args like -9)'
-    set --local pids (
-        ps axww -o user,pid,command | \
-        fzf $fzf_global_options \
-            --exact \
-            --header-lines=1 \
-            --with-nth=3.. \
-            --color=prompt:#ff3b30 \
+# #########################################################################################
+# KILL PROCESS
+# List system system processes and kill any one at a time
+# PID and USER are shown as previews on the right
+# #########################################################################################
+
+# Shortcut key - Alt + K
+bind \ek 'commandline -i "klf"; commandline -f execute'
+
+function klf --description 'Pick a process to kill (supports kill args like -9)'
+    set --local selection (
+        ps axww -o user,pid,command | tail -n +2 | \
+        fzf $fzf_common_options --exact --with-nth=3.. --color=prompt:#ff3b30 --preview-window=right:20% \
             --preview 'printf "\033[1;93mPID: \033[0m %s\n" {2}; printf "\033[1;93mUSER:\033[0m %s\n" {1}' \
-            --preview-window=down:2:wrap \
-            --prompt='⚠ Select process to kill ➤ ' | \
-        awk '{print $2}'
+            --prompt='⚠ Select process to kill ➤ '
     )
 
-    # If you hit Esc / no selection, do nothing
-    if test -z "$pids"
-        return 0
+    if test -n "$selection"
+        set --local pids (echo $selection | awk '{print $2}')
+        command kill $argv $pids
     end
-
-    # Pass through any args you provided (e.g., -9, -TERM)
-    command kill $argv $pids
 end
 
-function gb --description 'Pick a git branch to checkout into'
-    require_git_repo
-    or return 1
+# #########################################################################################
+# SSH
+# List SSH hosts along with HOSTNAME, PORT, USER and IDENTITY
+# #########################################################################################
 
-    # Collect branches except current
-    set --local branches (
-        git branch --format='%(refname:short)' \
-        | string match -v (git branch --show-current)
+# Shortcut key - Alt + S
+bind \es 'commandline -i "sshf"; commandline -f execute'
+
+function sshf --description 'SSH hosts fzf-picker'
+    set --local selection (
+        awk '
+            function clean(s) {
+                gsub(/\r/, "", s)
+                sub(/^[ \t]+/, "", s)
+                sub(/[ \t]+$/, "", s)
+                return s
+            }
+
+            function ok_host(s) {
+                return (s !~ /[\*\?]/) && (s !~ /^!/) && (s ~ /^[A-Za-z0-9._-]+$/)
+            }
+
+            function emit_row(h, cmd, line, hn, u, p, k, f) {
+                hn=""; u=""; p=""; k=""
+
+                cmd = "ssh -G " h " 2>/dev/null"
+
+                while ((cmd | getline line) > 0) {
+                    split(line, f, /[ \t]+/)
+
+                    if (f[1] == "hostname")      hn = f[2]
+                    else if (f[1] == "user")     u  = f[2]
+                    else if (f[1] == "port")     p  = f[2]
+                    else if (f[1] == "identityfile") k = f[2]   # keep last
+                }
+
+                close(cmd)
+
+                if (p == "") p = "22"
+
+                printf "%s\t%s\t%s\t%s\t%s\n", h, hn, u, p, k
+            }
+
+            function flush(i, h) {
+                if (n == 0) return
+                for (i = 1; i <= n; i++) {
+                    h = clean(hosts[i])
+                    if (!ok_host(h)) continue
+                    if (!(h in seen)) {
+                    seen[h]=1
+                    emit_row(h)
+                    }
+                }
+            }
+
+            BEGIN {
+                n=0
+                print "HOST\tHOSTNAME\tUSER\tPORT\tIDENTITYFILE"
+            }
+
+            /^[[:space:]]*Host[[:space:]]+/ && $1=="Host" {
+                flush()
+                n=0
+                for (i=2; i<=NF; i++) hosts[++n] = $i
+                next
+            }
+
+            END { flush() }
+
+        ' ~/.ssh/config |
+        column -t |
+        fzf $fzf_common_options --border --header-lines=1 \
+            --prompt='Pick a host to SSH into ➤ '
     )
 
-    # Guard: no other branches exist
-    if test (count $branches) -eq 0
-        echo 'No other git branches available to switch to.'
+    if test -n "$selection"
+        set --local host (string split -m 1 ' ' -- $selection)[1]
+        command ssh $host
+    end
+end
+
+# #########################################################################################
+# SYSTEMCTL
+# List systemd processes
+# Shows 'Enebled' status, and service status as previews
+# #########################################################################################
+
+# Shortcut key - Alt + D
+bind \ed 'commandline -i "sysd"; commandline -f execute'
+
+function sysd --description 'Systemd services browser'
+    if not type -q systemctl
+        echo "This OS doesn't support 'systemd' services"
         return 1
     end
 
-    set --local branch (
-        printf '%s\n' $branches \
-        | fzf $fzf_global_options --header-lines=0 \
-            --prompt='Select a git branch to switch to ➤ '
+    set --local selection (
+        {
+        echo "SERVICE Ignore STATE SUB-STATE"
+        systemctl list-units --type=service --all --plain --no-legend --no-pager
+        } | grep -v '^systemd' | column -t \
+        | fzf $fzf_common_options \
+            --header-lines=1 --with-nth=1,3,4 --preview-window=right:50%:wrap \
+            --preview '
+                desc=$(echo {5..} | xargs)
+                printf "\033[1;33m%s\033[0m%s\n\n" "$desc"
+                {
+                    printf "\033[0;36m%s %s %s\033[0m\n" "SERVICE_FILE" "START_UP" "PRESET"
+                    printf "\033[1;37m"
+                    systemctl list-unit-files --no-legend {1}
+                    printf "\033[0m"
+                } | column -t
+                systemctl status {1} --lines=0 --no-pager | tail -n +2
+            '
     )
 
-    # If you hit Esc / no selection, do nothing
-    if test -z "$branch"
-        return 0
+    if test -n "$selection"
+        set --local service (echo $selection | awk '{print $1}')
+        command journalctl -u $service -f | fzf --tac --reverse
     end
-
-    command git checkout "$branch"
 end
 
-function gr --description 'Pick a git commit to HARD reset into'
-    require_git_repo
-    or return 1
+# #########################################################################################
+# GIT BRANCH
+# Select a local git branch to checkout into
+# #########################################################################################
 
-    set --local selection (
-        git log --pretty=format:"%h │ %ad │ %s" --date=format:'%b %d %H:%M:%S' \
-        | fzf $fzf_global_options --prompt="git> " \
-            --preview 'git show --color=always {1}'\
-            --preview-window=hidden \
-            --prompt='Select a git branch to HARD reset to ➤ '
-    )
+# Shortcut key - Alt + B
+bind \eb 'commandline -i "gb"; commandline -f execute'
 
-    set --local commit_id (string split -m 1 ' ' -- $selection)[1]
+function gb --description 'Pick a git branch to checkout into'
+    require_git_repo; or return 1
 
-    if test -z "$commit_id"
-        return 0
+    set --local current (command git symbolic-ref --quiet --short HEAD 2>/dev/null)
+
+    set --local branches (command git for-each-ref --format='%(refname:short)' refs/heads)
+
+    if test (count $branches) -le 1
+        echo 'No other git branches available to switch to'
+        return 1
     end
 
-    command git reset --hard $commit_id
+    set --local selection (
+        printf '%s\n' $branches |
+        string match -v -- "$current" |
+        fzf $fzf_common_options --prompt='Select a git branch to switch to ➤ '
+    )
+
+    if test -n "$selection"
+        command git switch "$selection"
+    end
+end
+
+# #########################################################################################
+# GIT RESET --HARD
+# Select a commit to hard reset to
+# #########################################################################################
+
+# Shortcut key - Alt + R
+bind \er 'commandline -i "gr"; commandline -f execute'
+
+function gr --description 'Pick a git commit to HARD reset to'
+    require_git_repo; or return 1
+
+    set --local selection (
+        git log --pretty=format:"%h │ %ad │ %s" --date=format:'%b %d %H:%M:%S' | \
+        fzf $fzf_common_options --prompt="git> " --preview-window=hidden \
+            --prompt='Select a git branch to HARD reset to ➤ ' \
+            --preview 'git show --color=always {1}'
+    )
+
+    if test -n "$selection"
+        set --local commit_id (string split -m 1 ' ' -- $selection)[1]
+        command git reset --hard $commit_id
+    end
 end
 
 function require_git_repo --description 'Check if directory is a git repository'
@@ -97,65 +219,4 @@ function require_git_repo --description 'Check if directory is a git repository'
         echo "This directory is not a git repository" >&2
         return 1
     end
-end
-
-function sf --description 'SSH hosts picker'
-    set --local selection (
-            awk '
-              function clean(s) {
-                gsub(/\r/, "", s)                 # remove Windows CR
-                sub(/^[ \t]+/, "", s)             # ltrim
-                sub(/[ \t]+$/, "", s)             # rtrim
-                return s
-              }
-
-              function ok_host(s) {
-                # skip wildcards/patterns/negations; allow normal host tokens
-                return (s !~ /[\*\?]/) && (s !~ /^!/) && (s ~ /^[A-Za-z0-9._-]+$/)
-              }
-
-              function flush(i, h) {
-                if (n == 0) return
-                for (i = 1; i <= n; i++) {
-                  h = clean(hosts[i])
-                  if (!ok_host(h)) continue
-                  print h
-                }
-              }
-
-              BEGIN { n=0 }
-                /^[[:space:]]*Host[[:space:]]+/ && $1=="Host" {
-                    flush()
-                    n=0
-                    for (i=2; i<=NF; i++) hosts[++n] = $i
-                    next
-                }
-              END { flush() }
-              ' ~/.ssh/config |
-
-              fzf $fzf_global_options \
-                --prompt='Pick a host to SSH into ➤ ' \
-                --border \
-                --preview 'sh -lc '"'"'
-                    h=$(printf %s "{}" | tr -d "\r" | sed "s/^[[:space:]]*//;s/[[:space:]]*$//")
-                    ssh -G "$h" 2>/dev/null | awk "
-                      BEGIN { hostname=user=port=identityfile=\"\" }
-                        /^hostname /     { hostname=\$2 }
-                        /^user /         { user=\$2 }
-                        /^port /         { port=\$2 }
-                        /^identityfile / { identityfile=\$2 }   # last one wins
-                      END {
-                        if (hostname)     printf \"\033[1;93mHOSTNAME: \033[1;0m %s\n\", hostname
-                        if (user)         printf \"\033[1;93mUSER:     \033[1;0m %s\n\", user
-                        if (port)         printf \"\033[1;93mPORT:     \033[0m %s\n\", port
-                        if (identityfile) printf \"\033[1;93mIDENTITY: \033[0m %s\n\", identityfile
-                      }
-                    "
-                '"'"'' \
-                --preview-window=down:50%:border
-        )
-
-    test -z "$selection"; and return 0
-    set --local host (string split -m 1 ' ' -- $selection)[1]
-    command ssh $host
 end
