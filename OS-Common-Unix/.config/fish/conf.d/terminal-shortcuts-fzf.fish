@@ -181,7 +181,7 @@ function gb --description 'Pick a git branch to checkout into'
     set --local branches (command git for-each-ref --format='%(refname:short)' refs/heads)
 
     if test (count $branches) -le 1
-        echo 'No other git branches available to switch to'
+        exit_with_error 'No other git branches available to switch to'
         return 1
     end
 
@@ -226,7 +226,18 @@ end
 
 function require_git_repo --description 'Check if directory is a git repository'
     if not command git rev-parse --is-inside-work-tree >/dev/null 2>&1
-        echo "This directory is not a git repository" >&2
+        exit_with_error "This directory is not a git repository" >&2
         return 1
     end
+end
+
+function exit_with_error
+    set_color red >&2
+    echo "‼️ $argv" >&2
+    set_color normal >&2
+
+    # Force a newline so the repainted prompt appears BELOW the error
+    echo "" >&2
+
+    commandline -f repaint
 end
