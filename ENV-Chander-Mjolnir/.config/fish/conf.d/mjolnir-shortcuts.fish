@@ -24,16 +24,15 @@ set --export --global HOST_BANNER "\
 #------------------------------------------------------------------------------------------
 # Abbreviations
 #------------------------------------------------------------------------------------------
+abbr sleep 'systemctl suspend'
 abbr vol   'wpctl get-volume @DEFAULT_AUDIO_SINK@'
 abbr wol   'sudo ethtool eno1 | grep Wake' # Understand output https://askubuntu.com/questions/1267124/wake-on-lan-issues
-abbr sleep 'systemctl suspend'
 
 #------------------------------------------------------------------------------------------
 # Aliases
 #------------------------------------------------------------------------------------------
 alias tinn-vol  'wpctl set-volume @DEFAULT_AUDIO_SINK@ 1.0'
-alias tinn-log  'less +F /var/log/tintinnabulator/runtime.log | fzf --reverse --tac'
-alias tinn-stat 'systemctl status tintinnabulator.service'
+alias tinn-log  'less +F /var/log/tintinnabulator/runtime.log | fzf $fzf_common_options --reverse --tac'
 
 #------------------------------------------------------------------------------------------
 # Functions
@@ -92,7 +91,6 @@ function mj-help
 
     printf 'tinn-vol     --> Sets system volume to max level  \n'
     printf 'tinn-log     --> Tails Tinn runtime log \n'
-    printf 'tinn-stat    --> Prints system.d status for Tinn service \n'
     printf 'tinn-upgrade --> Upgrades Tinn to the latest version from GitHub \n\n'
 
     printf 'mega-synch   --> Starts MEGASync & waits until synced \n'

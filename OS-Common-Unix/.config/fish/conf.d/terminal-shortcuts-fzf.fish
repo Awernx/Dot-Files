@@ -21,7 +21,7 @@ set --global fzf_common_options --height=1% --reverse --info=hidden --border --m
 # #########################################################################################
 
 # Shortcut key - Alt + K
-bind \ek 'commandline -i "klf"; commandline -f execute'
+bind \ek klf
 
 function klf --description 'Pick a process to kill (supports kill args like -9)'
     set --local selection (
@@ -35,6 +35,8 @@ function klf --description 'Pick a process to kill (supports kill args like -9)'
         set --local pids (echo $selection | awk '{print $2}')
         command kill $argv $pids
     end
+
+    commandline -f repaint # Workaround known fish-shell bug
 end
 
 # #########################################################################################
@@ -43,7 +45,7 @@ end
 # #########################################################################################
 
 # Shortcut key - Alt + S
-bind \es 'commandline -i "sshf"; commandline -f execute'
+bind \es sshf
 
 function sshf --description 'SSH hosts fzf-picker'
     set --local selection (
@@ -116,6 +118,8 @@ function sshf --description 'SSH hosts fzf-picker'
         set --local host (string split -m 1 ' ' -- $selection)[1]
         command ssh $host
     end
+
+    commandline -f repaint # Workaround known fish-shell bug
 end
 
 # #########################################################################################
@@ -125,7 +129,7 @@ end
 # #########################################################################################
 
 # Shortcut key - Alt + D
-bind \ed 'commandline -i "sysd"; commandline -f execute'
+bind \ed sysd
 
 function sysd --description 'Systemd services browser'
     if not type -q systemctl
@@ -157,6 +161,8 @@ function sysd --description 'Systemd services browser'
         set --local service (echo $selection | awk '{print $1}')
         command journalctl -u $service -f | fzf --tac --reverse
     end
+
+    commandline -f repaint # Workaround known fish-shell bug
 end
 
 # #########################################################################################
@@ -165,7 +171,7 @@ end
 # #########################################################################################
 
 # Shortcut key - Alt + B
-bind \eb 'commandline -i "gb"; commandline -f execute'
+bind \eb gb
 
 function gb --description 'Pick a git branch to checkout into'
     require_git_repo; or return 1
@@ -188,6 +194,8 @@ function gb --description 'Pick a git branch to checkout into'
     if test -n "$selection"
         command git switch "$selection"
     end
+
+    commandline -f repaint # Workaround known fish-shell bug
 end
 
 # #########################################################################################
@@ -196,7 +204,7 @@ end
 # #########################################################################################
 
 # Shortcut key - Alt + R
-bind \er 'commandline -i "gr"; commandline -f execute'
+bind \er gr
 
 function gr --description 'Pick a git commit to HARD reset to'
     require_git_repo; or return 1
@@ -212,6 +220,8 @@ function gr --description 'Pick a git commit to HARD reset to'
         set --local commit_id (string split -m 1 ' ' -- $selection)[1]
         command git reset --hard $commit_id
     end
+
+    commandline -f repaint # Workaround known fish-shell bug
 end
 
 function require_git_repo --description 'Check if directory is a git repository'
