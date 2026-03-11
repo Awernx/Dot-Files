@@ -1,14 +1,21 @@
 // Zed settings
 // Reference: https://zed.dev/docs/configuring-zed
 {
+    "session": {
+        "trust_all_worktrees": true,
+    },
     "disable_ai": true,
-    "icon_theme": "Colored Zed Icons Theme Dark",
+    "icon_theme": {
+        "mode": "system",
+        "light": "Colored Zed Icons Theme Dark",
+        "dark": "Colored Zed Icons Theme Dark",
+    },
     "ui_font_size": 15.0,
     "buffer_font_size": 14.0,
     "theme": {
         "mode": "system",
         "light": "Tokyo Night Storm",
-        "dark": "Tokyo Night Storm"
+        "dark": "Tokyo Night Storm",
     },
     "terminal": {
         "dock": "bottom",
@@ -19,21 +26,21 @@
         "shell": {
             "with_arguments": {
                 "program": "fish",
-                "args": ["--interactive"]
-            }
-        }
+                "args": ["--interactive"],
+            },
+        },
     },
     "load_direnv": "direct",
     "indent_guides": {
         "enabled": true,
-        "coloring": "indent_aware"
+        "coloring": "indent_aware",
     },
     "tab_size": 4,
     "minimap": {
         "show": "always",
         "thumb": "hover",
         "thumb_border": "full",
-        "current_line_highlight": "all"
+        "current_line_highlight": "all",
     },
     "tabs": {
         "activate_on_close": "left_neighbour",
@@ -41,9 +48,9 @@
         "file_icons": true,
         "git_status": true,
         "show_close_button": "hover",
-        "show_diagnostics": "all"
+        "show_diagnostics": "all",
     },
     "file_types": {
-        "Shell Script": ["env*"] // Treat ".env" and ".enrc" files as Shell Script for syntax highlighting
-    }
+        "Shell Script": ["env*"], // Treat ".env" and ".enrc" files as Shell Script for syntax highlighting
+    },
 }
