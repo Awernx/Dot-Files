@@ -17,9 +17,9 @@ end
 # -----------------------------------------------------------------------------------------
 # List systemd processes
 # Shows 'Enebled' status, and service status as previews
-# Shortcut key - Alt + U, D
+# Shortcut key - Alt + U followed by Alt + D
 # -----------------------------------------------------------------------------------------
-bind \eud sysd
+bind alt-u,alt-d sysd
 function sysd --description 'Systemd services browser'
     if not type -q systemctl
         exit_with_error "This OS doesn't support 'systemd' services"

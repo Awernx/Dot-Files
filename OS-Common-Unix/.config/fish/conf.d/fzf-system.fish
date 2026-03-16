@@ -13,7 +13,7 @@ end
 # Kill system process - PID and USER are shown as previews on the right
 # Shortcut key - Alt + K
 # -----------------------------------------------------------------------------------------
-bind \ek klf
+bind alt-k klf
 function klf --description 'Pick a process to kill (supports kill args like -9)'
     set --local selection (
         ps axww -o user,pid,command | tail -n +2 | \
@@ -34,7 +34,7 @@ end
 # List SSH hosts along with HOSTNAME, PORT, USER and IDENTITY
 # Shortcut key - Alt + H
 # -----------------------------------------------------------------------------------------
-bind \eh sshf
+bind alt-h sshf
 function sshf --description 'SSH hosts fzf-picker'
     set --local selection (
         awk '

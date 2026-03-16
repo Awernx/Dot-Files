@@ -23,9 +23,9 @@ end
 
 # -----------------------------------------------------------------------------------------
 # Select a local git branch to checkout into
-# Shortcut key - Alt + G, B
+# Shortcut key - Alt + G followed by Alt +B
 # -----------------------------------------------------------------------------------------
-bind \egb gb
+bind alt-g,alt-b gb
 function gb --description 'Pick a git branch to checkout into'
     require_git_repo; or return 1
 
@@ -53,9 +53,9 @@ end
 
 # -----------------------------------------------------------------------------------------
 # Select a commit to HARD RESET to
-# Shortcut key - Alt + G, B
+# Shortcut key - Alt + G followed by Alt +R
 # -----------------------------------------------------------------------------------------
-bind \egr gr
+bind alt-g,alt-r gr
 function gr --description 'Pick a git commit to HARD reset to'
     require_git_repo; or return 1
 
