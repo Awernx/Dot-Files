@@ -35,12 +35,12 @@ abbr grep  'grep --color=auto'
 abbr wget  'wget -c '
 
 if type -q eza
-  set --local LS_COMMAND 'eza -almM --classify=always --color-scale=size --group-directories-first --sort=name --time-style=long-iso'
+  set --local LS_COMMAND eza -almM --classify=always --color-scale=size --group-directories-first --sort=name --time-style=long-iso
   alias l  "$LS_COMMAND"
   alias ll "$LS_COMMAND -ghU@"
   alias lt "$LS_COMMAND --tree"
 else
-  set --local LS_COMMAND 'ls -AgFh --color=always --group-directories-first --time-style=long-iso'
+  set --local LS_COMMAND (which ls) -AgFh --color=always --group-directories-first --time-style=long-iso
   alias l  "$LS_COMMAND"
   alias ll "$LS_COMMAND"
 end
@@ -60,11 +60,11 @@ alias pull    'git pull'
 alias gclean  'git fetch --prune'
 
 if type -q bat
-    set --export --universal MANROFFOPT "-c"
-    set --export --universal MANPAGER   "sh -c 'col -bx | bat -l man -p'"
-
     alias cat 'bat --plain --paging=never'
     alias bat 'bat --style=grid,numbers,header-filesize'
+
+    set --export --universal MANROFFOPT "-c"
+    set --export --universal MANPAGER   "sh -c 'col -bx | bat -l man -p'"
 
     abbr --add --position anywhere -- -h '-h | bat -plhelp'
     abbr --add --position anywhere -- --help '--help | bat -plhelp'
