@@ -13,13 +13,11 @@ end
 # Kill system process - PID and USER are shown as previews on the right
 # Shortcut key - Alt + K
 # -----------------------------------------------------------------------------------------
-bind alt-k klf
-function klf --description 'Pick a process to kill (supports kill args like -9)'
+bind alt-k kf
+function kf --description 'Pick a process to kill (supports kill args like -9)'
     set --local selection (
-        ps axww -o user,pid,command | tail -n +2 | \
-        fzf $fzf_common_options --exact --with-nth=3.. --color=prompt:#ff3b30 --preview-window=right:20% \
-            --preview 'printf "\033[1;93mPID: \033[0m %s\n" {2}; printf "\033[1;93mUSER:\033[0m %s\n" {1}' \
-            --prompt='⚠ Select process to kill ➤ '
+        ps axww -o user,pid,command | column -t | \
+        fzf $fzf_common_options --exact --header-lines=1 --prompt='Select process to kill ➤ '
     )
 
     if test -n "$selection"
@@ -95,11 +93,9 @@ function sshf --description 'SSH hosts fzf-picker'
             }
 
             END { flush() }
-
         ' ~/.ssh/config |
         column -t |
-        fzf $fzf_common_options --border --header-lines=1 \
-            --prompt='Pick a host to SSH into ➤ '
+        fzf $fzf_common_options --header-lines=1 --prompt='Pick a host to SSH into ➤ '
     )
 
     if test -n "$selection"
