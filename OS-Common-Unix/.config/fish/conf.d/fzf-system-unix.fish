@@ -19,8 +19,8 @@ end
 # Shows 'Enebled' status, and service status as previews
 # Shortcut key - Alt + U followed by Alt + D
 # -----------------------------------------------------------------------------------------
-bind alt-u,alt-d sysd
-function sysd --description 'Systemd services browser'
+bind alt-u,alt-d sysdf
+function sysdf --description 'Systemd services browser'
     if not type -q systemctl
         exit_with_error "This OS doesn't support 'systemd' services"
         return 1
@@ -28,27 +28,17 @@ function sysd --description 'Systemd services browser'
 
     set --local selection (
         {
-        echo "SERVICE Ignore STATE SUB-STATE"
-        systemctl list-units --type=service --all --plain --no-legend --no-pager
+            echo "SERVICE Ignore STATE SUB-STATE"
+            script -qec "systemctl list-units --type=service --all --plain --no-legend --no-pager" /dev/null
         } | grep -v '^systemd' | column -t \
         | fzf $fzf_common_options \
-            --header-lines=1 --with-nth=1,3,4 --preview-window=right:50%:wrap \
-            --preview '
-                desc=$(echo {5..} | xargs)
-                printf "\033[1;33m%s\033[0m%s\n\n" "$desc"
-                {
-                    printf "\033[0;36m%s %s %s\033[0m\n" "SERVICE_FILE" "START_UP" "PRESET"
-                    printf "\033[1;37m"
-                    systemctl list-unit-files --no-legend {1}
-                    printf "\033[0m"
-                } | column -t
-                systemctl status {1} --lines=0 --no-pager | tail -n +2
-            '
+            --ansi --header-lines=1 --with-nth=1,3,4 --preview-window=right:60%:wrap \
+            --preview 'SYSTEMD_COLORS=1 systemctl status {1} --lines=0 --no-pager'
     )
 
     if test -n "$selection"
         set --local service (echo $selection | awk '{print $1}')
-        command journalctl -u $service -f | fzf --tac --reverse
+        journalctl --no-tail --follow --no-pager -u $service | bat --style=grid,numbers --paging=never --language log
     end
 
     exit_with_repaint
