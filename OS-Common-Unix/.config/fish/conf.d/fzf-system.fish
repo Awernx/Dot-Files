@@ -16,7 +16,9 @@ end
 bind alt-k kf
 function kf --description 'Pick a process to kill (supports kill args like -9)'
     set --local selection (
-        ps axww -o user,pid,command | column -t | \
+        ps axww -o user,pid,command | \
+        awk '{printf "%s|%s|", $1, $2; $1=$2=""; sub(/^  */, ""); print}' | \
+        column -t -s '|' | \
         fzf $fzf_common_options --exact --header-lines=1 --prompt='Select process to kill ➤ '
     )
 
