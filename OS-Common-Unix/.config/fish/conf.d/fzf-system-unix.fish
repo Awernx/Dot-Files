@@ -16,10 +16,10 @@ end
 
 # -----------------------------------------------------------------------------------------
 # List systemd processes
-# Shows 'Enebled' status, and service status as previews
-# Shortcut key - Alt + U followed by Alt + D
+# Shows 'Enabled' status, and service status as previews
+# Shortcut key - Alt + U followed by Alt + Y
 # -----------------------------------------------------------------------------------------
-bind alt-u,alt-d sysdf
+bind alt-u,alt-y sysdf
 function sysdf --description 'Systemd services browser'
     if not type -q systemctl
         exit_with_error "This OS doesn't support 'systemd' services"
@@ -40,6 +40,25 @@ function sysdf --description 'Systemd services browser'
         set --local service (echo $selection | awk '{print $1}')
         journalctl --no-tail --follow --no-pager -u $service | bat --style=grid,numbers --paging=never --language log
     end
+
+    exit_with_repaint
+end
+
+# -----------------------------------------------------------------------------------------
+# List attached block devices
+# Shows 'Enebled' status, and service status as previews
+# Shortcut key - Alt + U followed by Alt + D
+# -----------------------------------------------------------------------------------------
+bind alt-u,alt-d disksf
+function disksf --description 'Block devices browser'
+    if not type -q lsblk
+        exit_with_error "This OS doesn't support 'lsblk'"
+        return 1
+    end
+
+    set --local selection (disks | fzf $fzf_common_options --ansi --header-lines=1 --preview-window=right:60%:wrap \
+        --preview 'lsblk -e 7 -o "NAME,SIZE,FSTYPE,MOUNTPOINT,FSUSE%" /dev/{1}'
+    )
 
     exit_with_repaint
 end
