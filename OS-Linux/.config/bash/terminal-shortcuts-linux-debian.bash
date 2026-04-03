@@ -16,4 +16,4 @@ alias apt-get='sudo apt-get'
 alias upgrade='apt-get update && apt-get --yes dist-upgrade'
 alias clean='apt-get --yes autoremove && apt-get --yes clean'
 
-alias partitions='lsblk -no "NAME,LABEL,SIZE,FSTYPE,MOUNTPOINT"'
+alias partitions='lsblk -e 7 -o "NAME,SIZE,FSTYPE,MOUNTPOINT,FSUSE%"'
