@@ -16,4 +16,5 @@ alias apt-get='sudo apt-get'
 alias upgrade='apt-get update && apt-get --yes dist-upgrade'
 alias clean='apt-get --yes autoremove && apt-get --yes clean'
 
+alias mounts='df -h --output=target,source,fstype,size,used,avail --exclude-type=tmpfs --exclude-type=efivarfs'
 alias partitions='lsblk -e 7 -o "NAME,SIZE,FSTYPE,MOUNTPOINT,FSUSE%"'

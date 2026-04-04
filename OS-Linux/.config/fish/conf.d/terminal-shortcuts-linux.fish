@@ -44,3 +44,4 @@ alias clk             'watch --no-title --precise --interval 0.1 '"'"'date +"%A 
 alias time_stat       'systemctl status systemd-timesyncd.service'
 alias time_sync       'sudo timedatectl set-ntp off; sudo timedatectl set-ntp on'
 alias partitions      'lsblk -e 7 -o "NAME,SIZE,FSTYPE,MOUNTPOINT,FSUSE%"'
+alias mounts          'df -h --output=target,source,fstype,size,used,avail --exclude-type=tmpfs --exclude-type=efivarfs'
