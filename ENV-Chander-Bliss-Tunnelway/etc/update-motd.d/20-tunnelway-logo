@@ -12,7 +12,8 @@
 # IMPORTANT: After dropping this file at the destination, run
 #            sudo service ssh restart
 
-cat << "EOF" | LANG=en_US.UTF-8 /usr/games/lolcat -f
+{
+    cat << "EOF"
 
 ████████ ██    ██ ███    ██ ███    ██ ███████ ██      ██     ██  █████  ██    ██
    ██    ██    ██ ████   ██ ████   ██ ██      ██      ██     ██ ██   ██  ██  ██
@@ -21,3 +22,7 @@ cat << "EOF" | LANG=en_US.UTF-8 /usr/games/lolcat -f
    ██     ██████  ██   ████ ██   ████ ███████ ███████  ███ ███  ██   ██    ██
 
 EOF
+
+    uptime --p | sed 's/^./ \u&/'
+
+} | LANG=en_US.UTF-8 /usr/games/lolcat -f

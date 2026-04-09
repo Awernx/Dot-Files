@@ -4,23 +4,28 @@
 # -------------------
 # Message of the day
 #
-# Location: /etc/update-motd.d folder 
-# Note: The file must starts with a number-name pattern, and 
+# Location: /etc/update-motd.d folder
+# Note: The file must starts with a number-name pattern, and
 #       should NOT have an extension such as .sh or .bash etc.
 # Example: 10-motd
 
 # IMPORTANT: After dropping this file at the destination, run
 #            sudo service ssh restart
 
-cat << "EOF" | LANG=en_US.UTF-8 /usr/games/lolcat -f
+{
+    cat << "EOF"
 
   ▄▄▄▄███▄▄▄▄        ▄█  ▄██████▄   ▄█       ███▄▄▄▄    ▄█     ▄████████
 ▄██▀▀▀███▀▀▀██▄     ███ ███    ███ ███       ███▀▀▀██▄ ███    ███    ███
 ███   ███   ███     ███ ███    ███ ███       ███   ███ ███▌   ███    ███
 ███   ███   ███     ███ ███    ███ ███       ███   ███ ███▌  ▄███▄▄▄▄██▀
-███   ███   ███     ███ ███    ███ ███       ███   ███ ███▌ ▀▀███▀▀▀▀▀  
+███   ███   ███     ███ ███    ███ ███       ███   ███ ███▌ ▀▀███▀▀▀▀▀
 ███   ███   ███     ███ ███    ███ ███       ███   ███ ███  ▀███████████
 ███   ███   ███     ███ ███    ███ ███▌    ▄ ███   ███ ███    ███    ███
  ▀█   ███   █▀  █▄ ▄███  ▀██████▀  █████▄▄██  ▀█   █▀  █▀     ███    ███
-                ▀▀▀▀▀▀             ▀                          ███    ███    
+                ▀▀▀▀▀▀             ▀                          ███    ███
 EOF
+
+    uptime --p | sed 's/^./ \u&/'
+
+} | LANG=en_US.UTF-8 /usr/games/lolcat -f
