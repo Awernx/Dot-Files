@@ -56,7 +56,7 @@ function disksf --description 'Block devices browser'
         return 1
     end
 
-    set --local selection (disks | fzf $fzf_common_options --ansi --header-lines=1 --preview-window=right:60%:wrap \
+    set --local selection (disks | fzf $fzf_window_options --ansi --header-lines=1 --preview-window=right:60%:wrap \
         --preview 'lsblk -e 7 -o "NAME,SIZE,FSTYPE,MOUNTPOINT,FSUSE%" /dev/{1}'
     )
 

@@ -41,7 +41,7 @@ function gb --description 'Pick a git branch to checkout into'
     set --local selection (
         printf '%s\n' $branches |
         string match -v -- "$current" |
-        fzf $fzf_common_options --prompt='Select a git branch to switch to ➤ '
+        fzf $fzf_window_options --prompt='Select a git branch to switch to ➤ '
     )
 
     if test -n "$selection"
@@ -61,7 +61,7 @@ function gr --description 'Pick a git commit to HARD reset to'
 
     set --local selection (
         git log --pretty=format:"%h │ %ad │ %s" --date=format:'%b %d %H:%M:%S' | \
-        fzf $fzf_common_options --prompt="git> " --preview-window=hidden \
+        fzf $fzf_window_options --prompt="git> " --preview-window=hidden \
             --prompt='Select a git branch to HARD reset to ➤ ' \
             --preview 'git show --color=always {1}'
     )

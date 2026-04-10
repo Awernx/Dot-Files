@@ -12,7 +12,8 @@ end
 # Miminal style; short window with a border
 # '+' key toggle preview
 # Filter option is at the top, with the list reversed - recent results at the top
-set --global fzf_common_options --height=1% --reverse --info=hidden --border --margin=1 --padding=1 --bind 'ctrl-space:toggle-preview' --color header:bright-yellow:bold --color=prompt:#00FF00 --style minimal
+set --global fzf_common_options --reverse --margin=1 --padding=1 --bind 'ctrl-space:toggle-preview' --color header:bright-yellow:bold --color=prompt:#00FF00 --style=minimal
+set --global fzf_window_options $fzf_common_options --height=25% --border
 
 # Workaround known fish-shell bug with interactive exits
 function exit_with_repaint

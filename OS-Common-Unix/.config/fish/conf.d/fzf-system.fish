@@ -97,7 +97,7 @@ function sshf --description 'SSH hosts fzf-picker'
             END { flush() }
         ' ~/.ssh/config |
         column -t |
-        fzf $fzf_common_options --header-lines=1 --prompt='Pick a host to SSH into ➤ '
+        fzf $fzf_window_options --header-lines=1 --prompt='Pick a host to SSH into ➤ '
     )
 
     if test -n "$selection"
