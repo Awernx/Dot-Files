@@ -61,8 +61,8 @@ function gr --description 'Pick a git commit to HARD reset to'
 
     set --local selection (
         git log --pretty=format:"%h │ %ad │ %s" --date=format:'%b %d %H:%M:%S' | \
-        fzf $fzf_window_options --prompt="git> " --preview-window=hidden \
-            --prompt='Select a git branch to HARD reset to ➤ ' \
+        fzf $fzf_common_options --prompt="git> " \
+            --prompt='Pick a git commit to HARD reset to ➤ ' \
             --preview 'git show --color=always {1}'
     )
 
