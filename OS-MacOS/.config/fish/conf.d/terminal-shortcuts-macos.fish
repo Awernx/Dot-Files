@@ -19,7 +19,6 @@ if test -f $homebrew_location
 end
 
 ## Abbreviations-----------------------
-abbr ports               'sudo lsof -PiTCP -sTCP:LISTEN'
 abbr clear-favicon-cache 'rm -rf ~/Library/Safari/Favicon\ Cache/'
 abbr clear-network-cache 'sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder'
 
