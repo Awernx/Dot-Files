@@ -1,21 +1,60 @@
-#!/bin/sh
+#!/bin/bash
 
-# 🅲 🅷 🅰 🅽 🅳 🅴 🆁
-# ----------------------------------------
-# Prints private and public IP addresses
+green='\e[0;92m'
+brgreen='\e[1;92m'
+yellow='\e[0;93m'
+bryellow='\e[1;93m'
+reset='\e[0m'
 
-SCRIPTS_FOLDER=$(dirname "$(readlink -f -- "$0")")
+internal_ip_address() {
+    route_info=$(ip route get 1.1.1.1)
 
-printf "\n${bold}🏠 Internal: ${normal}"
+    ip_address=$(echo "$route_info" | grep -oP 'src \K\S+')
+    router_ip=$(echo "$route_info"  | grep -oP 'via \K\S+')
+    adapter=$(echo "$route_info"    | grep -oP 'dev \K\S+')
+    mac_address=$(ip link show "$adapter" | grep -oP 'link/ether \K\S+')
 
-## Internal IP
-if hash ip 2>/dev/null; then
-    ip address | awk -f $SCRIPTS_FOLDER/ip-address.awk
-else
-    printf "${bold} ERROR ${normal}-> 'ip' tool is not available\n"
-fi
+    case "${adapter:0:2}" in
+        en|et)
+            adapter_type="Ethernet"
+            ;;
+        wl)
+            adapter_type="Wi-Fi"
+            ;;
+        ww)
+            adapter_type="Mobile Broadband (WWAN)"
+            ;;
+        lo)
+            adapter_type="Loopback"
+            ;;
+        *)
+            adapter_type="Unknown/Virtual"
+            ;;
+    esac
 
-## External IP
-printf "\n${bold}🌐 External: ${normal} \n"
-echo "      IP v4:" $(dig -4 TXT +short o-o.myaddr.l.google.com @ns1.google.com | tr -d '"')
-echo "      IP v6:" $(dig -6 TXT +short o-o.myaddr.l.google.com @ns1.google.com | tr -d '"')
+    printf "\n${green}🏠 Internal: ${reset}"
+    printf "\n         IP:${brgreen} $ip_address            ${reset}"
+    printf "\n    Adapter:${green} $adapter [$adapter_type] ${reset}"
+    printf "\n        MAC:${green} $mac_address             ${reset}"
+    printf "\n    Gateway:${green} $router_ip               ${reset}"
+    printf "\n"
+}
+
+public_ip_address() {
+    data=$(curl -s ipinfo.io)
+
+    ip=$(echo "$data"      | jq -r '.ip')
+    fqn=$(echo "$data"     | jq -r '.hostname // "N/A"')
+    city=$(echo "$data"    | jq -r '.city')
+    region=$(echo "$data"  | jq -r '.region')
+    country=$(echo "$data" | jq -r '.country')
+
+    printf "\n${yellow}  🌐 Public: ${reset}"
+    printf "\n         IP:${bryellow} $ip                    ${reset}"
+    printf "\n        FQN:${yellow} $fqn                     ${reset}"
+    printf "\n   Location:${yellow} $city, $region, $country ${reset}"
+    printf "\n"
+}
+
+internal_ip_address
+public_ip_address
