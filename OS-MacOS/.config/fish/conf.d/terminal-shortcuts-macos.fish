@@ -35,14 +35,6 @@ function clean
     brew cleanup --prune=all
 end
 
-function ipa
-    print_internal_ip_addresses
-
-    echo -ns '🌐 External:' \n
-    echo -ns '      IP v4: ' (set_color -o) (dig -4 TXT +short o-o.myaddr.l.google.com @ns1.google.com | tr -d '"') (set_color normal) \n
-    echo -ns '      IP v6: ' (set_color -o) (dig -6 TXT +short o-o.myaddr.l.google.com @ns1.google.com | tr -d '"') (set_color normal) \n
-end
-
 ##  Get the Bundle Id -----------------
 function bid
     if test (count $argv) -lt 1
@@ -59,73 +51,36 @@ function sane-defaults
     defaults write com.apple.Terminal AutoMarkPromptLines -bool NO
 end
 
-##  Internal IP address & adapter info -----------------
-function print_internal_ip_addresses
-    if not type -q scutil
-        echo "scutil not found" >&2;
-        return 1
+##  Print local and public IP info-----
+function ipa
+    if not type -q jq
+        echo "Error: 'jq' is required. Install it with 'brew install jq'."
+        exit 1
     end
 
-    if not type -q networksetup
-        echo "networksetup not found" >&2;
-        return 1
-    end
+    # Get Local Adapter Info
+    set -l interface (route -n get default | awk '/interface: / {print $2}')
+    set -l service (networksetup -listnetworkserviceorder | grep -B1 "$interface" | head -n1 | string replace -r '^\(\d+\)\s+' '')
+    set -l local_ip (ipconfig getifaddr $interface)
+    set -l mac_addr (networksetup -getmacaddress "$service" | awk '{print $3}')
+    set -l router_ip (route -n get default | awk '/gateway: / {print $2}')
 
-    # Collect outputs into single strings we can reuse
-    set -l SC (scutil --nwi | string collect)
-    set -l NS (networksetup -listallhardwareports | string collect)
+    echo
+    echo -ns (set_color -o brgreen) '🏠 Internal: ' (set_color normal) \n
+    echo -ns                        '         IP: ' (set_color -o brgreen) $local_ip                 (set_color normal) \n
+    echo -ns                        '    Adapter: ' (set_color brgreen)    $interface ' ' [$service] (set_color normal) \n
+    echo -ns                        '        MAC: ' (set_color brgreen)    $mac_addr                 (set_color normal) \n
+    echo -ns                        '    Gateway: ' (set_color brgreen)    $router_ip                (set_color normal) \n
 
-    # Get adapter list
-    set -l adapters (printf '%s\n' "$SC" | awk '
-        /^Network interfaces:/ {
-            for (i=3; i<=NF; i++) print $i
-            found=1
-        }
-        END { if (!found) print "" }
-    ')
+    # Get Public IP Info
+    set -l public_json (curl -s ipinfo.io)
+    set -l pub_ip (echo $public_json | jq -r '.ip')
+    set -l pub_host (echo $public_json | jq -r '.hostname // "N/A"')
+    set -l pub_loc (echo $public_json | jq -r '"\(.city), \(.region), \(.country)"')
 
-    if test (count $adapters) -eq 0
-        set adapters (printf '%s\n' "$SC" | awk '
-            /^IPv4 network interface information/ { ipv4=1; next }
-            ipv4 && /^[[:space:]]+[a-z0-9]+[[:space:]]+:/ {
-                gsub(/^ +/,""); split($1,a,":"); print a[1]
-            }
-        ' | sort -u)
-    end
-
-    echo -ns \n'🏠 Internal:                              ' \n
-
-    for iface in $adapters
-        # IPv4 for iface (first "address" line under iface in IPv4 section)
-        set -l ipv4 (printf '%s\n' "$SC" | awk -v IFACE="$iface" '
-            /^IPv4 network interface information/ { m=1; next }
-            m && $1==IFACE && $2==":" { want=1; next }
-            want && /address/ { print $3; exit }
-        ')
-
-        # IPv6 for iface (first "address" line under iface in IPv6 section)
-        set -l ipv6 (printf '%s\n' "$SC" | awk -v IFACE="$iface" '
-            /^IPv6 network interface information/ { m=1; next }
-            m && $1==IFACE && $2==":" { want=1; next }
-            want && /address/ { print $3; exit }
-        ')
-
-        # Hardware Port & MAC from networksetup output
-        set -l port_mac (printf '%s\n' "$NS" | awk -v IFACE="$iface" '
-            /^Hardware Port:/ { port=$0; sub(/^Hardware Port: /,"",port) }
-            $0 ~ "^Device: "IFACE"$" {
-                getline;                                # expect "Ethernet Address: ..."
-                gsub(/^Ethernet Address: /,"");
-                print port "|" $0; exit
-            }
-        ')
-
-        set -l port (string split -m1 '|' "$port_mac")[1]
-        set -l mac  (string split -m1 '|' "$port_mac")[2]
-
-        echo -ns '    Adapter: ' (set_color -o blue) $port ' ['$iface']' (set_color normal) \n
-        echo -ns '      IP v4: ' (set_color -o)      $ipv4               (set_color normal) \n
-        echo -ns '      IP v6: ' (set_color -o)      $ipv6               (set_color normal) \n
-        echo -ns '        MAC: ' (set_color -o)      $mac                (set_color normal) \n\n
-    end
+    echo
+    echo -ns (set_color -o bryellow) '  🌐 Public: ' (set_color normal) \n
+    echo -ns                         '         IP: ' (set_color -o bryellow) $pub_ip   (set_color normal) \n
+    echo -ns                         '        FQN: ' (set_color bryellow)    $pub_host (set_color normal) \n
+    echo -ns                         '   Location: ' (set_color bryellow)    $pub_loc  (set_color normal) \n
 end
