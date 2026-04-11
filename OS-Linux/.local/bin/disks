@@ -5,30 +5,50 @@
 # Prints information about attached disks
 
 get_block_devices() {
-    lsblk -de 7 -P -o NAME,MODEL,SIZE | awk '
+    lsblk -de 7 -P -o NAME,MODEL,SIZE,ROTA,TYPE,TRAN | awk '
     {
-        name=model=size=rota="";
+        name=model=size=rota=type=tran=dtype="";
         for(i=1;i<=NF;i++) {
             if($i~/^NAME=/) {
-                name=$i;
-                sub(/^NAME="/,"",name);
-                sub(/"$/,"",name)
+                name=$i; sub(/^NAME="/,"",name); sub(/"$/,"",name)
             }
-
             else if($i~/^SIZE=/) {
-                size=$i;
-                sub(/^SIZE="/,"",size);
-                sub(/"$/,"",size)
-
-            } else if($i~/^MODEL=/) {
+                size=$i; sub(/^SIZE="/,"",size); sub(/"$/,"",size)
+            }
+            else if($i~/^ROTA=/) {
+                rota=$i; sub(/^ROTA="/,"",rota); sub(/"$/,"",rota)
+            }
+            else if($i~/^TYPE=/) {
+                type=$i; sub(/^TYPE="/,"",type); sub(/"$/,"",type)
+            }
+            else if($i~/^TRAN=/) {
+                tran=$i; sub(/^TRAN="/,"",tran); sub(/"$/,"",tran)
+            }
+            else if($i~/^MODEL=/) {
                 model=substr($0,index($0,"MODEL=\"")+7);
                 sub(/" SIZE=.*/,"",model)
             }
         }
 
-        printf "%s||%s||%s\n",name,model,size
+        # Logic to identify Device Type
+        if (type == "rom") {
+            dtype = "DVD/CD"
+        } else if (model ~ /SD|MMC|Card|Reader|MS.PRO/) {
+            dtype = "Media Slot"
+        } else if (tran == "usb" && size == "0B") {
+            dtype = "Media Slot"
+        } else if (rota == "1") {
+            dtype = "HDD"
+        } else if (rota == "0") {
+            dtype = "SSD"
+        } else {
+            dtype = "Disk"
+        }
+
+        # SIZE is now the 4th element (the last column)
+        printf "%s||%s||%s||%s\n", name, dtype, model, size
     }'
 }
 
 devices=$(get_block_devices)
-printf "\033[1;33mNAME||SIZE||MODEL\033[0m\n%s\n" "$devices" | column -t -s '||'
+printf "\033[1;93mNAME||TYPE||MODEL||CAPACITY\033[0m\n%s\n" "$devices" | column -t -s '||'

@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# 🅲 🅷 🅰 🅽 🅳 🅴 🆁
+# ---------------------------------------------
+# Prints information about attached partitions
+
+lsblk -le 7 -o "NAME,SIZE,FSTYPE,MOUNTPOINT,PKNAME" --json | \
+jq -r '
+    (.blockdevices[] | select(.mountpoint != null) |
+        [
+            .mountpoint,
+            .size,
+            .fstype,
+            (if (.name | startswith("sd")) then .name else (.pkname + " ➤ " + .name) end)
+        ]
+    ) | @tsv' \
+| sort | \
+(printf "MOUNTPOINT\tSIZE\tFSTYPE\tNAME\n"; cat) | \
+column -t -s $'\t' | \
+awk 'NR==1 {print "\033[1;93m" $0 "\033[0m"} NR>1 {print $0}'
