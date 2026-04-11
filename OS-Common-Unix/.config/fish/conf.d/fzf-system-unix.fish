@@ -32,7 +32,7 @@ function sysdf --description 'Systemd services browser'
             script -qec "systemctl list-units --type=service --all --plain --no-legend --no-pager" /dev/null
         } | grep -v '^systemd' | column -t \
         | fzf $fzf_common_options \
-            --ansi --header-lines=1 --with-nth=1,3,4 --preview-window=right:60%:wrap \
+            --ansi --header-lines=1 --with-nth=1,3,4 --preview-window=right:50%:wrap \
             --preview 'SYSTEMD_COLORS=1 systemctl status {1} --lines=0 --no-pager'
     )
 

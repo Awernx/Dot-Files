@@ -50,7 +50,7 @@ function sshf --description 'SSH hosts fzf-picker'
             }
 
             function emit_row(h, cmd, line, hn, u, p, k, f) {
-                hn=""; u=""; p=""; k=""
+                hn=""; u=""; k=""
 
                 cmd = "ssh -G " h " 2>/dev/null"
 
@@ -59,7 +59,6 @@ function sshf --description 'SSH hosts fzf-picker'
 
                     if (f[1] == "hostname")      hn = f[2]
                     else if (f[1] == "user")     u  = f[2]
-                    else if (f[1] == "port")     p  = f[2]
                     else if (f[1] == "identityfile") k = f[2]   # keep last
                 }
 
@@ -67,13 +66,14 @@ function sshf --description 'SSH hosts fzf-picker'
 
                 if (p == "") p = "22"
 
-                printf "%s\t%s\t%s\t%s\t%s\n", h, hn, u, p, k
+                printf "%s\t%s\t%s\t%s\n", h, hn, u, k
             }
 
             function flush(i, h) {
                 if (n == 0) return
                 for (i = 1; i <= n; i++) {
                     h = clean(hosts[i])
+                    if (tolower(h) ~ /github\.com/) continue
                     if (!ok_host(h)) continue
                     if (!(h in seen)) {
                     seen[h]=1
@@ -84,7 +84,7 @@ function sshf --description 'SSH hosts fzf-picker'
 
             BEGIN {
                 n=0
-                print "HOST\tHOSTNAME\tUSER\tPORT\tIDENTITYFILE"
+                print "HOST\tHOSTNAME\tUSER\tIDENTITY_FILE"
             }
 
             /^[[:space:]]*Host[[:space:]]+/ && $1=="Host" {
@@ -97,7 +97,7 @@ function sshf --description 'SSH hosts fzf-picker'
             END { flush() }
         ' ~/.ssh/config |
         column -t |
-        fzf $fzf_window_options --header-lines=1 --prompt='Pick a host to SSH into ➤ '
+        fzf $fzf_window_options --header-lines=1 --prompt='Pick a SSH host ➤ '
     )
 
     if test -n "$selection"
