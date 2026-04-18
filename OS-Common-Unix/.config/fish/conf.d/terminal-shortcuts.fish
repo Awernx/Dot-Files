@@ -9,6 +9,8 @@ if not status is-interactive
     exit 0
 end
 
+set --export fish_color_cwd brcyan
+
 # XDG (Just in case they're not set already)
 set --export --universal XDG_CONFIG_HOME $HOME/.config
 set --export --universal XDG_DATA_HOME   $HOME/.local/share
@@ -20,16 +22,11 @@ if not set -q HOST_FULL_NAME
     set --export --global HOST_SHORT_NAME (hostname -s)
 end
 
-set --export fish_color_cwd brcyan
-set --export --global TITLE ''
-set --export --global TITLE_PREFIX ''
-
 ############################################################################
 ## Abbreviations
 ############################################################################
 abbr ..    'cd ..'
 abbr ...   'cd ../..'
-abbr title 'set TITLE_PREFIX'
 abbr ping  'ping -c 5'
 abbr grep  'grep --color=auto'
 abbr wget  'wget -c '
@@ -145,18 +142,6 @@ function fnd
   end
 end
 
-function fish_title
-  if not test -n "$TITLE"
-    set --export --global TITLE $USER '▕  ' $HOST_SHORT_NAME '▕  ' $OS
-  end
-
-  if test -n "$TITLE_PREFIX"
-    echo -ns $TITLE_PREFIX ' [' $TITLE ']'
-  else
-    echo -ns $TITLE
-  end
-end
-
 function update
     if test -z "$GIT_REPOS"
         echo 'GIT_REPOS env variable is empty; nothing to update'
@@ -177,6 +162,12 @@ function register_script
 
         echo "Registering '$script_name' with 🐟"
         ln -sf $script_full_path ~/.config/fish/conf.d/
+    end
+end
+
+function fish_title
+    if set --query SSH_CLIENT; or set --query SSH_TTY;
+        hostname
     end
 end
 
@@ -211,8 +202,10 @@ function terminal_colors
 
   # If running under SSH, only render the HOST BANNER and skip terminal colors
   if set --query SSH_CLIENT; or set --query SSH_TTY;
+    echo -e "\033]50;SetProfile=SSH\a"
     return
   else
+    echo -e "\033]50;SetProfile=Default\a"
     default_terminal_colors
   end
 end
