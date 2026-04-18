@@ -109,6 +109,13 @@ function fish_prompt
   printf "\n"
   echo -ns (set_color --bold brmagenta) $SHLVL (set_color normal)  ┊ (set_color $fish_color_operator) $FISH_INDICATOR ' '
   echo -ns (set_color $fish_color_cwd) (pwd) (set_color --bold $fish_color_error) $STATUS_INDICATOR (set_color brwhite) $PROMPT_INDICATOR (set_color normal)
+
+  # Setting profiles for iTerm2
+  if set --query SSH_CLIENT; or set --query SSH_TTY;
+    echo -e "\033]50;SetProfile=SSH\a"
+  else
+    echo -e "\033]50;SetProfile=Default\a"
+  end
 end
 
 function fish_right_prompt
@@ -201,13 +208,8 @@ function terminal_colors
   end
 
   # If running under SSH, only render the HOST BANNER and skip terminal colors
-  if set --query SSH_CLIENT; or set --query SSH_TTY;
-    echo -e "\033]50;SetProfile=SSH\a"
-    return
-  else
-    echo -e "\033]50;SetProfile=Default\a"
-    default_terminal_colors
-  end
+  not set -q SSH_CLIENT SSH_TTY; and default_terminal_colors
+
 end
 
 function default_terminal_colors
