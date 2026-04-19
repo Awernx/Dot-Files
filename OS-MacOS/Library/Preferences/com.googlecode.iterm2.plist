@@ -1631,7 +1631,7 @@
 			</dict>
 			<key>Bound Hosts</key>
 			<array>
-				<string>&amp;ssh*</string>
+				<string>&amp;ssh *</string>
 			</array>
 			<key>Character Encoding</key>
 			<integer>4</integer>

@@ -1,21 +1,17 @@
 #!/usr/bin/env fish
 
 # 🅲 🅷 🅰 🅽 🅳 🅴 🆁
-# ------------------------------------
-# Chander's FISH shell customizations
+# --------------------------
+# FISH shell customizations
 
-# Stop loading this script for non-interactive shells
-if not status is-interactive
-    exit 0
-end
+# Don't load this script for non-interactive shells
+status is-interactive; or exit 0
 
 set --export fish_color_cwd brcyan
-
-# XDG (Just in case they're not set already)
+set --export --universal GIT_REPOS       $HOME/Workspace/Dot-Files
 set --export --universal XDG_CONFIG_HOME $HOME/.config
 set --export --universal XDG_DATA_HOME   $HOME/.local/share
 set --export --universal XDG_CACHE_HOME  $HOME/.cache
-set --export --universal GIT_REPOS       $HOME/Workspace/Dot-Files
 
 if not set -q HOST_FULL_NAME
     set --export --global HOST_FULL_NAME  (hostname -f)
@@ -55,6 +51,7 @@ alias da      'direnv allow '
 alias gs      'git status'
 alias pull    'git pull'
 alias gclean  'git fetch --prune'
+alias path    'string join \n $PATH'
 
 if type -q bat
     alias cat 'bat --plain --paging=never'
@@ -67,9 +64,7 @@ if type -q bat
     abbr --add --position anywhere -- --help '--help | bat -plhelp'
 end
 
-if type -q zoxide
-    alias cd z
-end
+type -q zoxide; and alias cd z
 
 if type -q yazi
     function y
@@ -107,81 +102,48 @@ function fish_prompt
 
   echo -ns (set_color --bold brmagenta) $SHLVL (set_color normal)  ┊ (set_color $fish_color_operator) $FISH_INDICATOR ' '
   echo -ns (set_color $fish_color_cwd) (pwd)
-
-  if [ $last_run_command_status -gt 0 ]
-      echo -ns (set_color --bold $fish_color_error) ' ' [$last_run_command_status]
-  end
-
+  test $last_run_command_status -gt 0; and echo -ns (set_color --bold $fish_color_error) " [$last_run_command_status]"
   echo -ns (set_color brwhite) $PROMPT_INDICATOR (set_color normal)
 end
 
 function fish_right_prompt
-    if not set -q LIGHT_PROMPT
-        echo -ns (set_color -o $fish_color_host_remote) "$OS_ICON $HOST_SHORT_NAME" (set_color normal)
-    end
+    set -q SSH_CLIENT SSH_TTY; and echo -ns (set_color -o $fish_color_host_remote) $OS_ICON " $HOST_SHORT_NAME" (set_color normal)
 end
 
 function this
   echo -ns '        Host: ' (set_color -o) $HOST_FULL_NAME (set_color normal) \n
   echo -ns '          OS: ' (set_color -o) $OS (set_color normal) \n
-
-  if test -n "$BASE_OS"
-    echo -ns '     Base OS: ' (set_color -o) $BASE_OS (set_color normal) \n
-  end
-
+  test -n "$BASE_OS"; and echo -ns '     Base OS: ' (set_color -o) $BASE_OS (set_color normal) \n
   echo -ns 'Architecture: ' (set_color -o) (uname -m) (set_color normal) \n
   echo -ns '      Kernel: ' (set_color -o) (uname -sr) (set_color normal) \n
   echo -ns '       Shell: ' (set_color -o) '🐟 Fish ' $FISH_VERSION (set_color normal) \n
 end
 
-function path
-  for path_item in $PATH
-    echo $path_item
-  end
-end
-
 function fnd
-  if count $argv > /dev/null
-    find . -iname "*$argv*" -type f  -exec printf '"%s"\n' {} \;
-  end
+    test (count $argv) -gt 0; and find . -iname "*$argv*" -type f -exec printf '"%s"\n' {} \;
 end
 
 function update
-    if test -z "$GIT_REPOS"
-        echo 'GIT_REPOS env variable is empty; nothing to update'
-        exit 0
-    end
+    set -q GIT_REPOS; or return
 
-    for git_repo in $GIT_REPOS
-        echo Updating $git_repo
-        git -C $git_repo pull --ff-only
+    for repo in $GIT_REPOS
+        echo Updating $repo
+        git -C $repo pull --ff-only
         echo
     end
 end
 
-function register_script
-    if count $argv > /dev/null
-        set --local script_full_path (readlink -f $argv)
-        set --local script_name (basename $script_full_path)
-
-        echo "Registering '$script_name' with 🐟"
-        ln -sf $script_full_path ~/.config/fish/conf.d/
-    end
-end
-
 function fish_title
-    # Override default fish's pwd behavior
+    # Override fish's default 'pwd' behavior
 end
 
 function fish_greeting
-    # Skip and return if logging in under a remote SSH session
+    # Skip if running under SSH session
     set -q SSH_CLIENT SSH_TTY; and return
-
     terminal_colors
 end
 
 function terminal_colors
-    # If LIGHT_PROMPT is requested, skip banner rendering and return
     set -q LIGHT_PROMPT; and return
 
     set -q HOST_BANNER; and begin
@@ -191,7 +153,6 @@ end
 
 function default_terminal_colors
   # Inspired by Ivo's ANSI Color script
-  # Source: http://crunchbang.org/forums/viewtopic.php?pid=134749#p134749
   echo
   echo -ns (set_color red)   ' ██████  ' (set_color green)   ' ██████  ' (set_color yellow)   '   ██████' (set_color blue)   ' ██████  ' (set_color magenta)   '   ██████' (set_color cyan)   '   ██████' \n
   echo -ns (set_color red)   ' ████████' (set_color green)   ' ██    ██' (set_color yellow)   ' ██      ' (set_color blue)   ' ██    ██' (set_color magenta)   ' ██████  ' (set_color cyan)   ' ████████' \n
