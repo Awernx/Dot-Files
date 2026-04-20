@@ -35,7 +35,8 @@ function sysdf --description 'Systemd services browser'
     )
 
     if test -n "$selection"
-        set --local service (echo $selection | awk '{print $1}')
+        set --local service (echo $selection | string split -f1 " ")
+        clear
         journalctl --no-tail --follow --no-pager -u $service | bat --style=grid,numbers --paging=never --language log
     end
 
