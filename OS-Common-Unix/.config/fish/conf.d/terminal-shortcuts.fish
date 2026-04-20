@@ -98,12 +98,12 @@ function fish_prompt
 
   printf "\n"
 
-  set -q SSH_CLIENT SSH_TTY; and echo -ns (set_color --bold -b magenta white) SSH (set_color normal) (set_color magenta)  (set_color normal) ' '
+  set -q SSH_CLIENT SSH_TTY; and echo -ns (set_color --bold -b magenta brwhite) SSH (set_color normal) (set_color magenta)  (set_color normal) ' '
 
-  echo -ns (set_color --bold brmagenta) $SHLVL (set_color normal)  ┊ (set_color $fish_color_operator) $FISH_INDICATOR ' '
+  echo -ns (set_color --bold brmagenta) $SHLVL (set_color normal)  ┊ (set_color --bold bryellow) $FISH_INDICATOR ' ' (set_color normal)
   echo -ns (set_color $fish_color_cwd) (pwd)
   test $last_run_command_status -gt 0; and echo -ns (set_color --bold $fish_color_error) " [$last_run_command_status]"
-  echo -ns (set_color brwhite) $PROMPT_INDICATOR (set_color normal)
+  echo -ns (set_color --bold brwhite) $PROMPT_INDICATOR (set_color normal)
 end
 
 function fish_right_prompt

@@ -156,11 +156,11 @@ set_prompt() {
     local prompt="\n"
 
     if is_ssh_session; then
-        prompt+="${bold}${purplebg}${white_fg}SSH${reset}${purplef}${reset} "
+        prompt+="${bold}${purplebg}${whiteb}SSH${reset}${purplef}${reset} "
     fi
 
-    prompt+="${bold}${purplef}${SHLVL}${reset}┊${yellowb}${STATUS_INDICATOR} "
-    prompt+="${greenf}$(pwd)${reset}"
+    prompt+="${bold}${purpleb}${SHLVL}${reset}┊${yellowb}${STATUS_INDICATOR} "
+    prompt+="${whitef}$(pwd)${reset}"
 
     if [[ $LAST_RUN_COMMAND_STATUS -gt 0 ]]; then
         prompt+=" ${bold}${redb}[${LAST_RUN_COMMAND_STATUS}]${reset}"
