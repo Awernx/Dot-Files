@@ -101,12 +101,13 @@ this() {
 
 terminal_colors() {
     # Author: GekkoP
-    # Source: http://linuxbbq.org/bbs/viewtopic.php?f=4&t=1656#p33189
     cat << EOF
 
-${redf}███${reset}${redb}███${reset} ${greenf}███${reset}${greenb}███${reset} ${yellowf}███${reset}${yellowb}███${reset} ${bluef}███${reset}${blueb}███${reset} ${purplef}███${reset}${purpleb}███${reset} ${cyanf}███${reset}${cyanb}███${reset}
-${redf}███${reset}${redb}███${reset} ${greenf}███${reset}${greenb}███${reset} ${yellowf}███${reset}${yellowb}███${reset} ${bluef}███${reset}${blueb}███${reset} ${purplef}███${reset}${purpleb}███${reset} ${cyanf}███${reset}${cyanb}███${reset}
-${redf}███${reset}${redb}███${reset} ${greenf}███${reset}${greenb}███${reset} ${yellowf}███${reset}${yellowb}███${reset} ${bluef}███${reset}${blueb}███${reset} ${purplef}███${reset}${purpleb}███${reset} ${cyanf}███${reset}${cyanb}███${reset}
+${redf}█${reset}${redb}█ ${greenf}█${greenb}█ ${yellowf}█${yellowb}█ ${bluef}█${blueb}█ ${purplef}█${purpleb}█ ${cyanf}█${cyanb}█
+${redf}█${reset}${redb}█ ${greenf}█${greenb}█ ${yellowf}█${yellowb}█ ${bluef}█${blueb}█ ${purplef}█${purpleb}█ ${cyanf}█${cyanb}█
+${redf}█${reset}${redb}█ ${greenf}█${greenb}█ ${yellowf}█${yellowb}█ ${bluef}█${blueb}█ ${purplef}█${purpleb}█ ${cyanf}█${cyanb}█
+${redf}█${reset}${redb}█ ${greenf}█${greenb}█ ${yellowf}█${yellowb}█ ${bluef}█${blueb}█ ${purplef}█${purpleb}█ ${cyanf}█${cyanb}█
+${redf}█${reset}${redb}█ ${greenf}█${greenb}█ ${yellowf}█${yellowb}█ ${bluef}█${blueb}█ ${purplef}█${purpleb}█ ${cyanf}█${cyanb}█ ${reset}
 EOF
 }
 
