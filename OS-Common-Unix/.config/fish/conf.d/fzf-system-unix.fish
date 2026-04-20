@@ -4,10 +4,8 @@
 # ---------------------------------------------------------------------
 # Chander's FISH shell shortcuts for fzf functions & utilities
 
-# Stop loading this script for non-interactive shells
-if not status is-interactive
-    exit 0
-end
+# Don't load this script for non-interactive shells
+status is-interactive; or exit 0
 
 # #########################################################################################
 # All Unix related fzf shortcuts start with Alt + U, followed by the relevant character

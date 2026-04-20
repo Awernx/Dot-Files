@@ -4,10 +4,8 @@
 # ---------------------------------------------------------------------
 # Base file for all fzf functions & utilities
 
-# Stop loading this script for non-interactive shells
-if not status is-interactive
-    exit 0
-end
+# Don't load this script for non-interactive shells
+status is-interactive; or exit 0
 
 # Miminal style; short window with a border
 # '+' key toggle preview

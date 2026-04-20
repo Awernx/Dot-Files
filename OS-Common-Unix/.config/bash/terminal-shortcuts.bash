@@ -9,15 +9,15 @@ export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_CACHE_HOME="$HOME/.cache"
 
-# Color Controls        # Foreground Colors            # Bright Foreground Colors
-reset=$(tput sgr0)      blackf=$(tput setaf 0)         blackb=$(tput setaf 8)
-bold=$(tput bold)       redf=$(tput setaf 1)           redb=$(tput setaf 9)
-dim=$(tput dim)         greenf=$(tput setaf 2)         greenb=$(tput setaf 10)
-                        yellowf=$(tput setaf 3)        yellowb=$(tput setaf 11)
-                        bluef=$(tput setaf 4)          blueb=$(tput setaf 12)
-                        purplef=$(tput setaf 5)        purpleb=$(tput setaf 13)
-                        cyanf=$(tput setaf 6)          cyanb=$(tput setaf 14)
-                        whitef=$(tput setaf 7)         whiteb=$(tput setaf 15)
+# Color Controls        # Foreground Colors          # Bright Foreground Colors    # Background Colors
+reset=$(tput sgr0)      blackf=$(tput setaf 0)       blackb=$(tput setaf 8)        redbg=$(tput setab 9)
+bold=$(tput bold)       redf=$(tput setaf 1)         redb=$(tput setaf 9)          purplebg=$(tput setab 5)
+dim=$(tput dim)         greenf=$(tput setaf 2)       greenb=$(tput setaf 10)
+                        yellowf=$(tput setaf 3)      yellowb=$(tput setaf 11)
+                        bluef=$(tput setaf 4)        blueb=$(tput setaf 12)
+                        purplef=$(tput setaf 5)      purpleb=$(tput setaf 13)
+                        cyanf=$(tput setaf 6)        cyanb=$(tput setaf 14)
+                        whitef=$(tput setaf 7)       whiteb=$(tput setaf 15)
 
 gui_shell_indicator="🅱 🅰 🆂 🅷 "
 
@@ -83,7 +83,6 @@ cls() {
     clear
     terminal_colors
     echo
-    root_prefix
 }
 
 # Ctrl + L to 'clear' command
@@ -100,18 +99,14 @@ this() {
     printf "       Shell: ${bold}BASH $BASH_VERSION${reset}\n"
 }
 
-title() {
-    printf "\033]0;$1 [$USER@$HOSTNAME]\007"
-}
-
 terminal_colors() {
     # Author: GekkoP
     # Source: http://linuxbbq.org/bbs/viewtopic.php?f=4&t=1656#p33189
     cat << EOF
 
-${blackf}████${reset}${blackb}████${reset} ${redf}████${reset}${redb}████${reset} ${greenf}████${reset}${greenb}████${reset} ${yellowf}████${reset}${yellowb}████${reset} ${bluef}████${reset}${blueb}████${reset} ${purplef}████${reset}${purpleb}████${reset} ${cyanf}████${reset}${cyanb}████${reset} ${whitef}████${reset}${whiteb}████${reset}
-${blackf}████${reset}${blackb}████${reset} ${redf}████${reset}${redb}████${reset} ${greenf}████${reset}${greenb}████${reset} ${yellowf}████${reset}${yellowb}████${reset} ${bluef}████${reset}${blueb}████${reset} ${purplef}████${reset}${purpleb}████${reset} ${cyanf}████${reset}${cyanb}████${reset} ${whitef}████${reset}${whiteb}████${reset}
-${blackf}████${reset}${blackb}████${reset} ${redf}████${reset}${redb}████${reset} ${greenf}████${reset}${greenb}████${reset} ${yellowf}████${reset}${yellowb}████${reset} ${bluef}████${reset}${blueb}████${reset} ${purplef}████${reset}${purpleb}████${reset} ${cyanf}████${reset}${cyanb}████${reset} ${whitef}████${reset}${whiteb}████${reset}
+${redf}███${reset}${redb}███${reset} ${greenf}███${reset}${greenb}███${reset} ${yellowf}███${reset}${yellowb}███${reset} ${bluef}███${reset}${blueb}███${reset} ${purplef}███${reset}${purpleb}███${reset} ${cyanf}███${reset}${cyanb}███${reset}
+${redf}███${reset}${redb}███${reset} ${greenf}███${reset}${greenb}███${reset} ${yellowf}███${reset}${yellowb}███${reset} ${bluef}███${reset}${blueb}███${reset} ${purplef}███${reset}${purpleb}███${reset} ${cyanf}███${reset}${cyanb}███${reset}
+${redf}███${reset}${redb}███${reset} ${greenf}███${reset}${greenb}███${reset} ${yellowf}███${reset}${yellowb}███${reset} ${bluef}███${reset}${blueb}███${reset} ${purplef}███${reset}${purpleb}███${reset} ${cyanf}███${reset}${cyanb}███${reset}
 EOF
 }
 
@@ -126,47 +121,56 @@ if type yazi &> /dev/null; then
     }
 fi
 
-root_prefix() {
-    if [[ $EUID -eq 0 ]]; then
-        cat <<'EOF'
-╦═╗╔═╗╔═╗╔╦╗
-╠╦╝║ ║║ ║ ║
-╩╚═╚═╝╚═╝ ╩
-EOF
-    fi
+is_ssh_session() {
+  local pid=$PPID
+  while [[ "$pid" -gt 1 ]]; do
+    local comm
+    comm=$(ps -o comm= -p "$pid" 2>/dev/null) || break
+    case "$comm" in
+      sshd|ssh)
+        return 0
+        ;;
+      *)
+        pid=$(ps -o ppid= -p "$pid" 2>/dev/null | tr -d ' ')
+        ;;
+    esac
+  done
+  return 1
 }
 
 set_prompt() {
     local LAST_RUN_COMMAND_STATUS=$?
+    local STATUS_INDICATOR="🅱 🅰 🆂 🅷 "
+    local PROMPT_INDICATOR=" ➤ "
 
-    local STATUS_INDICATOR=''
-    if [ ${LAST_RUN_COMMAND_STATUS} -gt 0 ]
-    then
-        STATUS_INDICATOR=" ‼️ ${LAST_RUN_COMMAND_STATUS}"
+    if [[ -n "$TTY_MODE" ]]; then
+        STATUS_INDICATOR="BASH"
+        PROMPT_INDICATOR=" >> "
     fi
 
-    local PROMPT_INDICATOR=">>"
-    if [[ -z $TTY_MODE ]]; then
-        PROMPT_INDICATOR="➤"
-    fi
-
-    local NEWLINE="\n"
     if [[ $EUID -eq 0 ]]; then
-        echo
-        root_prefix
-        NEWLINE=""
+        PROMPT_INDICATOR=" ${bold}${redbg}${white_fg}ROOT${reset}${redb}${reset} "
     fi
 
-    local SHELL_INDICATOR="BASH"
-    if [[ -z $TTY_MODE ]]; then
-        SHELL_INDICATOR=$gui_shell_indicator
+    local prompt="\n"
+
+    if is_ssh_session; then
+        prompt+="${bold}${purplebg}${white_fg}SSH${reset}${purplef}${reset} "
     fi
 
-    SHELL_LEVEL="${blueb}${bold}$SHLVL${reset}"
-    PS1="$NEWLINE$SHELL_LEVEL┊${yellowb}$SHELL_INDICATOR ${reset}${cyanb}\$(pwd)${redb}${STATUS_INDICATOR}${reset} ${bold}$PROMPT_INDICATOR${reset} "
+    prompt+="${bold}${purplef}${SHLVL}${reset}┊${yellowb}${STATUS_INDICATOR} "
+    prompt+="${greenf}$(pwd)${reset}"
+
+    if [[ $LAST_RUN_COMMAND_STATUS -gt 0 ]]; then
+        prompt+=" ${bold}${redb}[${LAST_RUN_COMMAND_STATUS}]${reset}"
+    fi
+
+    # Prompt symbol
+    prompt+="${bold}${brwhite}${PROMPT_INDICATOR}${reset}"
+
+    PS1="$prompt"
 }
 
 ##  Startup actions
-title
 terminal_colors
 PROMPT_COMMAND=set_prompt

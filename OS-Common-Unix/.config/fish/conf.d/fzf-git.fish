@@ -2,12 +2,10 @@
 
 # 🅲 🅷 🅰 🅽 🅳 🅴 🆁
 # ---------------------------------------------------------------------
-# Chander's FISH shell shortcuts for GIT specific fzf utilities
+# FISH shell shortcuts for GIT specific fzf utilities
 
-# Stop loading this script for non-interactive shells
-if not status is-interactive
-    exit 0
-end
+# Don't load this script for non-interactive shells
+status is-interactive; or exit 0
 
 function require_git_repo --description 'Check if directory is a git repository'
     if not command git rev-parse --is-inside-work-tree >/dev/null 2>&1

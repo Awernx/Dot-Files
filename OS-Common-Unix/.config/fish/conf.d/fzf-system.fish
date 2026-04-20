@@ -2,12 +2,10 @@
 
 # 🅲 🅷 🅰 🅽 🅳 🅴 🆁
 # ---------------------------------------------------------------------
-# Chander's FISH shell shortcuts for fzf functions & utilities
+# FISH shell shortcuts for fzf functions & utilities
 
-# Stop loading this script for non-interactive shells
-if not status is-interactive
-    exit 0
-end
+# Don't load this script for non-interactive shells
+status is-interactive; or exit 0
 
 # -----------------------------------------------------------------------------------------
 # Kill system process - PID and USER are shown as previews on the right

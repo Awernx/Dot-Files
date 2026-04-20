@@ -2,7 +2,7 @@
 
 # 🅲 🅷 🅰 🅽 🅳 🅴 🆁
 # ---------------------------------------------------------------------
-# Chander's FISH shell shortcuts for docker commands
+# FISH shell shortcuts for docker commands
 
 # ======================================================================
 # NOTE: All commands below need root access (sudo)
@@ -10,10 +10,8 @@
 #       Ref: https://docs.docker.com/engine/install/linux-postinstall/
 # ======================================================================
 
-# Stop loading this script for non-interactive shells
-if not status is-interactive
-    exit 0
-end
+# Don't load this script for non-interactive shells
+status is-interactive; or exit 0
 
 # QEMU is a type-2 hypervisor that allows you to run virtual machines on your host system.
 # It can emulate a wide range of architectures, including x86 and ARM.
