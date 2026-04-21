@@ -21,8 +21,8 @@ function kf --description 'Pick a process to kill (supports kill args like -9)'
     )
 
     if test -n "$selection"
-        set --local pids (echo $selection | awk '{print $2}')
-        command kill $argv $pids
+        set pid (string split -n ' ' $selection)[2]
+        command kill $argv $pid
     end
 
     exit_with_repaint

@@ -20,7 +20,7 @@ status is-interactive; or exit 0
 bind alt-u,alt-y sysdf
 function sysdf --description 'Systemd services browser'
     if not type -q systemctl
-        exit_with_error "This OS doesn't support 'systemd' services"
+        exit_with_error "systemd listing not supported on this OS"
         return 1
     end
 
@@ -51,13 +51,12 @@ end
 bind alt-u,alt-d disksf
 function disksf --description 'Block devices browser'
     if not type -q lsblk
-        exit_with_error "This OS doesn't support 'lsblk'"
+        exit_with_error "Disk listing not supported on this OS"
         return 1
     end
 
-    set --local selection (disks | fzf $fzf_window_options --ansi --header-lines=1 --preview-window=right:60%:wrap \
+    disks | fzf $fzf_window_options --ansi --header-lines=1 --preview-window=right:60%:wrap \
         --preview 'lsblk -e 7 -o "NAME,SIZE,FSTYPE,MOUNTPOINT,FSUSE%" /dev/{1}'
-    )
 
     exit_with_repaint
 end
