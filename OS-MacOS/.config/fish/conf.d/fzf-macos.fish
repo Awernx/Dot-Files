@@ -14,19 +14,20 @@ status is-interactive; or exit 0
 bind alt-a appsf
 function appsf --description 'List applications and their bundle id'
     {
-        printf "%s\t%s\t%s\t%s\n" "APP" "PATH" "TYPE" "BUNDLE_ID"
-        scan_apps /Applications "System"
-        scan_apps /System/Applications "System"
-        scan_apps ~/Applications "User"
+        printf "%s\t%s\t%s\t%s\t%s\n" "APP" "PATH" "TYPE" "SCOPE" "BUNDLE_ID"
+        scan_apps /System/Applications "OEM" "System"
+        scan_apps /Applications "3rd-party" "System"
+        scan_apps ~/Applications "3rd-party" "User"
     } | column -t -s \t \
-    | fzf $fzf_common_options --header-lines=1 --prompt='Pick an application ➤ '
+    | fzf $fzf_common_options --header-lines=1 --prompt='Filter applications ➤ '
 
     exit_with_repaint
 end
 
 function scan_apps
-    set DIR $argv[1]
-    set TYPE $argv[2]
+    set DIR   $argv[1]
+    set TYPE  $argv[2]
+    set SCOPE $argv[3]
 
     if not test -d $DIR
         return
@@ -42,6 +43,6 @@ function scan_apps
             set BUNDLE_ID "N/A"
         end
 
-        printf "%s\t%s\t%s\t%s\n" "$NAME" "$APP" "$TYPE" "$BUNDLE_ID"
+        printf "%s\t%s\t%s\t%s\t%s\n" "$NAME" "$APP" "$TYPE" "$SCOPE" "$BUNDLE_ID"
     end
 end
