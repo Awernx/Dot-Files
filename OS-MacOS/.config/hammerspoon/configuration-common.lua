@@ -100,7 +100,7 @@ end
 -- Ctrl + Alt + Cmd + .....
 ----------------------------------------------------------------------------------
 hyperBind("B", "com.apple.Safari")
-hyperBind("D", "maccatalyst.com.mmm.post-it")
+hyperBind("C", "com.google.Chrome")
 hyperBind("I", "com.apple.MobileSMS")
 hyperBind("L", "com.apple.iCal")
 hyperBind("M", "com.apple.mail")

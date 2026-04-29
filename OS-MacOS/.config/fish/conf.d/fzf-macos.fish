@@ -14,7 +14,7 @@ status is-interactive; or exit 0
 bind alt-a appsf
 function appsf --description 'List applications and their bundle id'
     {
-        printf "%s\t%s\t%s\t%s\t%s\n" "APP" "PATH" "TYPE" "SCOPE" "BUNDLE_ID"
+        printf "%s\t%s\t%s\t%s\t%s\n" "APP" "PATH" "BUNDLE ID" "TYPE" "SCOPE"
         scan_apps /System/Applications "OEM" "System"
         scan_apps /Applications "3rd-party" "System"
         scan_apps ~/Applications "3rd-party" "User"
@@ -43,6 +43,6 @@ function scan_apps
             set BUNDLE_ID "N/A"
         end
 
-        printf "%s\t%s\t%s\t%s\t%s\n" "$NAME" "$APP" "$TYPE" "$SCOPE" "$BUNDLE_ID"
+        printf "%s\t%s\t%s\t%s\t%s\n" "$NAME" "$APP" "$BUNDLE_ID" "$TYPE" "$SCOPE"
     end
 end
