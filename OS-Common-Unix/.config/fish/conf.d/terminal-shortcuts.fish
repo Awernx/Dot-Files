@@ -51,7 +51,7 @@ alias da      'direnv allow '
 alias gs      'git status'
 alias pull    'git pull'
 alias gclean  'git fetch --prune'
-alias path    'string join \n $PATH'
+alias paths   'string join \n $PATH'
 
 if type -q bat
     alias cat 'bat --plain --paging=never'

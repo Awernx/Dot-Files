@@ -156,7 +156,7 @@ function loadPassword()
     return data and data["AccountPassword"] or ""
 end
 
-expandText("P", loadPassword())
+expandText("C", loadPassword())
 
 -- ********************************************************************************
 --                            Actions Section
