@@ -44,14 +44,12 @@ public_ip_address() {
     data=$(curl -s ipinfo.io)
 
     ip=$(echo "$data"      | jq -r '.ip')
-    fqn=$(echo "$data"     | jq -r '.hostname // "N/A"')
     city=$(echo "$data"    | jq -r '.city')
     region=$(echo "$data"  | jq -r '.region')
     country=$(echo "$data" | jq -r '.country')
 
     printf "\n${yellow}  🌐 Public: ${reset}"
     printf "\n         IP:${bryellow} $ip                    ${reset}"
-    printf "\n        FQN:${yellow} $fqn                     ${reset}"
     printf "\n   Location:${yellow} $city, $region, $country ${reset}"
     printf "\n"
 }

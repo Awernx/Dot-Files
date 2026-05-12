@@ -74,12 +74,10 @@ function ipa
     # Get Public IP Info
     set -l public_json (curl -s ipinfo.io)
     set -l pub_ip (echo $public_json | jq -r '.ip')
-    set -l pub_host (echo $public_json | jq -r '.hostname // "N/A"')
     set -l pub_loc (echo $public_json | jq -r '"\(.city), \(.region), \(.country)"')
 
     echo
     echo -ns (set_color -o bryellow) '  🌐 Public: ' (set_color normal) \n
     echo -ns                         '         IP: ' (set_color -o bryellow) $pub_ip   (set_color normal) \n
-    echo -ns                         '        FQN: ' (set_color bryellow)    $pub_host (set_color normal) \n
     echo -ns                         '   Location: ' (set_color bryellow)    $pub_loc  (set_color normal) \n
 end
