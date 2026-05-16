@@ -308,15 +308,24 @@ local genericBrowserIcon = hs.image.imageFromURL(
     "https://upload.wikimedia.org/wikipedia/commons/7/74/Breezeicons-apps-48-konqueror.svg")
 
 BrowserList = AwernxChooser:init("B", "Websites", genericBrowserIcon, nil, browserItemLauncher)
+BrowserList:addItem(AddSafariItem { text = "Chat GPT", subText = "https://chatgpt.com" })
 BrowserList:addItem(AddSafariItem { text = "Zoho Mail", subText = "https://mail.zoho.com/zm/#mail/folder/inbox" })
+BrowserList:addItem(AddSafariItem { text = "LIC", subText = "https://nriebiz.licindia.in" })
 BrowserList:addItem(AddSafariItem { text = "HDFC Netbanking", subText = "https://now.hdfc.bank.in" })
 BrowserList:addItem(AddSafariItem { text = "IOB Netbanking", subText = "https://ibanking.iob.bank.in/obmb/?bank_id=IOB" })
+BrowserList:addItem(AddSafariItem { text = "SBI State Bank of India", subText = "https://retail.sbi.bank.in/retail/login.htm" })
 
-BrowserList:addItem(AddChromeItem { text = "Google Drive", subText = "https://drive.google.com/drive/u/1/" })
-BrowserList:addItem(AddChromeItem { text = "NRO -- 0811", subText = "https://docs.google.com/spreadsheets/d/1oXGTnOp7kcpqkrMPKGCU0_NsxFNBcwo3e5tnt1CizfI/edit?gid=1902305141#gid=1902305141" })
-BrowserList:addItem(AddChromeItem { text = "NRE -- 0520", subText = "https://docs.google.com/spreadsheets/d/1SWFd5rvd-FgfmvpPfHuaKDGvWAbF4FmfG9Padv6CfAE/edit?gid=1020341916#gid=1020341916" })
-BrowserList:addItem(AddChromeItem { text = "My Investments", subText = "https://docs.google.com/spreadsheets/d/19U2-7TLjkuT_LrZTdE9VlHu9DR2BVpfS4ZfDTrmQTso/edit?gid=966623871#gid=966623871" })
-BrowserList:addItem(AddChromeItem { text = "Parents' Investments", subText = "https://docs.google.com/spreadsheets/d/1ro9Wj9bH-nyM0brJf92UpiskrtKHkZwgJNgB8FgoT9s/edit?gid=784724513#gid=784724513" })
+BrowserList:addItem(AddChromeItem { text = "Gmail", subText = "https://mail.google.com/mail/u/0/#inbox" })
+BrowserList:addItem(AddChromeItem { text = "Gemini", subText = "https://gemini.google.com/app" })
+BrowserList:addItem(AddChromeItem { text = "Google Meet", subText = "https://meet.google.com" })
+BrowserList:addItem(AddChromeItem { text = "Google Voice", subText = "https://voice.google.com/u/0/messages" })
+BrowserList:addItem(AddChromeItem { text = "Google Drive", subText = "https://drive.google.com/drive/u/0/" })
+BrowserList:addItem(AddChromeItem { text = "NRO -- 0811", subText = "https://docs.google.com/spreadsheets/d/1oXGTnOp7kcpqkrMPKGCU0_NsxFNBcwo3e5tnt1CizfI" })
+BrowserList:addItem(AddChromeItem { text = "NRE -- 0520", subText = "https://docs.google.com/spreadsheets/d/1SWFd5rvd-FgfmvpPfHuaKDGvWAbF4FmfG9Padv6CfAE" })
+BrowserList:addItem(AddChromeItem { text = "My Investments", subText = "https://docs.google.com/spreadsheets/d/19U2-7TLjkuT_LrZTdE9VlHu9DR2BVpfS4ZfDTrmQTso" })
+BrowserList:addItem(AddChromeItem { text = "Parents - Current Investments", subText = "https://docs.google.com/spreadsheets/d/1ro9Wj9bH-nyM0brJf92UpiskrtKHkZwgJNgB8FgoT9s" })
+BrowserList:addItem(AddChromeItem { text = "2026 - Parents - Tax Spreadsheet", subText = "https://docs.google.com/spreadsheets/d/1M7uAbCeNFRBCz5Z09ngIQ5TnrdgDQssOsw9KZtP3sJE" })
+BrowserList:addItem(AddChromeItem { text = "2025 - Parents - Tax Spreadsheet", subText = "https://docs.google.com/spreadsheets/d/1W7NBbBaQLfEPGUM5T7YhqjLqz-YmMdhpQhrYbn9zPUY" })
 
 ----------------------------------------------------------------------------------
 -- Chooser for ZED Workspaces
@@ -340,10 +349,11 @@ end
 
 local vsWorkspaceLauncher = function(choice)
     if not choice then return end
-    hs.execute('open -a Zed ' .. choice["subText"])
+    hs.execute('open -a Zed ' .. choice.subText)
 end
 
-local vscodeImage = hs.image.imageFromURL("https://zed.dev/_next/static/media/stable-app-logo.9b5f959f.png")
+local vscodeImage = hs.image.imageFromURL(
+    "https://framerusercontent.com/images/OXB5j8ebQcVXhZ5zICr4TB0N0.webp?width=400&height=400")
 AwernxChooser:init("V", "Zed Workspaces", vscodeImage, workspaceItemLoader, vsWorkspaceLauncher)
 
 ----------------------------------------------------------------------------------
