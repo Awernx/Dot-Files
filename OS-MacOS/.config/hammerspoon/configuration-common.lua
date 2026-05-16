@@ -54,7 +54,7 @@ spoon.WindowHalfsAndThirds:bindHotkeys(spoon.WindowHalfsAndThirds.defaultHotkeys
 
 -- Turn Off NATURAL scrolling for 🖱️ Mice, and not Trackpads!
 ----------------------------------------------------------------------------------
-reverse_mouse_scroll = hs.eventtap.new({ hs.eventtap.event.types.scrollWheel },
+hs.eventtap.new({ hs.eventtap.event.types.scrollWheel },
     function(event)
         local isTrackpad = event:getProperty(hs.eventtap.event.properties.scrollWheelEventIsContinuous)
         if isTrackpad == 1 then
@@ -80,7 +80,7 @@ end)
 --                       Application Launcher Section
 -- ********************************************************************************
 
-function hyperBind(shortcutKey, applicationName)
+local function hyperBind(shortcutKey, applicationName)
     hs.hotkey.bind(hyper, shortcutKey,
         function()
             hs.application.open(applicationName, 1, true)
@@ -88,7 +88,7 @@ function hyperBind(shortcutKey, applicationName)
     )
 end
 
-function hyperBindFile(shortcutKey, fileLocation)
+local function hyperBindFile(shortcutKey, fileLocation)
     hs.hotkey.bind(hyper, shortcutKey,
         function()
             hs.execute("open " .. fileLocation)
@@ -117,7 +117,7 @@ hyperBindFile("U", "~/MEGA/Personal\\ Backups/Chander/Sillarai\\ LLC/Sillarai.kd
 --                               Finders Section
 -- ********************************************************************************
 
-function bindDirectory(shortcutKey, directory)
+local function bindDirectory(shortcutKey, directory)
     hs.hotkey.bind(finder, shortcutKey,
         function()
             hs.execute('open -a Finder ' .. directory)
@@ -140,7 +140,7 @@ bindDirectory("S", "/Volumes/Svalbard")
 -- ********************************************************************************
 --                         Text Expanders Section
 -- ********************************************************************************
-function expandText(shortcutKey, text)
+local function expandText(shortcutKey, text)
     hs.hotkey.bind(expander, shortcutKey,
         function()
             hs.eventtap.keyStrokes(text)
@@ -151,7 +151,7 @@ end
 -- Expansion shortcuts
 -- Shift + Cmd + .......
 ----------------------------------------------------------------------------------
-function loadPassword()
+local function loadPassword()
     local data = hs.plist.read(os.getenv("HOME") .. "/.local/state/awernx/.ragasiyam")
     return data and data["AccountPassword"] or ""
 end
@@ -227,8 +227,8 @@ hs.hotkey.bind(super, ".",
 -- ********************************************************************************
 --                                Choosers Section
 -- ********************************************************************************
-t = require("hs.webview.toolbar")
-globalIncrement = 1
+local t = require("hs.webview.toolbar")
+local globalIncrement = 1
 
 AwernxChooser = { hotkey = "", title = "", icon = nil, launcherCallback = nil }
 AwernxChooser.__index = AwernxChooser
@@ -255,9 +255,8 @@ function AwernxChooser:init(hotkey, title, icon, prepareCallback, launcherCallba
 end
 
 function AwernxChooser:addItem(item)
-    if not item.icon then item.icon = self.icon end
+    if not item.image then item.image = self.icon end
 
-    item = { ["text"] = item.title, ["subText"] = item.subText, ["image"] = item.icon }
     table.insert(self.items, item)
     self.chooser:choices(self.items)
 end
@@ -270,23 +269,54 @@ end
 -- Chooser for Browser URLs
 -- Ctrl + Alt + B
 ----------------------------------------------------------------------------------
-local browserimage = hs.image.imageFromURL(
-    "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Safari_2020_logo.svg/1920px-Safari_2020_logo.svg.png")
+local safariBrowserimage = hs.image.imageFromURL(
+    "https://upload.wikimedia.org/wikipedia/en/7/71/Safari_Liquid_Glass_icon.png")
+
+local chromeBrowserimage = hs.image.imageFromURL(
+    "https://upload.wikimedia.org/wikipedia/commons/e/e1/Google_Chrome_icon_%28February_2022%29.svg")
+
+local safariBrowser = "safari"
+local chromeBrowser = "chrome"
+
+AddSafariItem = function(item)
+    item.browser = safariBrowser
+    item.image = safariBrowserimage
+    return item
+end
+
+AddChromeItem = function(item)
+    item.browser = chromeBrowser
+    item.image = chromeBrowserimage
+    return item
+end
 
 local browserItemLauncher = function(choice)
     if not choice then return end
-    hs.urlevent.openURL(choice["subText"])
+
+    if choice.browser == chromeBrowser then
+        choice.profile = choice.profile or "Default"
+        hs.task.new("/Applications/Google Chrome.app/Contents/MacOS/Google Chrome", nil, {
+            "--profile-directory=" .. choice.profile,
+            choice.subText
+        }):start()
+    else
+        hs.urlevent.openURLWithBundle(choice.subText, "com.apple.Safari")
+    end
 end
 
-browserList = AwernxChooser:init("B", "Websites", browserimage, nil, browserItemLauncher)
-browserList:addItem { title = "Zoho Mail", subText = "https://mail.zoho.com/zm/#mail/folder/inbox" }
-browserList:addItem { title = "AWS S3", subText = "https://s3.console.aws.amazon.com/s3/home?region=us-east-2#" }
-browserList:addItem { title = "AWS Cloud Watch", subText = "https://us-east-2.console.aws.amazon.com/cloudwatch/home?region=us-east-2#logsV2:log-groups" }
-browserList:addItem { title = "HDFC Netbanking", subText = "https://netbanking.hdfcbank.com/netbanking/" }
-browserList:addItem { title = "NRO -- 0811", subText = "https://docs.google.com/spreadsheets/d/1oXGTnOp7kcpqkrMPKGCU0_NsxFNBcwo3e5tnt1CizfI/edit?gid=1902305141#gid=1902305141" }
-browserList:addItem { title = "NRE -- 0520", subText = "https://docs.google.com/spreadsheets/d/1SWFd5rvd-FgfmvpPfHuaKDGvWAbF4FmfG9Padv6CfAE/edit?gid=1020341916#gid=1020341916" }
-browserList:addItem { title = "My Investments", subText = "https://docs.google.com/spreadsheets/d/19U2-7TLjkuT_LrZTdE9VlHu9DR2BVpfS4ZfDTrmQTso/edit?gid=966623871#gid=966623871" }
-browserList:addItem { title = "Parents' Investments", subText = "https://docs.google.com/spreadsheets/d/1ro9Wj9bH-nyM0brJf92UpiskrtKHkZwgJNgB8FgoT9s/edit?gid=784724513#gid=784724513" }
+local genericBrowserIcon = hs.image.imageFromURL(
+    "https://upload.wikimedia.org/wikipedia/commons/7/74/Breezeicons-apps-48-konqueror.svg")
+
+BrowserList = AwernxChooser:init("B", "Websites", genericBrowserIcon, nil, browserItemLauncher)
+BrowserList:addItem(AddSafariItem { text = "Zoho Mail", subText = "https://mail.zoho.com/zm/#mail/folder/inbox" })
+BrowserList:addItem(AddSafariItem { text = "HDFC Netbanking", subText = "https://now.hdfc.bank.in" })
+BrowserList:addItem(AddSafariItem { text = "IOB Netbanking", subText = "https://ibanking.iob.bank.in/obmb/?bank_id=IOB" })
+
+BrowserList:addItem(AddChromeItem { text = "Google Drive", subText = "https://drive.google.com/drive/u/1/" })
+BrowserList:addItem(AddChromeItem { text = "NRO -- 0811", subText = "https://docs.google.com/spreadsheets/d/1oXGTnOp7kcpqkrMPKGCU0_NsxFNBcwo3e5tnt1CizfI/edit?gid=1902305141#gid=1902305141" })
+BrowserList:addItem(AddChromeItem { text = "NRE -- 0520", subText = "https://docs.google.com/spreadsheets/d/1SWFd5rvd-FgfmvpPfHuaKDGvWAbF4FmfG9Padv6CfAE/edit?gid=1020341916#gid=1020341916" })
+BrowserList:addItem(AddChromeItem { text = "My Investments", subText = "https://docs.google.com/spreadsheets/d/19U2-7TLjkuT_LrZTdE9VlHu9DR2BVpfS4ZfDTrmQTso/edit?gid=966623871#gid=966623871" })
+BrowserList:addItem(AddChromeItem { text = "Parents' Investments", subText = "https://docs.google.com/spreadsheets/d/1ro9Wj9bH-nyM0brJf92UpiskrtKHkZwgJNgB8FgoT9s/edit?gid=784724513#gid=784724513" })
 
 ----------------------------------------------------------------------------------
 -- Chooser for ZED Workspaces
@@ -302,7 +332,7 @@ local workspaceItemLoader = function(chooser)
             local fullPath = dirPath .. "/" .. file
             local attr = hs.fs.attributes(fullPath)
             if attr and attr.mode == "directory" then
-                chooser:addItem { title = file, subText = fullPath }
+                chooser:addItem { text = file, subText = fullPath }
             end
         end
     end
@@ -325,7 +355,7 @@ local githubImage = hs.image.imageFromURL("https://images.icon-icons.com/3685/PN
 local githubRepoLauncher = function(choice)
     if not choice then return end
 
-    local cmd = string.format("git -C %q remote get-url origin 2>/dev/null", choice["subText"])
+    local cmd = string.format("git -C %q remote get-url origin 2>/dev/null", choice.subText)
     local output, status = hs.execute(cmd, true)
 
     local remoteUrl
@@ -335,7 +365,7 @@ local githubRepoLauncher = function(choice)
             :gsub("^git@github.com:", "https://github.com/") -- replace SSH prefix
             :gsub("%.git$", "")                              -- strip trailing .git
 
-        hs.urlevent.openURL(remoteUrl)
+        hs.urlevent.openURLWithBundle(remoteUrl, "com.apple.Safari")
     end
 end
 
@@ -423,24 +453,24 @@ hs.hotkey.bind(informer, "I",
 
 local lastKnownInterfaceName = ""
 
-function displayNetworkBanner(imageUrl, message)
+local function displayNetworkBanner(imageUrl, message)
     local image = hs.image.imageFromURL(imageUrl)
     image = image:size({ w = 250, h = 250 })
     hs.alert.showWithImage("", image)
     hs.alert(message)
 end
 
-function displayEthernetBanner()
+local function displayEthernetBanner()
     displayNetworkBanner("https://cdn-icons-png.flaticon.com/512/9118/9118846.png", "🟢 Connected via Ethernet")
 end
 
-function displayWiFiBanner(ssid)
+local function displayWiFiBanner(ssid)
     displayNetworkBanner(
         "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/WiFi_Logo.svg/1280px-WiFi_Logo.svg.png",
         "🟢 Connected to " .. hs.wifi.currentNetwork())
 end
 
-function displayCurrentInterfaceName(forceDisplay)
+local function displayCurrentInterfaceName(forceDisplay)
     forceDisplay = forceDisplay or false
     local currentInterface = hs.network.interfaceName()
 
@@ -472,7 +502,7 @@ end
 
 -- Watch 'Network Service' for network configuration changes
 ----------------------------------------------------------------------------------
-networkConfiguration = hs.network.configuration.open()
+local networkConfiguration = hs.network.configuration.open()
 networkConfiguration:monitorKeys("State:/Network/Service/.*/IPv4", true)
 networkConfiguration:setCallback(
     function(store, keys)
