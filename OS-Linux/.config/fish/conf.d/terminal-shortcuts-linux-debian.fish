@@ -17,37 +17,36 @@ abbr install  'apt update && apt --yes install'
 abbr purge    'apt --yes purge'
 
 function upgrade
-  echo "Upgrading 'Apt' packages"
-  apt update
-  apt --yes full-upgrade
+    sudo -v
 
-  if type -q flatpak
-    echo
-    echo "Upgrading 'Flatpak' packages"
-    flatpak update
-  end
+    echo "Upgrading 'Apt' packages"
+    apt update
+    apt --yes full-upgrade
 
-  if type -q brew
-    echo
-    echo "Upgrading 'Homebrew' packages"
-    brew update
-    brew upgrade --formula
-    brew upgrade --cask --greedy
-  end
+    echo "Cleaning 'Apt' packages"
+    apt --yes autoremove
+    apt --yes autoclean
 
-end
+    if type -q flatpak
+        echo
+        echo "Upgrading 'Flatpak' packages"
+        flatpak update
 
-function clean
-  echo "Cleaning 'Apt' packages"
-  apt --yes autoremove
-  apt --yes clean
+        echo "Cleaning 'Flatpak' packages"
+        flatpak uninstall --unused -y
+    end
 
-  if type -q brew
-    echo
-    echo "Cleaning 'Homebrew' packages"
-    brew doctor
-    brew autoremove
-    brew cleanup --prune=all
-  end
+    if type -q brew
+        echo
+        echo "Upgrading 'Homebrew' packages"
+        brew update
+        brew upgrade --formula
+        brew upgrade --cask --greedy
 
+        echo
+        echo "Cleaning 'Homebrew' packages"
+        brew doctor
+        brew autoremove
+        brew cleanup --prune=all
+    end
 end
