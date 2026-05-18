@@ -13,5 +13,6 @@ alias shutdown='sudo /sbin/shutdown -h now'
 alias reboot='sudo /sbin/reboot'
 
 alias apt='sudo apt'
-alias upgrade='apt update && apt --yes full-upgrade'
-alias clean='apt --yes autoremove && apt --yes autoclean'
+alias upgrade='apt update && apt --yes full-upgrade && apt --yes autoremove && apt --yes autoclean'
+alias install='apt update && apt --yes install'
+alias purge='apt --yes purge'
