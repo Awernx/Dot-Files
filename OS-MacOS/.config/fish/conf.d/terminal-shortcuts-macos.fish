@@ -26,9 +26,7 @@ function upgrade
     brew update
     brew upgrade --formula
     brew upgrade --cask --greedy
-end
 
-function clean
     brew doctor
     brew autoremove
     brew cleanup --prune=all

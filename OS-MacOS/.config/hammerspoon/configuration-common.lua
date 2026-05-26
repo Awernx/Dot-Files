@@ -314,6 +314,8 @@ BrowserList:addItem(AddSafariItem { text = "LIC", subText = "https://nriebiz.lic
 BrowserList:addItem(AddSafariItem { text = "HDFC Netbanking", subText = "https://now.hdfc.bank.in" })
 BrowserList:addItem(AddSafariItem { text = "IOB Netbanking", subText = "https://ibanking.iob.bank.in/obmb/?bank_id=IOB" })
 BrowserList:addItem(AddSafariItem { text = "SBI State Bank of India", subText = "https://retail.sbi.bank.in/retail/login.htm" })
+BrowserList:addItem(AddSafariItem { text = "RoseRock - Wealth Accounts", subText = "https://wealth.emaplan.com/ema/CS/Home" })
+BrowserList:addItem(AddSafariItem { text = "RoseRock - Wealth Performance", subText = "https://roserock.portal.tamaracinc.com/ClientDashboard.aspx" })
 
 BrowserList:addItem(AddChromeItem { text = "Gmail", subText = "https://mail.google.com/mail/u/0/#inbox" })
 BrowserList:addItem(AddChromeItem { text = "Gemini", subText = "https://gemini.google.com/app" })
