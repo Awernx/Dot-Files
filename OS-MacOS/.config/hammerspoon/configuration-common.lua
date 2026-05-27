@@ -314,8 +314,11 @@ BrowserList:addItem(AddSafariItem { text = "LIC", subText = "https://nriebiz.lic
 BrowserList:addItem(AddSafariItem { text = "HDFC Netbanking", subText = "https://now.hdfc.bank.in" })
 BrowserList:addItem(AddSafariItem { text = "IOB Netbanking", subText = "https://ibanking.iob.bank.in/obmb/?bank_id=IOB" })
 BrowserList:addItem(AddSafariItem { text = "SBI State Bank of India", subText = "https://retail.sbi.bank.in/retail/login.htm" })
+BrowserList:addItem(AddSafariItem { text = "Schwab", subText = "https://client.schwab.com/app/accounts/positions/#/" })
 BrowserList:addItem(AddSafariItem { text = "RoseRock - Wealth Accounts", subText = "https://wealth.emaplan.com/ema/CS/Home" })
 BrowserList:addItem(AddSafariItem { text = "RoseRock - Wealth Performance", subText = "https://roserock.portal.tamaracinc.com/ClientDashboard.aspx" })
+BrowserList:addItem(AddSafariItem { text = "TN Power Finance - TNPFC", subText = "https://www.tnpowerfinance.com/tnpfc-web" })
+BrowserList:addItem(AddSafariItem { text = "Shriram Finance", subText = "https://secure.shriramfinance.in" })
 
 BrowserList:addItem(AddChromeItem { text = "Gmail", subText = "https://mail.google.com/mail/u/0/#inbox" })
 BrowserList:addItem(AddChromeItem { text = "Gemini", subText = "https://gemini.google.com/app" })
@@ -326,8 +329,8 @@ BrowserList:addItem(AddChromeItem { text = "NRO -- 0811", subText = "https://doc
 BrowserList:addItem(AddChromeItem { text = "NRE -- 0520", subText = "https://docs.google.com/spreadsheets/d/1SWFd5rvd-FgfmvpPfHuaKDGvWAbF4FmfG9Padv6CfAE" })
 BrowserList:addItem(AddChromeItem { text = "My Investments", subText = "https://docs.google.com/spreadsheets/d/19U2-7TLjkuT_LrZTdE9VlHu9DR2BVpfS4ZfDTrmQTso" })
 BrowserList:addItem(AddChromeItem { text = "Parents - Current Investments", subText = "https://docs.google.com/spreadsheets/d/1ro9Wj9bH-nyM0brJf92UpiskrtKHkZwgJNgB8FgoT9s" })
-BrowserList:addItem(AddChromeItem { text = "2026 - Parents - Tax Spreadsheet", subText = "https://docs.google.com/spreadsheets/d/1M7uAbCeNFRBCz5Z09ngIQ5TnrdgDQssOsw9KZtP3sJE" })
-BrowserList:addItem(AddChromeItem { text = "2025 - Parents - Tax Spreadsheet", subText = "https://docs.google.com/spreadsheets/d/1W7NBbBaQLfEPGUM5T7YhqjLqz-YmMdhpQhrYbn9zPUY" })
+BrowserList:addItem(AddChromeItem { text = "Parents - 2026 Tax Spreadsheet", subText = "https://docs.google.com/spreadsheets/d/1M7uAbCeNFRBCz5Z09ngIQ5TnrdgDQssOsw9KZtP3sJE" })
+BrowserList:addItem(AddChromeItem { text = "Parents - 2025 Tax Spreadsheet", subText = "https://docs.google.com/spreadsheets/d/1W7NBbBaQLfEPGUM5T7YhqjLqz-YmMdhpQhrYbn9zPUY" })
 
 ----------------------------------------------------------------------------------
 -- Chooser for ZED Workspaces
