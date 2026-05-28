@@ -33,6 +33,7 @@ expander = { "shift", "cmd" }       -- For expanding / typing in text
 hs.location.get()
 
 hs.loadSpoon("SpoonInstall")
+
 spoon.SpoonInstall.use_syncinstall = true
 Install = spoon.SpoonInstall
 
@@ -187,7 +188,7 @@ Install:andUse("PasswordGenerator", {
 hs.hotkey.bind(super, "P",
     function()
         password = spoon.PasswordGenerator:copyPassword()
-        local button = hs.dialog.blockAlert(password, "", "", "")
+        hs.dialog.blockAlert(password, "", "", "")
     end
 )
 
@@ -199,27 +200,38 @@ hs.hotkey.bind(super, "R",
     end
 )
 
+-- Open sound input/output settings
+-- Ctrl + Alt + R
+hs.hotkey.bind(super, "A",
+    function()
+        hs.execute('open x-apple.systempreferences:com.apple.preference.sound')
+    end
+)
+
 -- Mute Microphone and display a band on screen
 -- Ctrl + Alt + .
+local muteMenuBarItem = nil
+
 hs.hotkey.bind(super, ".",
     function()
         mic = hs.audiodevice.defaultInputDevice()
         if (mic:inputMuted()) then
             mic:setMuted(false)
-            if micMuteStatusLine then
-                micMuteStatusLine:delete()
+
+            if muteMenuBarItem then
+                muteMenuBarItem:delete()
+                muteMenuBarItem = nil
             end
         else
             mic:setMuted(true)
 
-            micMuteStatusLineColor = { ["red"] = 1, ["blue"] = 0, ["green"] = 0, ["alpha"] = 1 }
-            max = hs.screen.primaryScreen():fullFrame()
-            micMuteStatusLine = hs.drawing.rectangle(hs.geometry.rect(max.x, max.y, max.w, max.h))
-            micMuteStatusLine:setStrokeColor(micMuteStatusLineColor)
-            micMuteStatusLine:setFillColor(micMuteStatusLineColor)
-            micMuteStatusLine:setFill(false)
-            micMuteStatusLine:setStrokeWidth(20)
-            micMuteStatusLine:show()
+            if not muteMenuBarItem then
+                muteMenuBarItem = hs.menubar.new()
+                if muteMenuBarItem then
+                    muteMenuBarItem:autosaveName("hammerspoon_mic_mute_indicator")
+                    muteMenuBarItem:setTitle("🛑 Muted")
+                end
+            end
         end
     end
 )
@@ -398,7 +410,7 @@ hs.hotkey.bind(informer, "A",
         local output = hs.audiodevice.defaultOutputDevice()
         local inputName = input and input:name() or "None"
         local outputName = output and output:name() or "None"
-        hs.alert.show("🎤 Input: " .. inputName .. "\n\n🔊 Output: " .. outputName)
+        hs.alert.show("🎤 " .. inputName .. "\n\n🔊 " .. outputName)
     end
 )
 
