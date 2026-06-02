@@ -97,6 +97,8 @@ this() {
     printf "Architecture: ${bold}$(uname -m)${reset}\n"
     printf "      Kernel: ${bold}$(uname -sr)${reset}\n"
     printf "       Shell: ${bold}BASH $BASH_VERSION${reset}\n"
+    [ -n "$XDG_SESSION_TYPE" ] && printf "     Session: ${bold}$XDG_SESSION_TYPE${reset}\n"
+    [ -n "$XDG_CURRENT_DESKTOP" ] && printf "     Desktop: ${bold}$XDG_CURRENT_DESKTOP${reset}\n"
 }
 
 terminal_colors() {
