@@ -31,8 +31,7 @@ abbr wol   'sudo ethtool eno1 | grep Wake' # Understand output https://askubuntu
 #------------------------------------------------------------------------------------------
 # Aliases
 #------------------------------------------------------------------------------------------
-alias tinn-vol  'wpctl set-volume @DEFAULT_AUDIO_SINK@ 1.0'
-alias tinn-log  'less +F /var/log/tintinnabulator/runtime.log | fzf $fzf_common_options --reverse --tac'
+alias tinn-vol  'wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.6'
 
 #------------------------------------------------------------------------------------------
 # Functions
