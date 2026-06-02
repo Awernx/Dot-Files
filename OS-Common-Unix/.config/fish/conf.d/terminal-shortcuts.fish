@@ -113,6 +113,8 @@ function this
   echo -ns 'Architecture: ' (set_color -o) (uname -m) (set_color normal) \n
   echo -ns '      Kernel: ' (set_color -o) (uname -sr) (set_color normal) \n
   echo -ns '       Shell: ' (set_color -o) '🐟 Fish ' $FISH_VERSION (set_color normal) \n
+  test -n "$XDG_SESSION_TYPE"; and echo -ns '     Session: ' (set_color -o) $XDG_SESSION_TYPE (set_color normal) \n
+  test -n "$XDG_CURRENT_DESKTOP"; and echo -ns '     Desktop: ' (set_color -o) $XDG_CURRENT_DESKTOP (set_color normal) \n
 end
 
 function fnd
