@@ -24,8 +24,7 @@ abbr clear-network-cache 'sudo dscacheutil -flushcache; sudo killall -HUP mDNSRe
 
 function upgrade
     brew update
-    brew upgrade --formula
-    brew upgrade --cask --greedy
+    brew upgrade --greedy
 
     brew doctor
     brew autoremove
