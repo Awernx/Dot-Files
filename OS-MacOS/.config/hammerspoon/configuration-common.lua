@@ -307,11 +307,13 @@ local browserItemLauncher = function(choice)
     if not choice then return end
 
     if choice.browser == chromeBrowser then
-        choice.profile = choice.profile or "Default"
-        hs.task.new("/Applications/Google Chrome.app/Contents/MacOS/Google Chrome", nil, {
-            "--profile-directory=" .. choice.profile,
-            choice.subText
-        }):start()
+        hs.urlevent.openURLWithBundle(choice.subText, "com.google.Chrome")
+        -- Ignore profile for now
+        -- choice.profile = choice.profile or "Default"
+        -- hs.task.new("/Applications/Google Chrome.app/Contents/MacOS/Google Chrome", nil, {
+        --     "--profile-directory=" .. choice.profile,
+        --     choice.subText
+        -- }):start()
     else
         hs.urlevent.openURLWithBundle(choice.subText, "com.apple.Safari")
     end
@@ -338,8 +340,9 @@ BrowserList:addItem(AddChromeItem { text = "Gemini", subText = "https://gemini.g
 BrowserList:addItem(AddChromeItem { text = "Google Meet", subText = "https://meet.google.com" })
 BrowserList:addItem(AddChromeItem { text = "Google Voice", subText = "https://voice.google.com/u/0/messages" })
 BrowserList:addItem(AddChromeItem { text = "Google Drive", subText = "https://drive.google.com/drive/u/0/" })
-BrowserList:addItem(AddChromeItem { text = "NRO -- 0811", subText = "https://docs.google.com/spreadsheets/d/1oXGTnOp7kcpqkrMPKGCU0_NsxFNBcwo3e5tnt1CizfI" })
-BrowserList:addItem(AddChromeItem { text = "NRE -- 0520", subText = "https://docs.google.com/spreadsheets/d/1SWFd5rvd-FgfmvpPfHuaKDGvWAbF4FmfG9Padv6CfAE" })
+BrowserList:addItem(AddChromeItem { text = "OLD - NRO - 0811", subText = "https://docs.google.com/spreadsheets/d/1oXGTnOp7kcpqkrMPKGCU0_NsxFNBcwo3e5tnt1CizfI" })
+BrowserList:addItem(AddChromeItem { text = "OLD - NRE - 0520", subText = "https://docs.google.com/spreadsheets/d/1SWFd5rvd-FgfmvpPfHuaKDGvWAbF4FmfG9Padv6CfAE" })
+BrowserList:addItem(AddChromeItem { text = "My 2026 Financial Transactions", subText = "https://docs.google.com/spreadsheets/d/10_kTN5cXtymDRRqbiRyQflqMzJxP8CsGB9lP1NCxqQ4" })
 BrowserList:addItem(AddChromeItem { text = "My Investments", subText = "https://docs.google.com/spreadsheets/d/19U2-7TLjkuT_LrZTdE9VlHu9DR2BVpfS4ZfDTrmQTso" })
 BrowserList:addItem(AddChromeItem { text = "Parents - Current Investments", subText = "https://docs.google.com/spreadsheets/d/1ro9Wj9bH-nyM0brJf92UpiskrtKHkZwgJNgB8FgoT9s" })
 BrowserList:addItem(AddChromeItem { text = "Parents - 2026 Tax Spreadsheet", subText = "https://docs.google.com/spreadsheets/d/1M7uAbCeNFRBCz5Z09ngIQ5TnrdgDQssOsw9KZtP3sJE" })
