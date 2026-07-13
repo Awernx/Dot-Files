@@ -3,25 +3,25 @@
 {
     "agent_servers": {
         "claude-acp": {
-            "type": "registry"
-        }
+            "type": "registry",
+        },
     },
     "project_panel": {
-        "dock": "left"
+        "dock": "left",
     },
     "outline_panel": {
-        "dock": "left"
+        "dock": "left",
     },
     "collaboration_panel": {
-        "dock": "left"
+        "dock": "left",
     },
     "agent": {
         "dock": "right",
         "favorite_models": [],
-        "model_parameters": []
+        "model_parameters": [],
     },
     "git_panel": {
-        "dock": "left"
+        "dock": "left",
     },
     "session": {
         "trust_all_worktrees": true,
@@ -32,6 +32,7 @@
         "light": "Colored Zed Icons Theme Dark",
         "dark": "Colored Zed Icons Theme Dark",
     },
+    "format_on_save": "off",
     "ui_font_size": 15.0,
     "buffer_font_size": 14.0,
     "theme": {

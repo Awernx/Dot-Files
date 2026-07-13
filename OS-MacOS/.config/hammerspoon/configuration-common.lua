@@ -32,6 +32,8 @@ expander = { "shift", "cmd" }       -- For expanding / typing in text
 ----------------------------------------------------------------------------------
 hs.location.get()
 
+require("sticky-notes")
+
 hs.loadSpoon("SpoonInstall")
 
 spoon.SpoonInstall.use_syncinstall = true
@@ -89,6 +91,10 @@ local function hyperBind(shortcutKey, applicationName)
     )
 end
 
+local function hyperBindFunction(shortcutKey, functionName)
+    hs.hotkey.bind(hyper, shortcutKey, functionName)
+end
+
 local function hyperBindFile(shortcutKey, fileLocation)
     hs.hotkey.bind(hyper, shortcutKey,
         function()
@@ -108,8 +114,8 @@ hyperBind("M", "com.apple.mail")
 hyperBind("N", "com.apple.Notes")
 hyperBind("O", "md.obsidian")
 hyperBind("P", "com.apple.Passwords")
+hyperBindFunction("Q", StickyNote)
 hyperBind("R", "com.apple.Reminders")
-hyperBind("S", "com.microsoft.teams2")
 hyperBind("T", "com.googlecode.iterm2")
 hyperBind("V", "dev.zed.Zed")
 hyperBindFile("Y", "~/MEGA/Kitchen\\ Sink/Srivatsas.kdbx")
@@ -179,7 +185,7 @@ Install:andUse("PasswordGenerator", {
         password_style = 'xkcd',
         word_count = 3,
         word_separators = '_',
-        word_uppercase = 3,
+        word_uppercase = 2,
         word_leet = 3
     }
 })
@@ -188,8 +194,8 @@ Install:andUse("PasswordGenerator", {
 -- Ctrl + Alt + P
 hs.hotkey.bind(super, "P",
     function()
-        password = spoon.PasswordGenerator:copyPassword()
-        hs.dialog.blockAlert(password, "", "", "")
+        spoon.PasswordGenerator:copyPassword()
+        StickyNoteWithClipboardContents(true)
     end
 )
 
