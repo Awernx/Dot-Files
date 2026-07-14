@@ -6,13 +6,14 @@
 -- Function to open a sticky note with an (optional) random color
 ----------------------------------------------------------------------------------
 function StickyNote(disableRandomColor)
-    hs.application.launchOrFocus("Stickies")
+    local bid = "com.apple.Stickies"
+    hs.application.launchOrFocusByBundleID(bid)
     hs.timer.usleep(200000)
 
-    local stickies = hs.application.find("Stickies")
+    local stickies = hs.application.get(bid)
     if not stickies then return end
 
-    stickies:selectMenuItem({ "File", "New Note" })
+    hs.eventtap.keyStroke({ "cmd" }, "n")
 
     if disableRandomColor == nil or not disableRandomColor then
         -- Add a tiny pause for the window to settle, then type
@@ -33,7 +34,7 @@ function StickyNoteWithClipboardContents(disableRandomColor)
 
     if stickies then
         hs.timer.usleep(50000)
-        hs.eventtap.keyStroke({"cmd"}, "v")
+        hs.eventtap.keyStroke({ "cmd" }, "v")
         hs.timer.usleep(50000)
         hs.eventtap.keyStroke({}, "return")
     end

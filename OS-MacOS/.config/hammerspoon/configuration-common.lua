@@ -83,7 +83,7 @@ end)
 --                       Application Launcher Section
 -- ********************************************************************************
 
-local function hyperBind(shortcutKey, applicationName)
+function HyperBind(shortcutKey, applicationName)
     hs.hotkey.bind(hyper, shortcutKey,
         function()
             hs.application.open(applicationName, 1, true)
@@ -91,11 +91,11 @@ local function hyperBind(shortcutKey, applicationName)
     )
 end
 
-local function hyperBindFunction(shortcutKey, functionName)
+function HyperBindFunction(shortcutKey, functionName)
     hs.hotkey.bind(hyper, shortcutKey, functionName)
 end
 
-local function hyperBindFile(shortcutKey, fileLocation)
+function HyperBindFile(shortcutKey, fileLocation)
     hs.hotkey.bind(hyper, shortcutKey,
         function()
             hs.execute("open " .. fileLocation)
@@ -106,20 +106,20 @@ end
 -- Application launchers
 -- Ctrl + Alt + Cmd + .....
 ----------------------------------------------------------------------------------
-hyperBind("B", "com.apple.Safari")
-hyperBind("C", "com.google.Chrome")
-hyperBind("I", "com.apple.MobileSMS")
-hyperBind("L", "com.apple.iCal")
-hyperBind("M", "com.apple.mail")
-hyperBind("N", "com.apple.Notes")
-hyperBind("O", "md.obsidian")
-hyperBind("P", "com.apple.Passwords")
-hyperBindFunction("Q", StickyNote)
-hyperBind("R", "com.apple.Reminders")
-hyperBind("T", "com.googlecode.iterm2")
-hyperBind("V", "dev.zed.Zed")
-hyperBindFile("Y", "~/MEGA/Kitchen\\ Sink/Srivatsas.kdbx")
-hyperBindFile("U", "~/MEGA/Personal\\ Backups/Chander/Sillarai\\ LLC/Sillarai.kdbx")
+HyperBind("B", "com.apple.Safari")
+HyperBind("C", "com.google.Chrome")
+HyperBind("I", "com.apple.MobileSMS")
+HyperBind("L", "com.apple.iCal")
+HyperBind("M", "com.apple.mail")
+HyperBind("N", "com.apple.Notes")
+HyperBind("O", "md.obsidian")
+HyperBind("P", "com.apple.Passwords")
+HyperBindFunction("Q", StickyNote)
+HyperBind("R", "com.apple.Reminders")
+HyperBind("T", "com.googlecode.iterm2")
+HyperBind("V", "dev.zed.Zed")
+HyperBindFile("Y", "~/MEGA/Kitchen\\ Sink/Srivatsas.kdbx")
+HyperBindFile("U", "~/MEGA/Personal\\ Backups/Chander/Sillarai\\ LLC/Sillarai.kdbx")
 
 -- ********************************************************************************
 --                               Finders Section
@@ -148,7 +148,7 @@ bindDirectory("S", "/Volumes/Svalbard")
 -- ********************************************************************************
 --                         Text Expanders Section
 -- ********************************************************************************
-local function expandText(shortcutKey, text)
+function ExpandText(shortcutKey, text)
     hs.hotkey.bind(expander, shortcutKey,
         function()
             hs.eventtap.keyStrokes(text)
@@ -164,7 +164,7 @@ local function loadPassword()
     return data and data["AccountPassword"] or ""
 end
 
-expandText("C", loadPassword())
+ExpandText("C", loadPassword())
 
 -- ********************************************************************************
 --                            Actions Section

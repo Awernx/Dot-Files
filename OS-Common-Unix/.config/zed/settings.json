@@ -32,7 +32,9 @@
         "light": "Colored Zed Icons Theme Dark",
         "dark": "Colored Zed Icons Theme Dark",
     },
-    "format_on_save": "off",
+
+    "auto_update": false,
+    "format_on_save": "on",
     "ui_font_size": 15.0,
     "buffer_font_size": 14.0,
     "theme": {
