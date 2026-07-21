@@ -219,7 +219,7 @@ hs.hotkey.bind(super, "A",
 -- Ctrl + Alt + .
 local muteMenuBarItem = nil
 
-hs.hotkey.bind(super, ".",
+hs.hotkey.bind(super, "-",
     function()
         mic = hs.audiodevice.defaultInputDevice()
         if (mic:inputMuted()) then
@@ -273,10 +273,15 @@ function AwernxChooser:init(hotkey, title, icon, prepareCallback, launcherCallba
     return awernxChooser
 end
 
-function AwernxChooser:addItem(item)
+function AwernxChooser:addItem(item, at_top)
     if not item.image then item.image = self.icon end
 
-    table.insert(self.items, item)
+    if at_top then
+        table.insert(self.items, 1, item) -- Insert at the top (index 1)
+    else
+        table.insert(self.items, item)    -- Insert at the bottom (default)
+    end
+
     self.chooser:choices(self.items)
 end
 
