@@ -14,12 +14,12 @@
 -- *******************************************************************************
 --                         Global shortcut prefixes
 -- *******************************************************************************
-hyper    = { "ctrl", "alt", "cmd" } -- For launching apps
-super    = { "ctrl", "alt" }        -- For performing actions
-chooser  = { "ctrl", "cmd" }        -- For launching choosers
-finder   = { "shift", "ctrl" }      -- For launching finder windows
-informer = { "shift", "alt" }       -- For displaying information on screen
-expander = { "shift", "cmd" }       -- For expanding / typing in text
+Hyper    = { "ctrl", "alt", "cmd" } -- For launching apps
+Super    = { "ctrl", "alt" }        -- For performing actions
+Chooser  = { "ctrl", "cmd" }        -- For launching choosers
+Finder   = { "shift", "ctrl" }      -- For launching finder windows
+Informer = { "shift", "alt" }       -- For displaying information on screen
+Expander = { "shift", "cmd" }       -- For expanding / typing in text
 
 -- *******************************************************************************
 --            Startup Actions: Will execute when Hammerspoon starts
@@ -32,7 +32,7 @@ expander = { "shift", "cmd" }       -- For expanding / typing in text
 ----------------------------------------------------------------------------------
 hs.location.get()
 
-require("sticky-notes")
+require("notes")
 
 hs.loadSpoon("SpoonInstall")
 
@@ -84,19 +84,15 @@ end)
 -- ********************************************************************************
 
 function HyperBind(shortcutKey, applicationName)
-    hs.hotkey.bind(hyper, shortcutKey,
+    hs.hotkey.bind(Hyper, shortcutKey,
         function()
             hs.application.open(applicationName, 1, true)
         end
     )
 end
 
-function HyperBindFunction(shortcutKey, functionName)
-    hs.hotkey.bind(hyper, shortcutKey, functionName)
-end
-
 function HyperBindFile(shortcutKey, fileLocation)
-    hs.hotkey.bind(hyper, shortcutKey,
+    hs.hotkey.bind(Hyper, shortcutKey,
         function()
             hs.execute("open " .. fileLocation)
         end
@@ -114,7 +110,6 @@ HyperBind("M", "com.apple.mail")
 HyperBind("N", "com.apple.Notes")
 HyperBind("O", "md.obsidian")
 HyperBind("P", "com.apple.Passwords")
-HyperBindFunction("Q", StickyNote)
 HyperBind("R", "com.apple.Reminders")
 HyperBind("T", "com.googlecode.iterm2")
 HyperBind("V", "dev.zed.Zed")
@@ -126,7 +121,7 @@ HyperBindFile("U", "~/MEGA/Personal\\ Backups/Chander/Sillarai\\ LLC/Sillarai.kd
 -- ********************************************************************************
 
 local function bindDirectory(shortcutKey, directory)
-    hs.hotkey.bind(finder, shortcutKey,
+    hs.hotkey.bind(Finder, shortcutKey,
         function()
             hs.execute('open -a Finder ' .. directory)
         end
@@ -137,6 +132,7 @@ end
 -- Shift + Ctrl + .......
 ----------------------------------------------------------------------------------
 bindDirectory("E", "~")
+bindDirectory("Y", "~/Documents")
 bindDirectory("W", "~/Workspace")
 bindDirectory("J", "~/Downloads")
 bindDirectory("K", "~/MEGA/Kitchen\\ Sink")
@@ -149,7 +145,7 @@ bindDirectory("S", "/Volumes/Svalbard")
 --                         Text Expanders Section
 -- ********************************************************************************
 function ExpandText(shortcutKey, text)
-    hs.hotkey.bind(expander, shortcutKey,
+    hs.hotkey.bind(Expander, shortcutKey,
         function()
             hs.eventtap.keyStrokes(text)
         end
@@ -172,7 +168,7 @@ ExpandText("C", loadPassword())
 
 -- Unformatted Paste from Clipboard
 -- Ctrl + Alt + V
-hs.hotkey.bind(super, "V",
+hs.hotkey.bind(Super, "V",
     function()
         hs.eventtap.keyStrokes(hs.pasteboard.getContents())
     end
@@ -183,33 +179,41 @@ hs.hotkey.bind(super, "V",
 Install:andUse("PasswordGenerator", {
     config = {
         password_style = 'xkcd',
-        word_count = 3,
+        word_count = 2,
         word_separators = '_',
         word_uppercase = 2,
-        word_leet = 3
+        word_leet = 2
     }
 })
 
 -- Generate Password
 -- Ctrl + Alt + P
-hs.hotkey.bind(super, "P",
+hs.hotkey.bind(Super, "P",
     function()
-        spoon.PasswordGenerator:copyPassword()
-        StickyNoteWithClipboardContents(true)
+        local password = spoon.PasswordGenerator:copyPassword()
+        CreateOrAppendToNote("Password Scratchpad", "<br>Password: <b>" .. password .. "</b><br>")
     end
 )
 
 -- Reload this HammerSpoon configuration
 -- Ctrl + Alt + R
-hs.hotkey.bind(super, "R",
+hs.hotkey.bind(Super, "R",
     function()
         hs.reload()
     end
 )
 
+-- Add Todo
+-- Ctrl + Alt + T
+hs.hotkey.bind(Super, "T",
+    function()
+        CreateOrAppendToNote("TODO", "-")
+    end
+)
+
 -- Open sound input/output settings
 -- Ctrl + Alt + R
-hs.hotkey.bind(super, "A",
+hs.hotkey.bind(Super, "A",
     function()
         hs.execute('open x-apple.systempreferences:com.apple.preference.sound')
     end
@@ -219,7 +223,7 @@ hs.hotkey.bind(super, "A",
 -- Ctrl + Alt + .
 local muteMenuBarItem = nil
 
-hs.hotkey.bind(super, "-",
+hs.hotkey.bind(Super, "-",
     function()
         mic = hs.audiodevice.defaultInputDevice()
         if (mic:inputMuted()) then
@@ -262,7 +266,7 @@ function AwernxChooser:init(hotkey, title, icon, prepareCallback, launcherCallba
     awernxChooser.chooser = hs.chooser.new(launcherCallback)
     awernxChooser.chooser:attachedToolbar(awernxChooser.toolbar)
 
-    hs.hotkey.bind(chooser, hotkey,
+    hs.hotkey.bind(Chooser, hotkey,
         function()
             if prepareCallback then prepareCallback(awernxChooser) end
             awernxChooser.chooser:show()
@@ -419,7 +423,7 @@ AwernxChooser:init("G", "GitHub Repositories", githubImage, workspaceItemLoader,
 
 -- Display current audio input and output devices
 -- Shift + Alt + A
-hs.hotkey.bind(informer, "A",
+hs.hotkey.bind(Informer, "A",
     function()
         local input = hs.audiodevice.defaultInputDevice()
         local output = hs.audiodevice.defaultOutputDevice()
@@ -431,7 +435,7 @@ hs.hotkey.bind(informer, "A",
 
 -- Shows the current CURSOR position by animating circle around it
 -- Shift + Alt + .
-hs.hotkey.bind(informer, ".",
+hs.hotkey.bind(Informer, ".",
     function()
         local minRadius = 25
         local screen = hs.screen.mainScreen()
@@ -483,7 +487,7 @@ hs.hotkey.bind(informer, ".",
 
 -- Display IP Addresses - Basically invoke the Shortcuts app shortcut
 -- Shift + Alt + I
-hs.hotkey.bind(informer, "I",
+hs.hotkey.bind(Informer, "I",
     function()
         hs.shortcuts.run("IP Address")
     end
@@ -555,7 +559,7 @@ networkConfiguration:start()
 
 -- Display currently used network interface name
 -- Shift + Alt + N
-hs.hotkey.bind(informer, "N",
+hs.hotkey.bind(Informer, "N",
     function()
         displayCurrentInterfaceName(true)
     end

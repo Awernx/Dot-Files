@@ -4,4 +4,4 @@
 --
 -- Location: ~/.config/hammerspoon/init.lua
 
-require('configuration-revorra')
+require('configuration-common')
