@@ -203,11 +203,17 @@ hs.hotkey.bind(Super, "R",
     end
 )
 
--- Add Todo
+-- Add Todo (Today)
 -- Ctrl + Alt + T
 hs.hotkey.bind(Super, "T",
     function()
-        CreateOrAppendToNote("TODO", "-")
+        hs.urlevent.openURL("x-apple-reminderkit://")
+        hs.timer.doAfter(0.15, function()
+            local reminders = hs.application.get("Reminders")
+            if reminders then
+                hs.eventtap.keyStroke({ "cmd" }, "1")
+            end
+        end)
     end
 )
 
