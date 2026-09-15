@@ -16,5 +16,4 @@ end
 
 ##  Aliases --------------------------------------
 alias pwd     'pwd -P'
-alias upgrade 'scoop update --all'
-alias clean   'scoop cleanup --all; scoop cache rm --all'
+alias upgrade 'scoop update --all; scoop cleanup --all; scoop cache rm --all'
