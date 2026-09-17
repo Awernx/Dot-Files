@@ -40,7 +40,7 @@ function upgrade
         echo
         echo "Upgrading 'Homebrew' packages"
         brew update
-        brew upgrade --greedy
+        yes | brew upgrade --greedy
 
         echo
         echo "Cleaning 'Homebrew' packages"
