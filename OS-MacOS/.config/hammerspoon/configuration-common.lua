@@ -32,12 +32,13 @@ Expander = { "shift", "cmd" }       -- For expanding / typing in text
 ----------------------------------------------------------------------------------
 hs.location.get()
 
-require("notes")
-
 hs.loadSpoon("SpoonInstall")
 
 spoon.SpoonInstall.use_syncinstall = true
 Install = spoon.SpoonInstall
+
+require("notes")
+require("window-management")
 
 -- Display Hammerspoon logo to indicate successful configuration loading
 ----------------------------------------------------------------------------------
@@ -49,11 +50,6 @@ Install:andUse("FadeLogo", {
     },
     start  = true
 })
-
--- Spoon 'WindowHalfsAndThirds' for Window management on large screens
-----------------------------------------------------------------------------------
-Install:andUse("WindowHalfsAndThirds")
-spoon.WindowHalfsAndThirds:bindHotkeys(spoon.WindowHalfsAndThirds.defaultHotkeys)
 
 -- Turn Off NATURAL scrolling for 🖱️ Mice, and not Trackpads!
 ----------------------------------------------------------------------------------
@@ -165,6 +161,10 @@ ExpandText("C", loadPassword())
 -- ********************************************************************************
 --                            Actions Section
 -- ********************************************************************************
+
+-- Window management
+BindWindowQuadCycle(Super)  -- Ctrl + Alt + 4
+BindWindowSixthCycle(Super) -- Ctrl + Alt + 6
 
 -- Unformatted Paste from Clipboard
 -- Ctrl + Alt + V
