@@ -227,7 +227,7 @@ hs.hotkey.bind(Super, "A",
 
 -- Mute Microphone and display a band on screen
 -- Ctrl + Alt + .
-local muteMenuBarItem = nil
+local screenBorderCanvas = nil
 
 hs.hotkey.bind(Super, "-",
     function()
@@ -235,19 +235,28 @@ hs.hotkey.bind(Super, "-",
         if (mic:inputMuted()) then
             mic:setMuted(false)
 
-            if muteMenuBarItem then
-                muteMenuBarItem:delete()
-                muteMenuBarItem = nil
+            if screenBorderCanvas then
+                screenBorderCanvas:delete()
+                screenBorderCanvas = nil
             end
         else
             mic:setMuted(true)
 
-            if not muteMenuBarItem then
-                muteMenuBarItem = hs.menubar.new()
-                if muteMenuBarItem then
-                    muteMenuBarItem:autosaveName("hammerspoon_mic_mute_indicator")
-                    muteMenuBarItem:setTitle("🛑 Muted")
-                end
+            if not screenBorderCanvas then
+                local screenFrame = hs.screen.mainScreen():fullFrame()
+                screenBorderCanvas = hs.canvas.new(screenFrame)
+
+                screenBorderCanvas[1] = {
+                    type = "rectangle",
+                    action = "stroke",
+                    strokeColor = { red = 0.8, green = 1.0, blue = 0.0, alpha = 1.0 },
+                    strokeWidth = 15,
+                    roundedRectRadii = { xRadius = 25, yRadius = 25 }
+                }
+
+                screenBorderCanvas:level(hs.canvas.windowLevels.screenSaver)
+                screenBorderCanvas:clickActivating(false)
+                screenBorderCanvas:show()
             end
         end
     end
