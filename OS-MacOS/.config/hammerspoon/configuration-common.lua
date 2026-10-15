@@ -39,6 +39,7 @@ Install = spoon.SpoonInstall
 
 require("notes")
 require("window-management")
+local MeetingMuter = require("meeting-muter")
 
 -- Display Hammerspoon logo to indicate successful configuration loading
 ----------------------------------------------------------------------------------
@@ -163,8 +164,17 @@ ExpandText("C", loadPassword())
 -- ********************************************************************************
 
 -- Window management
-BindWindowQuadCycle(Super)  -- Ctrl + Alt + 4
-BindWindowSixthCycle(Super) -- Ctrl + Alt + 6
+BindWindowHalfCycle(Super)     -- Ctrl + Alt + 2
+BindWindowTwoThirdCycle(Super) -- Ctrl + Alt + Right Arrow
+BindWindowThirdCycle(Super)    -- Ctrl + Alt + 3
+BindWindowQuadCycle(Super)     -- Ctrl + Alt + 4
+BindWindowSixthCycle(Super)    -- Ctrl + Alt + 6
+BindWindowTall(Super)          -- Ctrl + Alt + Down Arrow
+BindWindowMaximize(Super)      -- Ctrl + Alt + Up Arrow
+BindWindowFullScreen(Super)    -- Ctrl + Alt + F
+BindWindowCenter(Super)        -- Ctrl + Alt + C
+
+MeetingMuter.bind(Super, "-")
 
 -- Unformatted Paste from Clipboard
 -- Ctrl + Alt + V
@@ -222,43 +232,6 @@ hs.hotkey.bind(Super, "T",
 hs.hotkey.bind(Super, "A",
     function()
         hs.execute('open x-apple.systempreferences:com.apple.preference.sound')
-    end
-)
-
--- Mute Microphone and display a band on screen
--- Ctrl + Alt + .
-local screenBorderCanvas = nil
-
-hs.hotkey.bind(Super, "-",
-    function()
-        mic = hs.audiodevice.defaultInputDevice()
-        if (mic:inputMuted()) then
-            mic:setMuted(false)
-
-            if screenBorderCanvas then
-                screenBorderCanvas:delete()
-                screenBorderCanvas = nil
-            end
-        else
-            mic:setMuted(true)
-
-            if not screenBorderCanvas then
-                local screenFrame = hs.screen.mainScreen():fullFrame()
-                screenBorderCanvas = hs.canvas.new(screenFrame)
-
-                screenBorderCanvas[1] = {
-                    type = "rectangle",
-                    action = "stroke",
-                    strokeColor = { red = 0.8, green = 1.0, blue = 0.0, alpha = 1.0 },
-                    strokeWidth = 15,
-                    roundedRectRadii = { xRadius = 25, yRadius = 25 }
-                }
-
-                screenBorderCanvas:level(hs.canvas.windowLevels.screenSaver)
-                screenBorderCanvas:clickActivating(false)
-                screenBorderCanvas:show()
-            end
-        end
     end
 )
 
