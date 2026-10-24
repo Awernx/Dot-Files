@@ -25,12 +25,14 @@ stow-mbp: ## Stow dot-files for Chander's MacBook Pro
 
 .PHONY: stow-mjolnir
 stow-mjolnir: ## Stow dot-files for Mjolnir Linux machine
+	# Ignore etc/ when running as USER
 	$(STOW_COMMAND_PREFIX_HOME) \
-		--ignore='etc' \ # Ignore etc/ when running as USER
+		--ignore='etc' \
 		--stow OS-Common-Unix OS-Linux ENV-Chander-Mjolnir
 
+	# Ignore .config/ and .bashrc when running as ROOT
 	sudo $(STOW_COMMAND_PREFIX_ROOT) \
-		--ignore='(\.config|\.bashrc)' \ # Ignore .config/ and .bashrc when running as ROOT
+		--ignore='(\.config|\.bashrc)' \
 		--stow ENV-Chander-Mjolnir
 
 	printf "✅ Mjolnir Dot-Files stowed successfully\n"

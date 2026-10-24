@@ -20,29 +20,23 @@
 
   programs.fzf = {
     enable = true;
-    enableBashIntegration = true;
     enableFishIntegration = true;
-    enableZshIntegration = true;
     historyWidget.fish.command = "";
-    historyWidget.bash.command = "";
   };
 
   programs.mcfly = {
     enable = true;
-    enableBashIntegration = true;
     enableFishIntegration = true;
   };
 
   programs.direnv = {
     enable = true;
-    enableBashIntegration = true;
     enableFishIntegration = true;
-    nix-direnv.enable = true; # Highly recommended for Nix users to speed up environment loading
+    nix-direnv.enable = true;
   };
 
   programs.zoxide = {
     enable = true;
-    enableBashIntegration = true;
     enableFishIntegration = true;
   };
 
