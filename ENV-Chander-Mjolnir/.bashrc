@@ -18,8 +18,3 @@ export LESSHISTFILE=$history_location/less_history
 
 source ~/.config/bash/terminal-shortcuts.bash
 source ~/.config/bash/terminal-shortcuts-linux-debian.bash
-
-eval "$(fzf    --bash)"
-eval "$(mcfly  init bash)"
-eval "$(direnv hook bash)"
-eval "$(zoxide init bash)"
