@@ -28,4 +28,4 @@ EOF
 
     uptime --p | sed 's/^./ \u&/'
 
-} | LANG=en_US.UTF-8 /usr/games/lolcat -f
+} | LANG=en_US.UTF-8 /home/chander/.nix-profile/bin/lolcat -f
