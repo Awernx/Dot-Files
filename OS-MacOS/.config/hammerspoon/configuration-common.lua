@@ -423,55 +423,73 @@ hs.hotkey.bind(Informer, "A",
 
 -- Shows the current CURSOR position by animating circle around it
 -- Shift + Alt + .
-hs.hotkey.bind(Informer, ".",
-    function()
-        local minRadius = 25
-        local screen = hs.screen.mainScreen()
-        local frame = screen:frame()
-        local maxRadius = math.min(frame.w, frame.h) / 2 - 20
-        local steps = 100     -- Fewer steps for faster animation
-        local duration = 0.25 -- seconds, much faster
-        local interval = duration / steps
+hs.hotkey.bind(Informer, ".", function()
+    local minRadius = 12
+    local steps = 25
+    local duration = 0.5
+    local strokeWidth = 30
+    local padding = strokeWidth / 2 + 4
 
-        -- Get current mouse position
-        local mousePoint = hs.mouse.absolutePosition()
-        local centerX = mousePoint.x
-        local centerY = mousePoint.y
+    local frame = hs.screen.mainScreen():frame()
+    local maxRadius = math.min(frame.w, frame.h) / 2 - 20
+    local mouse = hs.mouse.absolutePosition()
 
-        local circle = hs.canvas.new {
-            x = centerX - maxRadius,
-            y = centerY - maxRadius,
-            w = maxRadius * 2,
-            h = maxRadius * 2
-        }:appendElements({
-            type = "circle",
-            strokeColor = { red = 1, green = 0, blue = 0.06, alpha = 1 }
-        })
+    local function circleFrame(radius)
+        local halfSize = radius + padding
 
-        circle:show()
-
-        local currentStep = 0
-        local animTimer
-
-        animTimer = hs.timer.doEvery(interval, function()
-            currentStep = currentStep + 1
-            local t = currentStep / steps
-            local radius = maxRadius - (maxRadius - minRadius) * t
-
-            circle:frame({
-                x = centerX - radius,
-                y = centerY - radius,
-                w = radius * 2,
-                h = radius * 2
-            })
-
-            if currentStep >= steps then
-                animTimer:stop()
-                hs.timer.doAfter(0.5, function() circle:delete() end)
-            end
-        end)
+        return {
+            x = mouse.x - halfSize,
+            y = mouse.y - halfSize,
+            w = halfSize * 2,
+            h = halfSize * 2
+        }
     end
-)
+
+    local function rainbowColor(hue)
+        local function channel(offset)
+            local k = (offset + hue * 6) % 6
+            return 1 - math.max(0, math.min(k, 4 - k, 1))
+        end
+
+        return {
+            red = channel(5),
+            green = channel(3),
+            blue = channel(1),
+            alpha = 1
+        }
+    end
+
+    local circle = hs.canvas.new(circleFrame(maxRadius))
+        :appendElements({
+            type = "circle",
+            action = "stroke",
+            center = { x = "50%", y = "50%" },
+            radius = maxRadius,
+            strokeWidth = strokeWidth,
+            strokeColor = rainbowColor(0)
+        })
+        :show()
+
+    local step = 0
+    local timer
+
+    timer = hs.timer.doEvery(duration / steps, function()
+        step = step + 1
+
+        if step >= steps then
+            timer:stop()
+            circle:delete()
+            return
+        end
+
+        local progress = step / steps
+        local radius = maxRadius - (maxRadius - minRadius) * progress
+
+        circle:frame(circleFrame(radius))
+        circle:elementAttribute(1, "radius", radius)
+        circle:elementAttribute(1, "strokeColor", rainbowColor(progress))
+    end)
+end)
 
 -- Display IP Addresses - Basically invoke the Shortcuts app shortcut
 -- Shift + Alt + I
