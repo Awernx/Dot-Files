@@ -5,9 +5,6 @@ case $- in
       *) return;;
 esac
 
-# Adds 'brew' to PATH, so tools can be discovered by other scripts
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-
 # Drop to Fish if BASH is requested at shell level 1 AND in an interactive mode
 source ~/.config/bash/use-fish-for-interactive-shell.bash
 
