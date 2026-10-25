@@ -14,6 +14,8 @@
     pkgs.lolcat
     pkgs.rclone
     pkgs.btop
+    pkgs.age
+    pkgs.sops
   ];
 
   programs.fish.enable = true;

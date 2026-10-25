@@ -15,6 +15,7 @@ alias apt     'sudo apt'
 ## Abbreviations-----------------------
 abbr install  'apt update && apt --yes install'
 abbr purge    'apt --yes purge'
+abbr sw       'home-manager switch'
 
 function upgrade
     sudo -v
@@ -23,17 +24,17 @@ function upgrade
     apt update
     apt --yes full-upgrade
 
-    echo "Cleaning 'Apt' packages"
-    apt --yes autoremove
-    apt --yes autoclean
+    if type -q nix
+        cd ~/.config/home-manager
+        nix flake update
+        home-manager switch --flake .
+        cd -
+    end
 
     if type -q flatpak
         echo
         echo "Upgrading 'Flatpak' packages"
         flatpak update
-
-        echo "Cleaning 'Flatpak' packages"
-        flatpak uninstall --unused -y
     end
 
     if type -q brew
@@ -41,7 +42,28 @@ function upgrade
         echo "Upgrading 'Homebrew' packages"
         brew update
         yes | brew upgrade --greedy
+    end
+end
 
+function clean
+    sudo -v
+
+    echo "Cleaning 'Apt' packages"
+    apt --yes autoremove
+    apt --yes autoclean
+
+    if type -q nix
+        home-manager expire-generations "-1 days"
+        nix-collect-garbage --delete-older-than 1d
+    end
+
+    if type -q flatpak
+        echo
+        echo "Cleaning 'Flatpak' packages"
+        flatpak uninstall --unused -y
+    end
+
+    if type -q brew
         echo
         echo "Cleaning 'Homebrew' packages"
         brew doctor
