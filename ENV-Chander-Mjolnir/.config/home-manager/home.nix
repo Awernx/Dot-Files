@@ -15,8 +15,7 @@
     pkgs.rclone
     pkgs.btop
     pkgs.jq
-    pkgs.age
-    pkgs.sops
+    pkgs.gh
   ];
 
   programs.fish.enable = true;
