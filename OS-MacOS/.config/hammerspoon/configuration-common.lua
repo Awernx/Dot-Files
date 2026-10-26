@@ -136,7 +136,6 @@ bindDirectory("K", "~/MEGA/Kitchen\\ Sink")
 bindDirectory("T", "~/MEGA/-TEMP-")
 bindDirectory("D", "~/MEGA/Sensitive\\ Family\\ Documents")
 bindDirectory("P", "~/MEGA/Personal\\ Backups/Chander")
-bindDirectory("S", "/Volumes/Svalbard")
 
 -- ********************************************************************************
 --                         Text Expanders Section
