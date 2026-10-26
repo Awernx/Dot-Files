@@ -116,31 +116,3 @@ function mega-synch
         sleep 1 # Wait for a second
     end
 end
-
-# Back up Google Drive & MEGA artifacts to Svalbard
-function backup-cloud
-    set --local svalbard_docs_folder /mnt/svalbard/Documents
-    set --local mega_folder          (realpath ~/'Cloud/Mega')
-    set --local gdrive_folder        (realpath ~/'Cloud/GoogleDrive')
-    set --local rsync_command        rsync --archive --human-readable --delete
-
-    # --------- MEGA Backup Section ------------------------------------
-    # Ensure MEGA is synced
-    mega-synch
-
-    echo -ne 'Backing up MEGASync to Svalbard' \r
-    $rsync_command $mega_folder/KitchenSink/                $svalbard_docs_folder/KitchenSink
-    $rsync_command $mega_folder/Personal_Backups/           $svalbard_docs_folder/Personal_Backups/
-    $rsync_command $mega_folder/Sensitive_Family_Documents/ $svalbard_docs_folder/Sensitive_Family_Documents/
-
-    echo '✅ MEGASync backed up successfully           '
-
-    # --------- Google Drive Backup Section ----------------------------
-    echo -ne 'Fetching contents from Google Drive' \r
-    rclone sync --include 'Family*/**' google-drive: $gdrive_folder
-
-    echo -ne 'Backing up Google Drive to Svalbard' \r
-    $rsync_command $gdrive_folder/'Family Documents'/ $svalbard_docs_folder/Google_Drive_Documents/
-
-    echo '✅ Google Drive backed up successfully       '
-end
