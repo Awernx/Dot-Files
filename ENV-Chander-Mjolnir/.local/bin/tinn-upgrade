@@ -1,0 +1,35 @@
+#!/bin/sh
+
+set -eu
+
+token_file="${XDG_CONFIG_HOME:-$HOME/.config}/awernx/github-token"
+install_directory=$(mktemp -d "${TMPDIR:-/tmp}/tinn-upgrade.XXXXXXXXXX")
+
+# Trap runs when the script exits, whether it succeeds or fails.
+trap 'rm -rf -- "$install_directory"' 0
+(
+    if [ -z "${GH_TOKEN:-}" ] && [ -z "${GITHUB_TOKEN:-}" ] && [ -f "$token_file" ]; then
+        GH_TOKEN=$(cat "$token_file")
+        export GH_TOKEN
+    fi
+
+   	printf "\r\033[KDownloading latest Tintinnabulator release from GitHub ...\r"
+    gh release download \
+        --repo 'Awernx/Tintinnabulator' \
+        --pattern '*.deb' \
+        --dir "$install_directory"
+)
+
+# Select the package for this machine using its metadata.
+deb_file=$(find "$install_directory" -type f -name '*.deb')
+new_version=$(basename "$deb_file" | sed 's/^[^_]*_\([^_]*\)_.*/\1/')
+
+current_version=$(dpkg-query -W -f='${Version}' tintinnabulator 2>/dev/null || :)
+
+if [ -n "$current_version" ] && dpkg --compare-versions "$current_version" ge "$new_version"; then
+    printf '%s\n' 'Tintinnabulator is already up to date.'
+    exit 0
+fi
+
+printf "\r\033[KInstalling new version of Tintinnabulator...\r"
+sudo apt-get install -qq --yes "$deb_file" > /dev/null
