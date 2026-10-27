@@ -1,4 +1,13 @@
 #!/bin/sh
+#
+# 🅲 🅷 🅰 🅽 🅳 🅴 🆁
+# ----------------------------------------------------------------------------------------------
+# Light-weight POSIX script that syncs Google Drive and Mega folders to /mnt/svalbard/Documents
+# Google Drive includes all folders except 'App Scripts'
+# Mega includes KitchenSink, Personal_Backups, and Sensitive_Family_Documents
+#
+# This script is scheduled to called once a day by a cron job
+
 set -eu
 
 trap '
@@ -10,17 +19,18 @@ trap '
 ' 0
 
 svalbard_docs="/mnt/svalbard/Documents"
+rclone="$HOME/.nix-profile/bin/rclone" # Cron-friendly full path
 
 # ----------------------------------------------------------------------------
 # Google Drive Section
 # ----------------------------------------------------------------------------
 printf '%s\n' 'Backing up Google Drive to Svalbard'
-rclone sync "google-drive:" "$svalbard_docs/Google_Drive_Documents/" --exclude "/App Scripts/**"
+"$rclone" sync "google-drive:" "$svalbard_docs/Google_Drive_Documents/" --exclude "/App Scripts/**"
 
 # ----------------------------------------------------------------------------
 # MEGA Sync Section
 # ----------------------------------------------------------------------------
 for folder in KitchenSink Personal_Backups Sensitive_Family_Documents; do
     printf '%s\n' "Backing up Mega/$folder to Svalbard"
-    rclone sync "mega:$folder/" "$svalbard_docs/$folder/"
+    "$rclone" sync "mega:$folder/" "$svalbard_docs/$folder/"
 done

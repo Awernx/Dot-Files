@@ -12,6 +12,7 @@ local SLACK_CALL_TITLES = { "huddle" }
 
 local MEET_URL_PATTERNS = {
     "^https://meet%.google%.com/%l%l%l%-%l%l%l%l%-%l%l%l",
+    "^https://meet%.google%.com/meet/%l%l%l%-%l%l%l%l%-%l%l%l",
     "^https://meet%.google%.com/lookup/",
 }
 

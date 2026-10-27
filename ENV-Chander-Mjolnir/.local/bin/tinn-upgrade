@@ -1,4 +1,12 @@
 #!/bin/sh
+#
+# 🅲 🅷 🅰 🅽 🅳 🅴 🆁
+# ----------------------------------------------------------------------------------------------
+# Lightweight POSIX script that downloads the latest Debian release from Awernx/Tintinnabulator
+# on GitHub and installs it with sudo apt-get when newer than the installed version.
+#
+# Ensure GitHub PAT is available in ~/.config/awernx/github-token
+# This script is intended for interactive use
 
 set -eu
 
