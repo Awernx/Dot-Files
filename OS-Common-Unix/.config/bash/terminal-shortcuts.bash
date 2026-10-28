@@ -4,11 +4,6 @@
 # -----------------------------------------
 # Chander's BASH shell shortcuts for Linux
 
-# XDG (Just in case they're not set already)
-export XDG_CONFIG_HOME="$HOME/.config"
-export XDG_DATA_HOME="$HOME/.local/share"
-export XDG_CACHE_HOME="$HOME/.cache"
-
 # Color Controls        # Foreground Colors          # Bright Foreground Colors    # Background Colors
 reset=$(tput sgr0)      blackf=$(tput setaf 0)       blackb=$(tput setaf 8)        redbg=$(tput setab 9)
 bold=$(tput bold)       redf=$(tput setaf 1)         redb=$(tput setaf 9)          purplebg=$(tput setab 5)
