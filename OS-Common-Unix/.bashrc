@@ -11,6 +11,12 @@ export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_STATE_HOME="$HOME/.local/state"
 export XDG_CACHE_HOME="$HOME/.cache"
 
+# Drop to Fish shell for interactive mode is requested
+interactive_fish_script="$XDG_CONFIG_HOME/bash/use-fish-for-interactive-shell.bash"
+if [ -f "$interactive_fish_script" ]; then
+    source "$interactive_fish_script"
+fi
+
 # Move bash & less history file to XDG directory
 history_location=$XDG_STATE_HOME/history
 mkdir -p $history_location
@@ -45,10 +51,13 @@ fi
 
 # Source custom bash configuration scripts if they exist
 if [ -d "$XDG_CONFIG_HOME/bash" ]; then
-  for script in "$XDG_CONFIG_HOME/bash"/*; do
-      source "$script"
-  done
+    for script in "$XDG_CONFIG_HOME/bash"/*; do
+        [ -f "$script" ] || continue
+        [ "$script" = "$interactive_fish_script" ] && continue
+        source "$script"
+    done
   unset script
+  unset interactive_fish_script
 fi
 
 #Initialize these staple tools - if they are found
