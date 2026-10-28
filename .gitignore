@@ -15,5 +15,6 @@
 *.key
 wg0.conf
 
-# Ignore Home Manager's direnv helper script
+# Home Manager's related stuff
+flake.lock
 **/direnv/lib/

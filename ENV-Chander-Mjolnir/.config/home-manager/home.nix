@@ -12,9 +12,9 @@
     pkgs.procs
     pkgs.bat
     pkgs.lolcat
-    pkgs.rclone
     pkgs.btop
     pkgs.jq
+    pkgs.rclone
     pkgs.gh
   ];
 
