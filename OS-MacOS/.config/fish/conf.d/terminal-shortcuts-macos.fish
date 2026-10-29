@@ -78,3 +78,20 @@ function ipa
     echo -ns                         '         IP: ' (set_color -o bryellow) $pub_ip   (set_color normal) \n
     echo -ns                         '   Location: ' (set_color bryellow)    $pub_loc  (set_color normal) \n
 end
+
+## Load these staple tools if they exist
+if command -sq fzf
+    fzf --fish | source
+end
+
+if command -sq mcfly
+    mcfly init fish | source
+end
+
+if command -sq direnv
+    direnv hook fish | source
+end
+
+if command -sq zoxide
+    zoxide init fish | source
+end
