@@ -16,5 +16,4 @@
 wg0.conf
 
 # Home Manager's related stuff
-flake.lock
 **/direnv/lib/

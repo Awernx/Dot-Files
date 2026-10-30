@@ -20,7 +20,10 @@ help:
 
 .PHONY: stow-mbp
 stow-mbp: ## Stow dot-files for Chander's MacBook Pro
-	$(STOW_COMMAND_PREFIX_HOME) --stow OS-Common-Unix OS-MacOS ENV-Chander-MBP
+	$(STOW_COMMAND_PREFIX_HOME) \
+        --ignore='(|\.bashrc)' \
+       	--stow OS-Common-Unix OS-MacOS ENV-Chander-MBP
+
 	printf "✅ Chander's MBP Dot-Files stowed successfully\n"
 
 .PHONY: stow-mjolnir
