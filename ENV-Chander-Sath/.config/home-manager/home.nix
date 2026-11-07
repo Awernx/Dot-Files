@@ -9,11 +9,11 @@
   home.packages = [
     pkgs.gnumake
     pkgs.stow
+    pkgs.vim
     pkgs.eza
-    pkgs.procs
     pkgs.bat
     pkgs.lolcat
-    pkgs.btop
+    pkgs.htop
     pkgs.jq
   ];
 

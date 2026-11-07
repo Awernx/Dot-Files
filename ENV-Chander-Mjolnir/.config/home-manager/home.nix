@@ -8,11 +8,11 @@
 
   home.packages = [
     pkgs.stow
+    pkgs.vim
     pkgs.eza
-    pkgs.procs
     pkgs.bat
     pkgs.lolcat
-    pkgs.btop
+    pkgs.htop
     pkgs.jq
     pkgs.rclone
     pkgs.gh

@@ -10,7 +10,7 @@ status is-interactive; or exit 0
 # Miminal style; short window with a border
 # '+' key toggle preview
 # Filter option is at the top, with the list reversed - recent results at the top
-set --global fzf_common_options --reverse --margin=1 --padding=1 --bind 'ctrl-space:toggle-preview' --color header:bright-yellow:bold --color=prompt:bright-green --style=minimal
+set --global fzf_common_options --reverse --margin=1 --padding=1 --color="fg:#b5a8a7,fg+:#00ff00:bold,bg+:#334455" --bind 'ctrl-space:toggle-preview' --color header:bright-yellow:bold --color=prompt:bright-green --style=minimal
 set --global fzf_window_options $fzf_common_options --height=25% --border
 
 # Workaround known fish-shell bug with interactive exits
