@@ -1,6 +1,7 @@
 { config, pkgs, ... }:
 
 {
+  nix.assumeXdg = true;
   home.username = "chander";
   home.homeDirectory = "/home/chander";
 
