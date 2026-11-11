@@ -40,6 +40,13 @@ stow-mjolnir: ## Stow dot-files for Mjolnir Linux machine
 
 	printf "✅ Mjolnir Dot-Files stowed successfully\n"
 
+.PHONY: stow-elebook
+stow-sath: ## Stow dot-files for elebook (Elementary) laptop
+	$(STOW_COMMAND_PREFIX_HOME) \
+		--stow OS-Common-Unix OS-Linux OS-ElementaryOS ENV-Chander-Elebook
+
+	printf "✅ Elebook Dot-Files stowed successfully\n"
+
 .PHONY: stow-sath
 stow-sath: ## Stow dot-files for Sath (Elementary) machine
 	$(STOW_COMMAND_PREFIX_HOME) \

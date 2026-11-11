@@ -11,12 +11,47 @@ bold=$(tput bold)
 normal=$(tput sgr0)
 
 ##  Prompt
+terminal_colors() {
+    rows=(
+      ' \e[31m██████████████████' # Dark Red
+      ' \e[91m██████████████████' # Light Red
+      ' \e[33m              ████' # Dark Yellow
+      ' \e[93m            ████'   # Light Yellow
+      ' \e[32m          ████'     # Dark Green
+      ' \e[92m        ████'       # Light Green
+      ' \e[36m      ████'         # Dark Cyan
+      ' \e[96m    ████'           # Light Cyan
+      ' \e[34m  ████'             # Dark Blue
+      ' \e[94m████'               # Light Blue
+      ' \e[35m██████████████████' # Dark Purple
+      ' \e[95m██████████████████' # Light Purple
+    )
+
+    echo
+    for row in "${rows[@]}"; do
+      print -- "${row}\e[0m"
+    done
+}
+
+terminal_colors
 PROMPT='$GREETING'
 
 setopt prompt_subst
 function precmd() {
 	GREETING="${newline}${bold}$SHLVL┊🅉 ${normal} ${dim}$PWD${normal} ${bold}➤ ${normal}"
 }
+
+cls() {
+    clear
+    terminal_colors
+    echo
+    zle && zle reset-prompt
+}
+
+# Register the function as a ZLE widget and bind it to Ctrl + L
+zle -N cls
+bindkey '^L' cls
+
 
 ##  Aliases
 alias ..='cd ..'
