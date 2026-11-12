@@ -19,7 +19,7 @@ trap '
 ' 0
 
 svalbard_docs="/mnt/svalbard/Documents"
-rclone="$HOME/.nix-profile/bin/rclone" # Cron-friendly full path
+rclone="$HOME/.local/state/nix/profile/bin/rclone" # Cron-friendly full path
 
 # ----------------------------------------------------------------------------
 # Google Drive Section
