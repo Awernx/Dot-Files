@@ -4,12 +4,6 @@
 # -----------------------------------------------
 # Chander's Z-shell customizations for Mac & BSD
 
-## Local variables
-dim=$'\e[2m'
-newline=$'\n'
-bold=$(tput bold)
-normal=$(tput sgr0)
-
 ##  Prompt
 terminal_colors() {
     rows=(
@@ -38,7 +32,7 @@ PROMPT='$GREETING'
 
 setopt prompt_subst
 function precmd() {
-	GREETING="${newline}${bold}$SHLVL┊🅉 ${normal} ${dim}$PWD${normal} ${bold}➤ ${normal}"
+    GREETING=$'\n%B%F{#c678dd}%L%f%b┊%B%F{#e5c07b}🆉  %F{#5c6370}%/%f %B%F{#ffffff}➤ %f%b'
 }
 
 cls() {
@@ -52,29 +46,25 @@ cls() {
 zle -N cls
 bindkey '^L' cls
 
-
 ##  Aliases
 alias ..='cd ..'
 alias ...='cd ../..'
 alias path='echo -e ${PATH//:/\\n}'
 
-if type eza &> /dev/null
-then
-    LS_COMMAND='eza -almM --classify=always --color-scale=size --group-directories-first --sort=name --time-style=long-iso'
-    alias l="${LS_COMMAND}"
-    alias ll="${LS_COMMAND} -ghU@"
-    alias lt="${LS_COMMAND} --tree"
+if (( $+commands[eza] )); then
+    local eza_opts='eza -almM --classify=always --color-scale=size --group-directories-first --sort=name --time-style=long-iso'
+    alias l="$eza_opts"
+    alias ll="$eza_opts -ghU@"
+    alias lt="$eza_opts --tree"
 else
-    alias l="ls -AgFthG"
+    alias l='ls -AgFthG'
 fi
 
-if type zoxide &> /dev/null
-then
+if (( $+commands[zoxide] )); then
     alias cd="z"
 fi
 
-if type bat &> /dev/null
-then
+if (( $+commands[bat] )); then
     export MANROFFOPT="-c"
     export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 
@@ -86,8 +76,7 @@ then
     alias -g -- --help='--help 2>&1 | bat --language=help --style=plain'
 fi
 
-if type yazi &> /dev/null
-then
+if (( $+commands[yazi] )); then
     function y() {
     	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
     	command yazi "$@" --cwd-file="$tmp"
