@@ -5,8 +5,10 @@
 
 STOW_PATH                := $(shell which stow)
 DOT_FILES_LOCATION       := $$HOME/Workspace/Dot-Files
-STOW_COMMAND_PREFIX_ROOT := $(STOW_PATH) --dir=$(DOT_FILES_LOCATION) --target=/
+ROOT_FOLDER_LOCATION     := /root
+BASH_CONFIG_LOCATION     := .config/bash
 STOW_COMMAND_PREFIX_HOME := $(STOW_PATH) --dir=$(DOT_FILES_LOCATION) --target=$$HOME
+STOW_COMMAND_PREFIX_ROOT := $(STOW_PATH) --dir=$(DOT_FILES_LOCATION) --target=/
 
 .SILENT:
 
@@ -34,9 +36,22 @@ stow-mjolnir: ## Stow dot-files for Mjolnir Linux machine
 		--stow OS-Common-Unix OS-Linux ENV-Chander-Mjolnir
 
 	# Ignore .config/ and .bashrc when running as ROOT
-	sudo $(STOW_COMMAND_PREFIX_ROOT) \
-		--ignore='(\.config|\.bashrc)' \
+	$(STOW_COMMAND_PREFIX_ROOT) \
+		--ignore='(\.config|\.local)' \
 		--stow ENV-Chander-Mjolnir
+
+	# Stow .bashrc to /root
+	sudo $(STOW_PATH) \
+	    --dir=$(DOT_FILES_LOCATION) \
+		--target=$(ROOT_FOLDER_LOCATION) \
+		--stow OS-Common-Unix
+
+	# # Stow .config/bash to /root
+	# sudo mkdir -p $(ROOT_FOLDER_LOCATION)/$(BASH_CONFIG_LOCATION)
+	# sudo $(STOW_PATH) \
+	#     --dir=$(DOT_FILES_LOCATION)/OS-Common-Unix/.config \
+	# 	--target=$(ROOT_FOLDER_LOCATION)/$(BASH_CONFIG_LOCATION) \
+	# 	--stow bash
 
 	printf "✅ Mjolnir Dot-Files stowed successfully\n"
 

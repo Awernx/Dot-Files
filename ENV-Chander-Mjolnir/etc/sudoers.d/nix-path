@@ -1,0 +1,1 @@
+Defaults        secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin:/home/chander/.local/state/nix/profile/bin:/nix/var/nix/profiles/default/bin"
