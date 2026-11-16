@@ -49,7 +49,6 @@ stow-mjolnir: ## Stow dot-files for Mjolnir Linux machine
 	# sudoers.d files cannot be stowed because they require to be owned by root!
 	# So making a copy of those files
 	sudo install -o root -g root -m 0440 ENV-Chander-Mjolnir/etc/sudoers.d/nix-path /etc/sudoers.d/nix-path
-	sudo visudo -c
 
 	printf "✅ Mjolnir Dot-Files stowed successfully\n"
 

@@ -50,6 +50,7 @@ bindkey '^L' cls
 alias ..='cd ..'
 alias ...='cd ../..'
 alias path='echo -e ${PATH//:/\\n}'
+alias sudo='sudo ' # Trick to force shell to expand aliases that follow the sudo command
 
 if (( $+commands[eza] )); then
     local eza_opts='eza -almM --classify=always --color-scale=size --group-directories-first --sort=name --time-style=long-iso'

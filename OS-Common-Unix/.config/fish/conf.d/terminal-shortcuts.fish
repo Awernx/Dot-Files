@@ -28,14 +28,14 @@ abbr grep  'grep --color=auto'
 abbr wget  'wget -c '
 
 if type -q eza
-  set --local LS_COMMAND eza -almM --classify=always --color-scale=size --group-directories-first --sort=name --time-style=long-iso
-  alias l  "$LS_COMMAND"
-  alias ll "$LS_COMMAND -ghU@"
-  alias lt "$LS_COMMAND --tree"
+    set --local LS_COMMAND eza -almM --classify=always --color-scale=size --group-directories-first --sort=name --time-style=long-iso
+    alias l  "$LS_COMMAND"
+    alias ll "$LS_COMMAND -ghU@"
+    alias lt "$LS_COMMAND --tree"
 else
-  set --local LS_COMMAND (which ls) -AgFh --color=always --group-directories-first --time-style=long-iso
-  alias l  "$LS_COMMAND"
-  alias ll "$LS_COMMAND"
+    set --local LS_COMMAND (which ls) -AgFh --color=always --group-directories-first --time-style=long-iso
+    alias l  "$LS_COMMAND"
+    alias ll "$LS_COMMAND"
 end
 
 ############################################################################
@@ -86,35 +86,50 @@ end
 ## Bind Ctrl + L to clear screen and display greeting
 bind \cl 'clear; echo'
 
+function sudo --description "Expand Fish aliases properly for sudo"
+    if functions -q -- $argv[1]
+        # 1. Extract the command line inside the Fish alias/function
+        set -l raw_cmd (functions --no-details $argv[1] | string match -r '^\s*(?!function|end).*' | string trim)
+        # 2. Remove the literal '$argv' placeholder that Fish aliases include
+        set raw_cmd (string replace -r '\s*\$argv$' '' -- $raw_cmd)
+        # 3. Split the command and flags into separate words
+        set -l expanded (string split ' ' -- $raw_cmd)
+        # 4. Run sudo with the expanded command and any extra arguments you typed
+        command sudo $expanded $argv[2..-1]
+    else
+        command sudo $argv
+    end
+end
+
 function fish_prompt
-  set --local last_run_command_status $status
-  set --local FISH_INDICATOR 🐟
-  set --local PROMPT_INDICATOR ' ➤ '
+    set --local last_run_command_status $status
+    set --local FISH_INDICATOR 🐟
+    set --local PROMPT_INDICATOR ' ➤ '
 
-  if test -n "$TTY_MODE"
-      set FISH_INDICATOR 'FISH'
-      set PROMPT_INDICATOR ' >> '
-  end
+    if test -n "$TTY_MODE"
+        set FISH_INDICATOR 'FISH'
+        set PROMPT_INDICATOR ' >> '
+    end
 
-  printf "\n"
+    printf "\n"
 
-  set -q SSH_CLIENT SSH_TTY; and echo -ns (set_color -b brmagenta black) "$OS_ICON $HOST_SHORT_NAME " (set_color --bold -b magenta brwhite) " SSH " (set_color normal) (set_color magenta)  (set_color normal) ' '
+    set -q SSH_CLIENT SSH_TTY; and echo -ns (set_color -b brmagenta black) "$OS_ICON $HOST_SHORT_NAME " (set_color --bold -b magenta brwhite) " SSH " (set_color normal) (set_color magenta)  (set_color normal) ' '
 
-  echo -ns (set_color --bold brmagenta) $SHLVL (set_color normal)  ┊ (set_color --bold bryellow) $FISH_INDICATOR ' ' (set_color normal)
-  echo -ns (set_color $fish_color_cwd) (pwd)
-  test $last_run_command_status -gt 0; and echo -ns (set_color --bold $fish_color_error) " [$last_run_command_status]"
-  echo -ns (set_color --bold brwhite) $PROMPT_INDICATOR (set_color normal)
+    echo -ns (set_color --bold brmagenta) $SHLVL (set_color normal)  ┊ (set_color --bold bryellow) $FISH_INDICATOR ' ' (set_color normal)
+    echo -ns (set_color $fish_color_cwd) (pwd)
+    test $last_run_command_status -gt 0; and echo -ns (set_color --bold $fish_color_error) " [$last_run_command_status]"
+    echo -ns (set_color --bold brwhite) $PROMPT_INDICATOR (set_color normal)
 end
 
 function this
-  echo -ns '        Host: ' (set_color -o) $HOST_FULL_NAME (set_color normal) \n
-  echo -ns '          OS: ' (set_color -o) $OS (set_color normal) \n
-  test -n "$BASE_OS"; and echo -ns '     Base OS: ' (set_color -o) $BASE_OS (set_color normal) \n
-  echo -ns 'Architecture: ' (set_color -o) (uname -m) (set_color normal) \n
-  echo -ns '      Kernel: ' (set_color -o) (uname -sr) (set_color normal) \n
-  echo -ns '       Shell: ' (set_color -o) '🐟 Fish ' $FISH_VERSION (set_color normal) \n
-  test -n "$XDG_SESSION_TYPE"; and echo -ns '     Session: ' (set_color -o) $XDG_SESSION_TYPE (set_color normal) \n
-  test -n "$XDG_CURRENT_DESKTOP"; and echo -ns '     Desktop: ' (set_color -o) $XDG_CURRENT_DESKTOP (set_color normal) \n
+    echo -ns '        Host: ' (set_color -o) $HOST_FULL_NAME (set_color normal) \n
+    echo -ns '          OS: ' (set_color -o) $OS (set_color normal) \n
+    test -n "$BASE_OS"; and echo -ns '     Base OS: ' (set_color -o) $BASE_OS (set_color normal) \n
+    echo -ns 'Architecture: ' (set_color -o) (uname -m) (set_color normal) \n
+    echo -ns '      Kernel: ' (set_color -o) (uname -sr) (set_color normal) \n
+    echo -ns '       Shell: ' (set_color -o) '🐟 Fish ' $FISH_VERSION (set_color normal) \n
+    test -n "$XDG_SESSION_TYPE"; and echo -ns '     Session: ' (set_color -o) $XDG_SESSION_TYPE (set_color normal) \n
+    test -n "$XDG_CURRENT_DESKTOP"; and echo -ns '     Desktop: ' (set_color -o) $XDG_CURRENT_DESKTOP (set_color normal) \n
 end
 
 function fnd
@@ -150,11 +165,11 @@ function terminal_colors
 end
 
 function default_terminal_colors
-  # Inspired by Ivo's ANSI Color script
-  echo
-  echo -ns (set_color red)   ' ██████  ' (set_color green)   ' ██████  ' (set_color yellow)   '   ██████' (set_color blue)   ' ██████  ' (set_color magenta)   '   ██████' (set_color cyan)   '   ██████' \n
-  echo -ns (set_color red)   ' ████████' (set_color green)   ' ██    ██' (set_color yellow)   ' ██      ' (set_color blue)   ' ██    ██' (set_color magenta)   ' ██████  ' (set_color cyan)   ' ████████' \n
-  echo -ns (set_color brred) ' ██  ████' (set_color brgreen) ' ██  ████' (set_color bryellow) ' ████    ' (set_color brblue) ' ████  ██' (set_color brmagenta) ' ████    ' (set_color brcyan) ' █████   ' \n
-  echo -ns (set_color brred) ' ██    ██' (set_color brgreen) ' ██████  ' (set_color bryellow) ' ████████' (set_color brblue) ' ██████  ' (set_color brmagenta) ' ████████' (set_color brcyan) ' ██      ' \n
-  echo -ns (set_color normal)
+    # Inspired by Ivo's ANSI Color script
+    echo
+    echo -ns (set_color red)   ' ██████  ' (set_color green)   ' ██████  ' (set_color yellow)   '   ██████' (set_color blue)   ' ██████  ' (set_color magenta)   '   ██████' (set_color cyan)   '   ██████' \n
+    echo -ns (set_color red)   ' ████████' (set_color green)   ' ██    ██' (set_color yellow)   ' ██      ' (set_color blue)   ' ██    ██' (set_color magenta)   ' ██████  ' (set_color cyan)   ' ████████' \n
+    echo -ns (set_color brred) ' ██  ████' (set_color brgreen) ' ██  ████' (set_color bryellow) ' ████    ' (set_color brblue) ' ████  ██' (set_color brmagenta) ' ████    ' (set_color brcyan) ' █████   ' \n
+    echo -ns (set_color brred) ' ██    ██' (set_color brgreen) ' ██████  ' (set_color bryellow) ' ████████' (set_color brblue) ' ██████  ' (set_color brmagenta) ' ████████' (set_color brcyan) ' ██      ' \n
+    echo -ns (set_color normal)
 end

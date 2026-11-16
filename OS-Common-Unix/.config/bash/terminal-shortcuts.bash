@@ -27,6 +27,7 @@ alias path='echo -e ${PATH//:/\\n}'
 alias ping='ping -c 5 -s.2'
 alias ttymode='export TTY_MODE=1; set_prompt'
 alias guimode='unset TTY_MODE; set_prompt'
+alias sudo='sudo ' # Trick to force shell to expand aliases that follow the sudo command
 alias root='sudo -i'
 alias ls='l'
 
