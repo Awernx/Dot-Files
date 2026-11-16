@@ -35,23 +35,21 @@ stow-mjolnir: ## Stow dot-files for Mjolnir Linux machine
 		--ignore='etc' \
 		--stow OS-Common-Unix OS-Linux ENV-Chander-Mjolnir
 
-	# Ignore .config/ and .bashrc when running as ROOT
+	# Stow /etc files to / (ROOT)
 	$(STOW_COMMAND_PREFIX_ROOT) \
 		--ignore='(\.config|\.local)' \
 		--stow ENV-Chander-Mjolnir
 
-	# Stow .bashrc to /root
+	# Stow .bashrc and .config to /root
 	sudo $(STOW_PATH) \
 	    --dir=$(DOT_FILES_LOCATION) \
 		--target=$(ROOT_FOLDER_LOCATION) \
 		--stow OS-Common-Unix
 
-	# # Stow .config/bash to /root
-	# sudo mkdir -p $(ROOT_FOLDER_LOCATION)/$(BASH_CONFIG_LOCATION)
-	# sudo $(STOW_PATH) \
-	#     --dir=$(DOT_FILES_LOCATION)/OS-Common-Unix/.config \
-	# 	--target=$(ROOT_FOLDER_LOCATION)/$(BASH_CONFIG_LOCATION) \
-	# 	--stow bash
+	# sudoers.d files cannot be stowed because they require to be owned by root!
+	# So making a copy of those files
+	sudo install -o root -g root -m 0440 ENV-Chander-Mjolnir/etc/sudoers.d/nix-path /etc/sudoers.d/nix-path
+	sudo visudo -c
 
 	printf "✅ Mjolnir Dot-Files stowed successfully\n"
 
