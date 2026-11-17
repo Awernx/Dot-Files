@@ -158,7 +158,7 @@ set_prompt() {
     fi
 
     prompt+="${bold}${purpleb}${SHLVL}${reset}┊${yellowb}${STATUS_INDICATOR} "
-    prompt+="${whitef}$(pwd)${reset}"
+    prompt+="${blueb}$(pwd)${reset}"
 
     if [[ $LAST_RUN_COMMAND_STATUS -gt 0 ]]; then
         prompt+=" ${bold}${redb}[${LAST_RUN_COMMAND_STATUS}]${reset}"
