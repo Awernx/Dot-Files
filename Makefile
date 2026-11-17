@@ -57,6 +57,16 @@ stow-elebook: ## Stow dot-files for elebook (Elementary) laptop
 	$(STOW_COMMAND_PREFIX_HOME) \
 		--stow OS-Common-Unix OS-Linux OS-ElementaryOS ENV-Chander-Elebook
 
+	# Stow .bashrc and .config to /root
+	sudo $(STOW_PATH) \
+	    --dir=$(DOT_FILES_LOCATION) \
+		--target=$(ROOT_FOLDER_LOCATION) \
+		--stow OS-Common-Unix
+
+	# sudoers.d files cannot be stowed because they require to be owned by root!
+	# So making a copy of those files
+	sudo install -o root -g root -m 0440 OS-ElementaryOS/etc/sudoers.d/nix-path /etc/sudoers.d/nix-path
+
 	printf "✅ Elebook Dot-Files stowed successfully\n"
 
 .PHONY: stow-sath
