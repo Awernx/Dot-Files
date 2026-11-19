@@ -1,0 +1,73 @@
+/* Tokyo Night Storm Theme for gwym */
+@define-color tn_bg      #24283b;
+@define-color tn_surface #1f2335;
+@define-color tn_border  #3b4261;
+@define-color tn_text    #c0caf5;
+@define-color tn_muted   #565f89;
+@define-color tn_blue    #7aa2f7;
+@define-color tn_cyan    #7dcfff;
+@define-color tn_magenta #bb9af7;
+@define-color tn_ink     #1a1b26;
+
+window {
+    background-color: transparent;
+    font:
+        10pt Zed Mono,
+        JetBrains Mono,
+        monospace;
+}
+
+.menu-bar {
+    background-color: @tn_bg;
+    color: @tn_text;
+    margin: 10px 16px;
+    border-radius: 6px;
+    border: 1px solid @tn_border;
+    box-shadow: 0 6px 20px rgba(15, 17, 26, 0.65);
+}
+
+/* Vibrant Tokyo Night blue prompt badge */
+.prompt {
+    background-color: @tn_blue;
+    color: @tn_ink;
+    font-weight: bold;
+    padding: 5px 11px;
+    margin: 4px 0 4px 4px;
+    border-radius: 4px;
+}
+
+/* Recessed storm search box with cyan caret */
+entry,
+entry text {
+    background-color: @tn_surface;
+    color: @tn_text;
+    caret-color: @tn_cyan;
+}
+
+entry {
+    border: 1px solid @tn_border;
+    border-radius: 4px;
+    box-shadow: none;
+    min-width: 200px;
+    padding: 4px 10px;
+    margin: 4px 8px;
+}
+
+entry:focus {
+    border-color: @tn_blue;
+}
+
+/* Unselected workspace items in muted storm slate */
+.item {
+    color: @tn_muted;
+    padding: 4px 10px;
+    margin: 4px 2px;
+    border-radius: 4px;
+}
+
+/* Selected workspace pill in Tokyo Night Magenta */
+.item.selected {
+    background-color: @tn_magenta;
+    color: @tn_ink;
+    font-weight: bold;
+}

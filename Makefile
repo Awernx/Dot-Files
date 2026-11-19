@@ -36,7 +36,7 @@ stow-mjolnir: ## Stow dot-files for Mjolnir Linux machine
 		--stow OS-Common-Unix OS-Linux ENV-Chander-Mjolnir
 
 	# Stow /etc files to / (ROOT)
-	$(STOW_COMMAND_PREFIX_ROOT) \
+	sudo $(STOW_COMMAND_PREFIX_ROOT) \
 		--ignore='(\.config|\.local)' \
 		--stow ENV-Chander-Mjolnir
 
@@ -55,7 +55,13 @@ stow-mjolnir: ## Stow dot-files for Mjolnir Linux machine
 .PHONY: stow-elebook
 stow-elebook: ## Stow dot-files for elebook (Elementary) laptop
 	$(STOW_COMMAND_PREFIX_HOME) \
+	    --ignore='etc' \
 		--stow OS-Common-Unix OS-Linux OS-ElementaryOS ENV-Chander-Elebook
+
+	# Stow /etc files to / (ROOT)
+	sudo $(STOW_COMMAND_PREFIX_ROOT) \
+	    --ignore='(\.config|\.local)' \
+		--stow OS-ElementaryOS ENV-Chander-Elebook
 
 	# Stow .bashrc and .config to /root
 	sudo $(STOW_PATH) \

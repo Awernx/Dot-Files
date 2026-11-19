@@ -39,18 +39,13 @@ function bootstrap
     gsettings set io.elementary.files.preferences show-hiddenfiles true
     gsettings set io.elementary.files.preferences singleclick-select true
 
-    # echo
-    # echo 'Setting up Logitech MX Keys'
-    # sudo systemd-hwdb update
-    # sudo udevadm trigger /dev/input/event*
-    # echo 'Note: Restart computer to complete MX Keys set'
-
     echo '✅ Settings have been applied'
 end
 
 function register_keyboard_shortcuts
     set --local HYPER "<Control><Alt><Super>"
     set --local FINDER "<Control><Shift>"
+    set --local CHOOSER "<Control><Alt>"
 
     set --local apps
     set --append apps "T" "io.elementary.terminal.desktop"   # Terminal
@@ -64,6 +59,10 @@ function register_keyboard_shortcuts
     set --append folders "W" "/home/$USER/Workspace"         # Workspace
     set --append folders "S" "smb://mjolnir.local/svalbard"  # Svalbard SMB Share
 
+    set --local chooser_scripts
+    set --append chooser_scripts "G" "/home/$USER/.local/bin/gwym_github_websites.sh" # GitHub Repo Launcher
+    set --append chooser_scripts "V" "/home/$USER/.local/bin/gwym_zed_workspaces.sh"  # Zed Workspace Launcher
+
     set --local entries
 
     for i in (seq 1 2 (count $apps))
@@ -76,6 +75,12 @@ function register_keyboard_shortcuts
         set --local key $folders[$i]
         set --local target $folders[(math $i + 1)]
         set --append entries "(1, 'io.elementary.files $target', @a{sv} {}, ['$FINDER$key'])"
+    end
+
+    for i in (seq 1 2 (count $chooser_scripts))
+        set --local key $chooser_scripts[$i]
+        set --local target $chooser_scripts[(math $i + 1)]
+        set --append entries "(1, '$target', @a{sv} {}, ['$CHOOSER$key'])"
     end
 
     set --local joined (string join ", " $entries)

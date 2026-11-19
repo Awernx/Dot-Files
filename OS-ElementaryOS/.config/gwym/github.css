@@ -1,0 +1,74 @@
+/* GitHub Command Palette Theme for gwym */
+@define-color gh_canvas #0d1117;
+@define-color gh_surface #161b22;
+@define-color gh_border #30363d;
+@define-color gh_text #e6edf3;
+@define-color gh_muted #8b949e;
+@define-color gh_blue #1f6feb;
+@define-color gh_green #238636;
+
+window {
+    background-color: transparent;
+    font:
+        10pt "JetBrains Mono",
+        "Roboto Mono",
+        monospace;
+}
+
+/* Command palette floating bar */
+.menu-bar {
+    background-color: @gh_canvas;
+    color: @gh_text;
+    margin: 10px 16px;
+    border-radius: 8px;
+    border: 1px solid @gh_border;
+    box-shadow:
+        0 8px 24px rgba(1, 4, 9, 0.75),
+        0 0 0 1px rgba(240, 246, 252, 0.04);
+}
+
+/* GitHub-styled prompt badge (using GitHub's signature PR green) */
+.prompt {
+    background-color: @gh_green;
+    color: #ffffff;
+    font-weight: bold;
+    padding: 6px 12px;
+    margin: 4px 0 4px 4px;
+    border-radius: 5px;
+}
+
+/* Search input styled like GitHub's `/` search box */
+entry,
+entry text {
+    background-color: @gh_surface;
+    color: @gh_text;
+    caret-color: @gh_text;
+}
+
+entry {
+    border: 1px solid @gh_border;
+    border-radius: 5px;
+    box-shadow: none;
+    min-width: 200px;
+    padding: 4px 10px;
+    margin: 4px 8px;
+}
+
+entry:focus {
+    border-color: @gh_blue;
+}
+
+/* Repository items */
+.item {
+    color: @gh_muted;
+    padding: 4px 10px;
+    margin: 4px 2px;
+    border-radius: 5px;
+}
+
+/* Selected repository pill in GitHub Blue */
+.item.selected {
+    background-color: @gh_blue;
+    color: #ffffff;
+    font-weight: bold;
+}
