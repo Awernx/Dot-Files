@@ -55,7 +55,7 @@ stow-mjolnir: ## Stow dot-files for Mjolnir Linux machine
 .PHONY: stow-elebook
 stow-elebook: ## Stow dot-files for elebook (Elementary) laptop
 	$(STOW_COMMAND_PREFIX_HOME) \
-	    --ignore='etc' \
+	    --ignore='(etc|usr)' \
 		--stow OS-Common-Unix OS-Linux OS-ElementaryOS ENV-Chander-Elebook
 
 	# Stow /etc files to / (ROOT)
