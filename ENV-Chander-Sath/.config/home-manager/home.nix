@@ -15,7 +15,6 @@
     pkgs.bat
     pkgs.lolcat
     pkgs.htop
-    pkgs.jq
   ];
 
   programs.fish.enable = true;

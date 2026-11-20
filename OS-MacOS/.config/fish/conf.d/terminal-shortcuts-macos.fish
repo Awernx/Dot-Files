@@ -18,7 +18,7 @@ if test -f $homebrew_location
     $homebrew_location shellenv | source
 end
 
-## Abbreviations-----------------------
+## Abbreviations
 abbr clear-favicon-cache 'rm -rf ~/Library/Safari/Favicon\ Cache/'
 abbr clear-network-cache 'sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder'
 
@@ -31,7 +31,7 @@ function upgrade
     brew cleanup --prune=all
 end
 
-##  Get the Bundle Id -----------------
+##  Get the Bundle Id
 function bid
     if test (count $argv) -lt 1
         echo "⚠️ Application name is a required argument";
@@ -41,42 +41,45 @@ function bid
     end
 end
 
-##  Set sane defaults on macOS --------
+##  Set sane defaults on macOS
 function sane-defaults
     defaults write org.hammerspoon.Hammerspoon MJConfigFile "~/.config/hammerspoon/init.lua"
     defaults write com.apple.Terminal AutoMarkPromptLines -bool NO
 end
 
-##  Print local and public IP info-----
+##  Print local and public IP info
 function ipa
-    if not type -q jq
-        echo "Error: 'jq' is required. Install it with 'brew install jq'."
-        exit 1
-    end
+    set -l route_out (route -n get default 2>/dev/null)
+    set -l interface (printf '%s\n' $route_out | awk '/interface: / {print $2}')
+    set -l router_ip (printf '%s\n' $route_out | awk '/gateway: / {print $2}')
 
-    # Get Local Adapter Info
-    set -l interface (route -n get default | awk '/interface: / {print $2}')
     set -l service (networksetup -listnetworkserviceorder | grep -B1 "$interface" | head -n1 | string replace -r '^\(\d+\)\s+' '')
     set -l local_ip (ipconfig getifaddr $interface)
     set -l mac_addr (networksetup -getmacaddress "$service" | awk '{print $3}')
-    set -l router_ip (route -n get default | awk '/gateway: / {print $2}')
 
     echo
     echo -ns (set_color -o brgreen) '🏠 Internal: ' (set_color normal) \n
     echo -ns                        '         IP: ' (set_color -o brgreen) $local_ip                 (set_color normal) \n
     echo -ns                        '    Adapter: ' (set_color brgreen)    $interface ' ' [$service] (set_color normal) \n
     echo -ns                        '        MAC: ' (set_color brgreen)    $mac_addr                 (set_color normal) \n
-    echo -ns                        '    Gateway: ' (set_color brgreen)    $router_ip                (set_color normal) \n
+    echo -ns                        '    Gateway: ' (set_color -o brgreen) $router_ip                (set_color normal) \n
 
     # Get Public IP Info
-    set -l public_json (curl -s ipinfo.io)
-    set -l pub_ip (echo $public_json | jq -r '.ip')
-    set -l pub_loc (echo $public_json | jq -r '"\(.city), \(.region), \(.country)"')
+    set -l public_json (curl -fsS --max-time 5 https://ipinfo.io 2>/dev/null)
+    set -l pub_ip (string match -r '"ip":\s*"\K[^"]+' -- $public_json)
+    set -l city (string match -r '"city":\s*"\K[^"]+' -- $public_json)
+    set -l region (string match -r '"region":\s*"\K[^"]+' -- $public_json)
+    set -l country (string match -r '"country":\s*"\K[^"]+' -- $public_json)
+
+    set -l pub_loc "N/A"
+    if test -n "$city"
+        set pub_loc "$city, $region, $country"
+    end
 
     echo
     echo -ns (set_color -o bryellow) '  🌐 Public: ' (set_color normal) \n
-    echo -ns                         '         IP: ' (set_color -o bryellow) $pub_ip   (set_color normal) \n
-    echo -ns                         '   Location: ' (set_color bryellow)    $pub_loc  (set_color normal) \n
+    echo -ns                         '         IP: ' (set_color -o bryellow) (string collect $pub_ip; or echo "N/A") (set_color normal) \n
+    echo -ns                         '   Location: ' (set_color bryellow)    $pub_loc                                (set_color normal) \n
 end
 
 ## Load these staple tools if they exist

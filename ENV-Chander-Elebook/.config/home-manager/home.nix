@@ -18,7 +18,6 @@
     pkgs.bat
     pkgs.lolcat
     pkgs.htop
-    pkgs.jq
   ];
 
   programs.home-manager.enable = true;

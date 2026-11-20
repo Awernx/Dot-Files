@@ -16,7 +16,6 @@
     pkgs.bat
     pkgs.lolcat
     pkgs.htop
-    pkgs.jq
     pkgs.rclone
     pkgs.gh
   ];

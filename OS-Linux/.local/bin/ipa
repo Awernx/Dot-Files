@@ -1,57 +1,57 @@
-#!/bin/bash
+#!/bin/sh
 
-green='\e[0;92m'
-brgreen='\e[1;92m'
-yellow='\e[0;93m'
-bryellow='\e[1;93m'
-reset='\e[0m'
+green='\033[0;92m'
+brgreen='\033[1;92m'
+yellow='\033[0;93m'
+bryellow='\033[1;93m'
+reset='\033[0m'
 
 internal_ip_address() {
-    route_info=$(ip route get 1.1.1.1)
+    set -- $(ip route get 1.1.1.1 2>/dev/null)
+    while [ $# -gt 0 ]; do
+        case "$1" in
+            via) router_ip="$2"; shift ;;
+            dev) adapter="$2"; shift ;;
+            src) ip_address="$2"; shift ;;
+        esac
+        shift
+    done
 
-    ip_address=$(echo "$route_info" | grep -oP 'src \K\S+')
-    router_ip=$(echo "$route_info"  | grep -oP 'via \K\S+')
-    adapter=$(echo "$route_info"    | grep -oP 'dev \K\S+')
-    mac_address=$(ip link show "$adapter" | grep -oP 'link/ether \K\S+')
+    mac_address=""
+    if [ -n "$adapter" ] && [ -r "/sys/class/net/$adapter/address" ]; then
+        read -r mac_address < "/sys/class/net/$adapter/address"
+    fi
 
-    case "${adapter:0:2}" in
-        en|et)
-            adapter_type="Ethernet"
-            ;;
-        wl)
-            adapter_type="Wi-Fi"
-            ;;
-        ww)
-            adapter_type="Mobile Broadband (WWAN)"
-            ;;
-        lo)
-            adapter_type="Loopback"
-            ;;
-        *)
-            adapter_type="Unknown/Virtual"
-            ;;
+    case "$adapter" in
+        en*|et*) adapter_type="Ethernet" ;;
+        wl*)     adapter_type="Wi-Fi" ;;
+        ww*)     adapter_type="Mobile Broadband (WWAN)" ;;
+        lo*)     adapter_type="Loopback" ;;
+        *)       adapter_type="Unknown/Virtual" ;;
     esac
 
     printf "\n${green}🏠 Internal: ${reset}"
-    printf "\n         IP:${brgreen} $ip_address            ${reset}"
-    printf "\n    Adapter:${green} $adapter [$adapter_type] ${reset}"
-    printf "\n        MAC:${green} $mac_address             ${reset}"
-    printf "\n    Gateway:${green} $router_ip               ${reset}"
-    printf "\n"
+    printf "\n         IP:${brgreen} %s            ${reset}" "${ip_address:-N/A}"
+    printf "\n    Adapter:${green} %s [%s] ${reset}" "${adapter:-N/A}" "$adapter_type"
+    printf "\n        MAC:${green} %s             ${reset}" "${mac_address:-N/A}"
+    printf "\n    Gateway:${green} %s               ${reset}\n" "${router_ip:-N/A}"
 }
 
 public_ip_address() {
-    data=$(curl -s ipinfo.io)
+    data=$(curl -fsS --max-time 5 https://ipinfo.io 2>/dev/null)
 
-    ip=$(echo "$data"      | jq -r '.ip')
-    city=$(echo "$data"    | jq -r '.city')
-    region=$(echo "$data"  | jq -r '.region')
-    country=$(echo "$data" | jq -r '.country')
+    if [ -n "$data" ]; then
+        eval "$(printf '%s\n' "$data" | awk -F'"' '
+            /"ip":/      { print "ip=\"" $4 "\"" }
+            /"city":/    { print "city=\"" $4 "\"" }
+            /"region":/  { print "region=\"" $4 "\"" }
+            /"country":/ { print "country=\"" $4 "\"" }
+        ')"
+    fi
 
     printf "\n${yellow}  🌐 Public: ${reset}"
-    printf "\n         IP:${bryellow} $ip                    ${reset}"
-    printf "\n   Location:${yellow} $city, $region, $country ${reset}"
-    printf "\n"
+    printf "\n         IP:${bryellow} %s                    ${reset}" "${ip:-N/A}"
+    printf "\n   Location:${yellow} %s, %s, %s ${reset}\n" "${city:-N/A}" "${region:-N/A}" "${country:-N/A}"
 }
 
 internal_ip_address
