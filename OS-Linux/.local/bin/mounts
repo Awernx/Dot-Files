@@ -1,0 +1,125 @@
+#!/bin/sh
+
+# 🅲 🅷 🅰 🅽 🅳 🅴 🆁
+# ---------------------------------------------------------
+# Prints secondary, external, and SMB/network mounts
+
+if command -v timeout >/dev/null 2>&1; then
+    df_cmd="timeout 3 df"
+else
+    df_cmd="df"
+fi
+
+{
+    # 1. Standard block & kernel network mounts (cifs, nfs, etc.)
+    $df_cmd -h --output=target,source,fstype,size,used,avail,pcent \
+        --exclude-type=tmpfs \
+        --exclude-type=devtmpfs \
+        --exclude-type=efivarfs \
+        --exclude-type=squashfs \
+        --exclude-type=overlay 2>/dev/null
+
+    # 2. Userspace GVFS mounts (desktop file manager SMB/SFTP/MTP shares)
+    for gvfs_item in /run/user/*/gvfs/*; do
+        [ -e "$gvfs_item" ] || continue
+        df_line=$($df_cmd -h --output=source,fstype,size,used,avail,pcent "$gvfs_item" 2>/dev/null | tail -n +2)
+        if [ -n "$df_line" ]; then
+            printf "%s %s\n" "$gvfs_item" "$df_line"
+        else
+            printf "%s gvfsd-fuse smb - - - -\n" "$gvfs_item"
+        fi
+    done
+} | awk '
+function max(a, b) { return (a > b ? a : b) }
+
+function rep(s, n, o, i) {
+    o = ""
+    for (i = 0; i < n; i++) o = o s
+    return o
+}
+
+function hline(l, m, r) {
+    printf "%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s\n",
+        l, rep("─", w1 + 2), m, rep("─", w2 + 2), m, rep("─", w3 + 2),
+        m, rep("─", w4 + 2), m, rep("─", w5 + 2), m, rep("─", w6 + 2),
+        m, rep("─", w7 + 2), r
+}
+
+BEGIN {
+    h1 = "MOUNTPOINT"; h2 = "SOURCE"; h3 = "FSTYPE"
+    h4 = "SIZE"; h5 = "USED"; h6 = "AVAIL"; h7 = "USE%"
+
+    w1 = length(h1); w2 = length(h2); w3 = length(h3)
+    w4 = length(h4); w5 = length(h5); w6 = length(h6); w7 = length(h7)
+}
+
+NR > 1 {
+    pcent  = $NF
+    avail  = $(NF - 1)
+    used   = $(NF - 2)
+    size   = $(NF - 3)
+    fstype = $(NF - 4)
+
+    rest = $0
+    sub(/[[:space:]]+[^[:space:]]+[[:space:]]+[^[:space:]]+[[:space:]]+[^[:space:]]+[[:space:]]+[^[:space:]]+[[:space:]]+[^[:space:]]+[[:space:]]*$/, "", rest)
+
+    if (match(rest, /[[:space:]]+(\/\/|[^[:space:]]+:\/|\/dev\/|gvfsd-fuse|portal)[^[:space:]]*$/)) {
+        source = substr(rest, RSTART)
+        sub(/^[[:space:]]+/, "", source)
+        target = substr(rest, 1, RSTART - 1)
+    } else {
+        match(rest, /[[:space:]]+[^[:space:]]+$/)
+        source = substr(rest, RSTART)
+        sub(/^[[:space:]]+/, "", source)
+        target = substr(rest, 1, RSTART - 1)
+    }
+    sub(/[[:space:]]+$/, "", target)
+
+    # Skip core OS system mountpoints (while keeping /run/user/*/gvfs/* subdirectories)
+    if (target ~ /^\/($|boot|efi|var|usr|opt|srv|home$|dev|proc|sys|run\/lock|run\/shm)/) next
+    if (target ~ /^\/run\/user\/[0-9]+(\/(doc|gvfs))?$/) next
+
+    # Format GVFS SMB paths into clean smb://server/share URI
+    if (target ~ /\/gvfs\/smb-share:/) {
+        srv = target; shr = target
+        sub(/.*server=/, "", srv); sub(/,.*/, "", srv)
+        sub(/.*share=/, "", shr);  sub(/,.*/, "", shr)
+        target = "smb://" srv "/" shr
+        source = "//" srv "/" shr
+        fstype = "smb (gvfs)"
+    }
+
+    n++
+    c1[n] = target; c2[n] = source; c3[n] = fstype
+    c4[n] = size;   c5[n] = used;   c6[n] = avail; c7[n] = pcent
+
+    w1 = max(w1, length(target)); w2 = max(w2, length(source)); w3 = max(w3, length(fstype))
+    w4 = max(w4, length(size));   w5 = max(w5, length(used));   w6 = max(w6, length(avail)); w7 = max(w7, length(pcent))
+}
+
+END {
+    if (n == 0) {
+        print "No secondary or network mounts found."
+        exit 0
+    }
+
+    hline("┌", "┬", "┐")
+    printf "│ \033[1;93m%-*s\033[0m │ \033[1;93m%-*s\033[0m │ \033[1;93m%-*s\033[0m │ \033[1;93m%*s\033[0m │ \033[1;93m%*s\033[0m │ \033[1;93m%*s\033[0m │ \033[1;93m%*s\033[0m │\n",
+        w1, h1, w2, h2, w3, h3, w4, h4, w5, h5, w6, h6, w7, h7
+    hline("├", "┼", "┤")
+
+    for (i = 1; i <= n; i++) {
+        if (c7[i] == "-" || c7[i] == "") {
+            ucol = "\033[0;90m"
+        } else {
+            pct = c7[i] + 0
+            ucol = (pct >= 85 ? "\033[1;91m" : (pct >= 65 ? "\033[1;93m" : "\033[0;92m"))
+        }
+        scol = (c3[i] ~ /^(cifs|smb|nfs|fuse\.sshfs)/ ? "\033[1;96m" : "\033[1;92m")
+
+        printf "│ %s%-*s\033[0m │ %-*s │ %-*s │ %*s │ %*s │ %*s │ %s%*s\033[0m │\n",
+            scol, w1, c1[i], w2, c2[i], w3, c3[i], w4, c4[i], w5, c5[i], w6, c6[i], ucol, w7, c7[i]
+    }
+
+    hline("└", "┴", "┘")
+}'

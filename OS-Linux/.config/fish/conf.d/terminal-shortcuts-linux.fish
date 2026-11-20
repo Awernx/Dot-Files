@@ -42,7 +42,6 @@ abbr reboot   'sudo /sbin/reboot'
 alias clk             'watch --no-title --precise --interval 0.1 '"'"'date +"%A %B %d, %Y %I:%M:%S,%N %p %Z"'"'"''
 alias time_stat       'systemctl status systemd-timesyncd.service'
 alias time_sync       'sudo timedatectl set-ntp off; sudo timedatectl set-ntp on'
-alias mounts          'df -h --output=target,source,fstype,size,used,avail --exclude-type=tmpfs --exclude-type=efivarfs'
 
 #!/usr/bin/env fish
 
