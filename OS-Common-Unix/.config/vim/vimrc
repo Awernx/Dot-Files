@@ -2,40 +2,50 @@
 " ---------------------------------------------------------
 " VIM editor preferences
 
-set nocompatible    " Don't try to be Vi compatible
-set number          " Show line number
-set incsearch       " Search as you type - incremental
-set ignorecase      " Ignore case when searching
-set hlsearch        " Highlight search matches
-set showmatch       " Match brackets 
+set nocompatible          " Don't try to be Vi compatible
+filetype plugin indent on " Detect file types (e.g., .sh, .fish, .py) and load their rules & auto-indent
+syntax on                 " Enable syntax highlighting based on the detected file typefiletype plugin indent on
+set number                " Show line numbers
+set incsearch             " Search as you type - incremental
+set ignorecase            " Ignore case when searching
+set smartcase             " Case-sensitive if search contains uppercase
+set hlsearch              " Highlight search matches
+set showmatch             " Briefly highlight matching brackets
+set matchtime=2           " Keep bracket flash brief (0.2s)
 
 " Status bar section
 " ---------------------------------------------------------
-set laststatus=2    " Enable status bar
+set laststatus=2    " Always show status bar
 
-set statusline =%7*[%n]%*
-set statusline +=%1*%F\ %*%8*%m%r%*%1*%h%w%* "filename
-set statusline +=%7*\|%*
-set statusline+=%2*\ %Y: "filetype
-set statusline+=%{&ff}:  "dos/unix
-set statusline+=%{&fenc!=''?&fenc:&enc}\ %* "encoding
-set statusline +=%7*\|%*
-set statusline+=%2*\ row:%l/%*%1*%L%*%2*\ %2*\ \col:%v\ %*
-set statusline +=%7*\|%*
-set statusline+=%2*\ ASCII:%b\ %*  " ascii
-set statusline +=%7*\|%*
+" Define User1/2/7/8 highlight groups so %1*..%8* render with color
+hi User1 ctermfg=222 ctermbg=236 guifg=#ffd787 guibg=#303030 gui=bold
+hi User2 ctermfg=117 ctermbg=236 guifg=#87d7ff guibg=#303030
+hi User7 ctermfg=244 ctermbg=236 guifg=#808080 guibg=#303030
+hi User8 ctermfg=203 ctermbg=236 guifg=#ff5f5f guibg=#303030 gui=bold
+
+set statusline=%7*[%n]%*
+set statusline+=%1*\ %F\ %*%8*%m%r%*%1*%h%w%*   " Filename & flags
+set statusline+=%7*\|%*
+set statusline+=%2*\ %Y:                        " Filetype
+set statusline+=%{&ff}:                         " Line endings (unix/dos)
+set statusline+=%{&fenc!=''?&fenc:&enc}\ %*     " Encoding
+set statusline+=%7*\|%*
+set statusline+=%2*\ row:%l/%*%1*%L%*%2*\ col:%v\ %*
+set statusline+=%7*\|%*
+set statusline+=%2*\ ASCII:%b\ %*
+set statusline+=%7*\|%*
 
 " XDG section
 " ---------------------------------------------------------
-" Use XDG defaults if not exported 
 if empty($XDG_STATE_HOME)
   let $XDG_STATE_HOME = $HOME . '/.local/state'
 endif
 
-" Ensure the directory exists
-call mkdir($XDG_STATE_HOME . '/vim', 'p', 0700)
+let s:vim_state = $XDG_STATE_HOME . '/vim'
+if !isdirectory(s:vim_state)
+  call mkdir(s:vim_state, 'p', 0700)
+endif
 
-" Tell Vim where to write viminfo
 if has('viminfo')
-  let &viminfofile = $XDG_STATE_HOME . '/vim/viminfo'
+  let &viminfofile = s:vim_state . '/viminfo'
 endif

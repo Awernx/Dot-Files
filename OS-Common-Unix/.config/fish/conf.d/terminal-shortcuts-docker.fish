@@ -18,25 +18,32 @@ status is-interactive; or exit 0
 # The qemu-system-aarch64 package provides an AArch64 (ARM64) system emulator,
 # which can be used to emulate an entire system, including the CPU and various peripheral devices.
 # To build code on Raspberry Pi, QEMU can be used to simulate an AArch64 system on an x86 machine
-abbr dqemu  'docker run --rm --privileged multiarch/qemu-user-static --reset -p yes'
+abbr dqemu  'docker run --privileged --rm tonistiigi/binfmt --install all'
+abbr dclean 'docker system prune --force'
+abbr dpurge 'docker system prune --all --volumes --force'
 abbr drm    'docker image rm --force' # Remove a specific image -> Pass image id as param
+# Tab-completion for the 'drm' abbr/command
+complete -c drm -f -a "(docker images --format '{{.Repository}}:{{.Tag}}\t{{.Size}} ({{.ID}})' 2>/dev/null | string replace -r '^<none>:<none>\t' '' | string match -v '<none>*')"
 
-alias dclean 'docker image prune --force; docker container prune --force; docker network prune --force'
-alias dpurge 'docker system prune --all --volumes --force'
 
 # List all images and containers
-function dl
-    printf '📸 I M A G E S\n'
-    printf '==========================================================================\n'
-    docker images;
+function dl --description "Overview of Docker images, containers, and networks"
+    if not type -q docker; or not docker info >/dev/null 2>&1
+        set_color -o brred; echo "Docker daemon is not running."; set_color normal
+        return 1
+    end
 
-    printf '\n🐳 C O N T A I N E R S\n'
-    printf '==========================================================================\n'
-    docker container ls -a
+    set -l rule (string repeat -n 74 '─')
 
-    printf '\n🛜 N E T W O R K S\n'
-    printf '==========================================================================\n'
-    docker network ls
+    set_color -o bryellow; printf '\nIMAGES\n%s\n' $rule; set_color normal
+    docker images --format "table {{.Repository}}\t{{.Tag}}\t{{.ID}}\t{{.Size}}\t{{.CreatedSince}}"
+
+    set_color -o brcyan; printf '\nCONTAINERS\n%s\n' $rule; set_color normal
+    docker ps -a --format "table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}"
+
+    set_color -o brgreen; printf '\nNETWORKS\n%s\n' $rule; set_color normal
+    docker network ls --format "table {{.Name}}\t{{.Driver}}\t{{.Scope}}"
+    echo
 end
 
 # List all docker shortcuts

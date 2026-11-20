@@ -9,8 +9,13 @@ if not status is-interactive
     exit 0
 end
 
+set -l sw_out (sw_vers)
+set -l os_name (string match -r 'ProductName:\s*\K.+' -- $sw_out)
+set -l os_ver  (string match -r 'ProductVersion:\s*\K.+' -- $sw_out)
+set -l os_code (string match -r 'SOFTWARE LICENSE AGREEMENT FOR macOS \K[A-Za-z ]+' < '/System/Library/CoreServices/Setup Assistant.app/Contents/Resources/en.lproj/OSXSoftwareLicense.rtf' | string trim)
+
 set --export --global OS_ICON ''
-set --export --global OS $OS_ICON ' ' (sw_vers -productName) ' ' (sw_vers -productVersion) ' ' (grep -oE 'SOFTWARE LICENSE AGREEMENT FOR macOS [A-Z]*[a-z]*' '/System/Library/CoreServices/Setup Assistant.app/Contents/Resources/en.lproj/OSXSoftwareLicense.rtf' | awk -F 'macOS ' '{print $NF}')
+set --export --global OS OS "$OS_ICON $os_name $os_ver $os_code"
 
 # Initialize homebrew ENV before registering aliases to enable identification of brew-installed binaries
 set --local homebrew_location '/opt/homebrew/bin/brew'

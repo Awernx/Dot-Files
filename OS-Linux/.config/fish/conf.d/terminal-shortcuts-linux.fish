@@ -37,30 +37,21 @@ end
 ## Abbreviations-----------------------
 abbr shutdown 'sudo /sbin/shutdown -h now'
 abbr reboot   'sudo /sbin/reboot'
-
-##  Aliases ---------------------------
-alias clk             'watch --no-title --precise --interval 0.1 '"'"'date +"%A %B %d, %Y %I:%M:%S,%N %p %Z"'"'"''
-alias time_stat       'systemctl status systemd-timesyncd.service'
-alias time_sync       'sudo timedatectl set-ntp off; sudo timedatectl set-ntp on'
-
-#!/usr/bin/env fish
-
-# 🅲 🅷 🅰 🅽 🅳 🅴 🆁
-# --------------------------------------------------------
-# Chander's FISH shell shortcuts for Debian-based distros
-
-# Stop loading this script for non-interactive shells
-if not status is-interactive
-    exit 0
-end
-
-##  Aliases ---------------------------
-alias apt     'sudo apt'
-
-## Abbreviations-----------------------
 abbr install  'apt update && apt --yes install'
 abbr purge    'apt --yes purge'
 abbr sw       'home-manager switch'
+
+##  Aliases ---------------------------
+alias apt       'sudo apt'
+alias time_stat 'systemctl status systemd-timesyncd.service'
+alias time_sync 'sudo timedatectl set-ntp off; sudo timedatectl set-ntp on'
+
+function clk --description "Live high-precision clock inline"
+    while true
+        printf '\r%s' (date "+%A %B %d, %Y %I:%M:%S.%3N %p %Z ")
+        sleep 0.05
+    end
+end
 
 function upgrade --description "Upgrade installed package managers"
     if command -sq apt-get
