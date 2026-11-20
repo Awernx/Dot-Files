@@ -1,1 +1,0 @@
-system.exec_command("flatpak run io.github.nokse22.minitext", getOutput=False)

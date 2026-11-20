@@ -1,1 +1,0 @@
-system.exec_command("flatpak run net.nokyan.Resources", getOutput=False)

@@ -1,41 +1,45 @@
-# 🅲 🅷 🅰 🅽 🅳 🅴 🆁
-# ----------------------------------------------
-# Syncthing ignore file
-# Location: Root of folders being synced
-# https://docs.syncthing.net/users/ignoring.html
+// 🅲 🅷 🅰 🅽 🅳 🅴 🆁
+// ----------------------------------------------
+// Syncthing ignore file
+// Location: Root of folders being synced
+// https://docs.syncthing.net/users/ignoring.html
 
-################################################
-# Programs & Tools generated files and folders
-################################################
+// ----------------------------------------------
+// Programs & Tools generated files and folders
+// ----------------------------------------------
 
-# Backblaze artifacts
+// Backblaze & editor swap artifacts
 *~
 .*.swp
 sync.*
 .bzvol
 
-# MEGASync artifacts
-Rubbish
-.debris
+// MEGASync artifacts
+/Rubbish
+/.debris
 
-# FreeFileSync artifacts
+// FreeFileSync artifacts
 .sync.ffs_db*
+sync.ffs_*
 
-################################################
-# OS generated files
-################################################
+// ----------------------------------------------
+// OS generated files
+// ----------------------------------------------
 
-# Windows artifacts
-(?d)$RECYCLE.BIN
-(?d)System Volume Information
-(?d)desktop.ini
-(?d)ehthumbs.db
-(?d)Thumbs.db
+// Windows artifacts
+(?d)(?i)$RECYCLE.BIN
+(?d)(?i)System Volume Information
+(?d)(?i)desktop.ini
+(?d)(?i)ehthumbs.db
+(?d)(?i)Thumbs.db
 
-# MacOS artifacts
-(?d)._.DS_Store*
+// macOS artifacts
+(?d)._*
 (?d).DS_Store
 (?d).localized
+(?d).Spotlight-V100
+(?d).Trashes
+(?d).fseventsd
 
-# Linux artifacts
+// Linux artifacts
 (?d).Trash*
