@@ -8,7 +8,7 @@ set --export --global BASE_OS (awk -F '=' '$1 == "UBUNTU_VERSION" {gsub(/"/, "")
 
 alias open "io.elementary.files"
 
-function bootstrap
+function eos_apply_settings
     # Clock settings
     gsettings set io.elementary.desktop.wingpanel.datetime clock-show-weekday true
     gsettings set io.elementary.desktop.wingpanel.datetime clock-show-seconds true
@@ -17,7 +17,7 @@ function bootstrap
     # Files settings
     gsettings set io.elementary.files.preferences show-hiddenfiles true
     gsettings set io.elementary.files.preferences singleclick-select true
-    pkill -x io.elementary.f 2>/dev/null # displaying as 'list' will be over-written by files
+    pkill -x io.elementary.f 2>/dev/null # Stop 'files' first; Otherwise preference will be over-written by when it closes
     gsettings reset io.elementary.files.preferences tab-info-list
     gsettings set io.elementary.files.preferences default-viewmode 'list'
 
@@ -32,6 +32,7 @@ function bootstrap
     # Terminal settings + Gruvbox theme
     gsettings set io.elementary.terminal.settings cursor-shape 'I-Beam'
     gsettings set io.elementary.terminal.settings follow-system-style false
+    gsettings set io.elementary.terminal.settings tab-bar-behavior 'Hide When Single Tab'
     gsettings set io.elementary.terminal.settings theme 'custom'
     gsettings set io.elementary.terminal.settings background 'rgba(40,40,40,0.936396)'
     gsettings set io.elementary.terminal.settings foreground 'rgb(235,219,178)'
@@ -40,7 +41,7 @@ function bootstrap
     echo '✅ Settings have been applied'
 end
 
-function register_keyboard_shortcuts
+function eos_register_keyboard_shortcuts
     set --local HYPER "<Control><Alt><Super>"
     set --local FINDER "<Control><Shift>"
     set --local CHOOSER "<Control><Alt>"
