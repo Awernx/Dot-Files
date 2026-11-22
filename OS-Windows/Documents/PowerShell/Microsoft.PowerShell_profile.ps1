@@ -74,3 +74,85 @@ function upgrade {
 
     Write-Host "`n✅ All updates and cleanup complete!" -ForegroundColor Green
 }
+
+function Get-IpInfo {
+    $e = [char]27
+    $green    = "$e[0;92m"
+    $brgreen  = "$e[1;92m"
+    $yellow   = "$e[0;93m"
+    $bryellow = "$e[1;93m"
+    $reset    = "$e[0m"
+
+    # --- 1. Internal IP Information (~5ms) ---
+    $ipAddress   = "N/A"
+    $adapterName = "N/A"
+    $adapterType = "Unknown/Virtual"
+    $macAddress  = "N/A"
+    $routerIp    = "N/A"
+
+    $activeNic = [System.Net.NetworkInformation.NetworkInterface]::GetAllNetworkInterfaces() |
+        Where-Object {
+            $_.OperationalStatus -eq 'Up' -and
+            $_.NetworkInterfaceType -ne 'Loopback' -and
+            ($_.GetIPProperties().GatewayAddresses | Where-Object { $_.Address.AddressFamily -eq 'InterNetwork' })
+        } | Select-Object -First 1
+
+    if ($activeNic) {
+        $ipProps     = $activeNic.GetIPProperties()
+        $adapterName = $activeNic.Name
+
+        $rawMac = $activeNic.GetPhysicalAddress().ToString()
+        if ($rawMac.Length -eq 12) {
+            $macAddress = ($rawMac -replace '(.{2})(?!$)', '$1:').ToLower()
+        }
+
+        $adapterType = switch ($activeNic.NetworkInterfaceType) {
+            'Ethernet'        { 'Ethernet' }
+            'GigabitEthernet' { 'Ethernet' }
+            'FastEthernetT'   { 'Ethernet' }
+            'Wireless80211'   { 'Wi-Fi' }
+            'Wwanpp'          { 'Mobile Broadband (WWAN)' }
+            'Wwanpp2'         { 'Mobile Broadband (WWAN)' }
+            'Loopback'        { 'Loopback' }
+            default           { 'Unknown/Virtual' }
+        }
+
+        $ipv4 = $ipProps.UnicastAddresses |
+            Where-Object { $_.Address.AddressFamily -eq 'InterNetwork' } |
+            Select-Object -First 1
+        if ($ipv4) { $ipAddress = $ipv4.Address.IPAddressToString }
+
+        $gw = $ipProps.GatewayAddresses |
+            Where-Object { $_.Address.AddressFamily -eq 'InterNetwork' } |
+            Select-Object -First 1
+        if ($gw) { $routerIp = $gw.Address.IPAddressToString }
+    }
+
+    Write-Host "`n${green}🏠 Internal: ${reset}"
+    Write-Host "         IP:${brgreen} $ipAddress            ${reset}"
+    Write-Host "    Adapter:${green} $adapterName [$adapterType] ${reset}"
+    Write-Host "        MAC:${green} $macAddress             ${reset}"
+    Write-Host "    Gateway:${green} $routerIp               ${reset}"
+    [Console]::Out.Flush()
+
+    # --- 2. Public IP Information ---
+    $pubIp   = "N/A"
+    $city    = "N/A"
+    $region  = "N/A"
+    $country = "N/A"
+
+    $rawJson = curl.exe -4 -fsS --ssl-no-revoke --max-time 3 https://ipinfo.io 2>$null
+    if ($rawJson) {
+        $data = $rawJson | ConvertFrom-Json
+        if ($data.ip)      { $pubIp   = $data.ip }
+        if ($data.city)    { $city    = $data.city }
+        if ($data.region)  { $region  = $data.region }
+        if ($data.country) { $country = $data.country }
+    }
+
+    Write-Host "`n${yellow}  🌐 Public: ${reset}"
+    Write-Host "         IP:${bryellow} $pubIp                    ${reset}"
+    Write-Host "   Location:${yellow} $city, $region, $country ${reset}`n"
+}
+
+Set-Alias -Name ipa -Value Get-IpInfo
