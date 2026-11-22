@@ -6,6 +6,11 @@
 # Link this file using the command below
 # New-Item -ItemType SymbolicLink -Path $PROFILE -Target "...\Dot-Files\OS-Windows\Documents\PowerShell\Microsoft.PowerShell_profile.ps1" -Force
 
+# Character printing
+$e     = [char]27
+$reset = "$e[0m"
+$dim   = "$e[2m"
+
 if ($PSStyle) {
     # Make directories bold bright white with no background block
     $PSStyle.FileInfo.Directory = "`e[1;97m"
@@ -20,8 +25,6 @@ if (Get-Module -ListAvailable -Name PSReadLine) {
     # Use Bash/Emacs-style Ctrl+A (start), Ctrl+E (end), Ctrl+R (history search)
     Set-PSReadLineOption -EditMode Emacs
 }
-
-function l { Get-ChildItem -Force @args }
 
 # Find the full path of an executable (like Unix 'which')
 function which ($command) {
@@ -75,14 +78,27 @@ function upgrade {
     Write-Host "`n✅ All updates and cleanup complete!" -ForegroundColor Green
 }
 
-function Get-IpInfo {
-    $e = [char]27
-    $green    = "$e[0;92m"
-    $brgreen  = "$e[1;92m"
-    $yellow   = "$e[0;93m"
-    $bryellow = "$e[1;93m"
-    $reset    = "$e[0m"
+function this {
+    $cv  = Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion'
+    $bld = [int]$cv.CurrentBuild
+    $prod = if ($bld -ge 22000) { $cv.ProductName -replace 'Windows 10', 'Windows 11' } else { $cv.ProductName }
+    $winOs = "$prod $($cv.DisplayVersion) (Build $bld)"
 
+    $arch     = [System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture.ToString().ToLower()
+    $kernel   = [System.Environment]::OSVersion.Version.ToString()
+    $psVer    = $PSVersionTable.PSVersion.ToString()
+    $terminal = if ($env:WT_SESSION) { 'Windows Terminal' } elseif ($env:TERM_PROGRAM) { $env:TERM_PROGRAM } else { 'Console Host' }
+
+    Write-Host "${dim}        Host: ${reset}$env:COMPUTERNAME"
+    Write-Host "${dim}          OS: ${reset}⊞ $winOs"
+    Write-Host "${dim} Environment: ${reset}PowerShell ($($PSVersionTable.PSEdition))"
+    Write-Host "${dim}Architecture: ${reset}$arch"
+    Write-Host "${dim}      Kernel: ${reset}$kernel"
+    Write-Host "${dim}       Shell: ${reset}⚡ PowerShell $psVer"
+    Write-Host "${dim}    Terminal: ${reset}$terminal"
+}
+
+function Get-IpInfo {
     # --- 1. Internal IP Information (~5ms) ---
     $ipAddress   = "N/A"
     $adapterName = "N/A"
@@ -128,11 +144,11 @@ function Get-IpInfo {
         if ($gw) { $routerIp = $gw.Address.IPAddressToString }
     }
 
-    Write-Host "`n${green}🏠 Internal: ${reset}"
-    Write-Host "         IP:${brgreen} $ipAddress            ${reset}"
-    Write-Host "    Adapter:${green} $adapterName [$adapterType] ${reset}"
-    Write-Host "        MAC:${green} $macAddress             ${reset}"
-    Write-Host "    Gateway:${green} $routerIp               ${reset}"
+    Write-Host "`n🏠 Internal: "
+    Write-Host "  ${dim}       IP:${reset} $ipAddress"
+    Write-Host "  ${dim}  Adapter:${reset} $adapterName [$adapterType]"
+    Write-Host "  ${dim}      MAC:${reset} $macAddress                 "
+    Write-Host "  ${dim}  Gateway:${reset} $routerIp                   "
     [Console]::Out.Flush()
 
     # --- 2. Public IP Information ---
@@ -150,9 +166,67 @@ function Get-IpInfo {
         if ($data.country) { $country = $data.country }
     }
 
-    Write-Host "`n${yellow}  🌐 Public: ${reset}"
-    Write-Host "         IP:${bryellow} $pubIp                    ${reset}"
-    Write-Host "   Location:${yellow} $city, $region, $country ${reset}`n"
+    Write-Host "`n  🌐 Public: "
+    Write-Host " ${dim}        IP:${reset} $pubIp "
+    Write-Host " ${dim}  Location:${reset} $city, $region, $country`n"
 }
 
 Set-Alias -Name ipa -Value Get-IpInfo
+
+# A better compressed view of dir
+function l {
+    param(
+        [Parameter(ValueFromRemainingArguments = $true)]
+        [string[]]$Args
+    )
+
+    $e         = "`e"
+    $dim       = "$e[2m"
+    $bold      = "$e[1m"
+    $brCyan    = "$e[96m"
+    $bldCyan   = "$e[1;96m"
+    $brPurple  = "$e[95m"
+    $bldPurple = "$e[1;95m"
+    $reset     = "$e[0m"
+
+    Get-ChildItem -Force @Args | ForEach-Object {
+        $isHidden = ($_.Attributes -band [System.IO.FileAttributes]::Hidden) -or ($_.Name.StartsWith('.'))
+        $isLink   = [bool]$_.LinkType
+
+        $size = if ($isLink) {
+            "${dim}<LINK>${reset}"
+        } elseif ($_.PSIsContainer) {
+            "${dim}<DIR>${reset}"
+        } elseif ($_.Length -ge 1GB) {
+            '{0:N1} GB' -f ($_.Length / 1GB)
+        } elseif ($_.Length -ge 1MB) {
+            '{0:N1} MB' -f ($_.Length / 1MB)
+        } elseif ($_.Length -ge 1KB) {
+            '{0:N0} KB' -f ($_.Length / 1KB)
+        } else {
+            "$($_.Length) B"
+        }
+
+        $targetSuffix = if ($isLink -and $_.Target) {
+            " ${dim}-> $($_.Target -join ', ')${reset}"
+        } else {
+            ''
+        }
+
+        $name = if ($isLink) {
+            $linkColor = if ($isHidden) { $bldPurple } elseif ($_.PSIsContainer) { $bldCyan } else { $brCyan }
+            "${linkColor}$($_.Name)${reset}${targetSuffix}"
+        } elseif ($_.PSIsContainer) {
+            if ($isHidden) { "${bldPurple}$($_.Name)/${reset}" } else { "${bold}$($_.Name)/${reset}" }
+        } else {
+            if ($isHidden) { "${brPurple}$($_.Name)${reset}" } else { $_.Name }
+        }
+
+        [PSCustomObject]@{
+            Mode     = "${dim}$($_.Mode)${reset}"
+            Modified = "${dim}$($_.LastWriteTime.ToString('yyyy-MM-dd HH:mm'))${reset}"
+            Size     = $size
+            Name     = $name
+        }
+    } | Format-Table -AutoSize
+}

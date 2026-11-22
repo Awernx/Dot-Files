@@ -14,8 +14,8 @@ set --export --universal XDG_DATA_HOME   $HOME/.local/share
 set --export --universal XDG_CACHE_HOME  $HOME/.cache
 
 if not set -q HOST_FULL_NAME
-    set --export --global HOST_FULL_NAME  (hostname -f)
-    set --export --global HOST_SHORT_NAME (hostname -s)
+    set --export --global HOST_FULL_NAME (hostname -f 2>/dev/null; or hostname)
+    set --export --global HOST_SHORT_NAME (hostname -s 2>/dev/null; or hostname | string split -f 1 .)
 end
 
 ############################################################################
