@@ -9,23 +9,74 @@ if not status is-interactive
     exit 0
 end
 
-set -l sw_out (sw_vers)
-set -l os_name (string match -r 'ProductName:\s*\K.+' -- $sw_out)
-set -l os_ver  (string match -r 'ProductVersion:\s*\K.+' -- $sw_out)
-set -l os_code (string match -r 'SOFTWARE LICENSE AGREEMENT FOR macOS \K[A-Za-z ]+' < '/System/Library/CoreServices/Setup Assistant.app/Contents/Resources/en.lproj/OSXSoftwareLicense.rtf' | string trim)
-
-set --export --global OS_ICON ''
-set --export --global OS OS "$OS_ICON $os_name $os_ver $os_code"
-
 # Initialize homebrew ENV before registering aliases to enable identification of brew-installed binaries
 set --local homebrew_location '/opt/homebrew/bin/brew'
 if test -f $homebrew_location
     $homebrew_location shellenv | source
 end
 
+## Load these staple tools if they exist
+if command -sq fzf
+    fzf --fish | source
+end
+
+if command -sq mcfly
+    mcfly init fish | source
+end
+
+if command -sq direnv
+    direnv hook fish | source
+end
+
+if command -sq zoxide
+    zoxide init fish | source
+end
+
 ## Abbreviations
 abbr clear-favicon-cache 'rm -rf ~/Library/Safari/Favicon\ Cache/'
 abbr clear-network-cache 'sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder'
+
+## Functions
+
+function macos_info
+    set -l plist "/System/Library/CoreServices/SystemVersion"
+    set -l os_name (defaults read $plist ProductName)
+    set -l os_ver  (defaults read $plist ProductVersion)
+    set -l os_bld  (defaults read $plist ProductBuildVersion)
+    set -l major   (string split '.' $os_ver | head -n 1)
+    set -l code    ""
+
+    # 1. Use cached codename if it matches the current OS build and isn't blank
+    if set -q _cached_macos_build; and test "$_cached_macos_build" = "$os_bld"; and test -n "$_cached_macos_name"; and test "$_cached_macos_name" != "(Beta)"
+        set code $_cached_macos_name
+    else
+        # 2. Fetch marketing name from endoflife.date API
+        set -l url (string join / "https:/" "endoflife.date" "api" "v1" "products" "macos" "releases" "$major")
+        set code (curl -fsSL --max-time 3 "$url" 2>/dev/null | string match -rg '"label"\s*:\s*"[^"]*\(([^)]+)\)"')
+
+        # 3. Fallback to local RTF license if offline or API is unreachable
+        if test -z "$code"
+            set -l rtf "/System/Library/CoreServices/Setup Assistant.app/Contents/Resources/en.lproj/OSXSoftwareLicense.rtf"
+            set -l rtf_name (textutil -convert txt -stdout "$rtf" 2>/dev/null | string match -ir 'SOFTWARE LICENSE AGREEMENT FOR macOS\s+\K.+' | head -n 1)
+            if test -n "$rtf_name"; and not string match -qi '*PRE-RELEASE*' "$rtf_name"
+                set code $rtf_name
+            end
+        end
+
+        # 4. Append (Beta) if build ends with a lowercase seed letter (e.g., 26C5035r)
+        if string match -qr '[a-z]$' "$os_bld"
+            set code (string trim "$code (Beta)")
+        end
+
+        # 5. Cache in Fish universal variables only when a real name was resolved
+        if test -n "$code"; and test "$code" != "(Beta)"
+            set -U _cached_macos_build "$os_bld"
+            set -U _cached_macos_name "$code"
+        end
+    end
+
+    string trim "$OS_ICON $os_name $os_ver $code"
+end
 
 function upgrade
     brew update
@@ -87,19 +138,6 @@ function ipa
     echo -ns                         '   Location: ' (set_color bryellow)    $pub_loc                                (set_color normal) \n
 end
 
-## Load these staple tools if they exist
-if command -sq fzf
-    fzf --fish | source
-end
-
-if command -sq mcfly
-    mcfly init fish | source
-end
-
-if command -sq direnv
-    direnv hook fish | source
-end
-
-if command -sq zoxide
-    zoxide init fish | source
-end
+# Populate OS environment variables
+set -gx OS_ICON ''
+set -gx OS (macos_info)
