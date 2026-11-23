@@ -2,27 +2,38 @@
 # ==============================================================================
 # Custom Non-Smeared Stratum 1 NTP Sources (Optimized for North Texas / DFW)
 # All sources below use standard UTC leap-second stepping (no leap-smearing).
+
+# Since Ubuntu's NTP pool has 'prefer', disable with the following command
+# sudo dpkg-divert --add --rename --divert /etc/chrony/sources.d/ubuntu-ntp-pools.sources.disabled /etc/chrony/sources.d/ubuntu-ntp-pools.sources
+
+# After installing this file, run 'sudo chronyc reload sources'
 # ==============================================================================
 
-# Cloudflare Anycast NTP (Stratum 1, NTS-authenticated)
-# Routes directly to Cloudflare's Dallas-Fort Worth (DFW) edge (<5-10ms latency).
-# 'nts' enables cryptographic TLS/AEAD authentication; 'prefer' favors it as primary.
-server time.cloudflare.com iburst nts prefer
-
-# Matt Nordhoff Public Stratum 1 (Dallas, TX)
-# Independent GPS/PPS Stratum 1 server hosted locally in Dallas, TX.
-# Provides non-anycast local redundancy in the same metroplex.
-server tick.mattnordhoff.com iburst
-
-# NIST Internet Time Service - WWV Radio Station (Fort Collins, CO)
-# Directly tied to NIST's primary atomic clock ensemble in Fort Collins, CO (~15-25ms).
-server time-a-wwv.nist.gov iburst
+# ------------------------------------------------------------------------------
+# Tier 1: Stratum 1 Clocks (3 sources prevent 1 hiccup from losing consensus)
+# ------------------------------------------------------------------------------
 
 # NIST Internet Time Service - Boulder Labs (Boulder, CO)
-# Directly tied to NIST's primary atomic clock facility in Boulder, CO (~15-25ms).
-server time-d-b.nist.gov iburst
+server time-d-b.nist.gov iburst prefer
 
-# Netnod Anycast NTP (Stratum 1, NTS-authenticated)
-# Operated by Netnod (Swedish Internet infrastructure operator) using atomic clocks.
-# Provides a second independent NTS-authenticated Stratum 1 source via anycast.
+# NIST Internet Time Service - WWV Radio Station (Fort Collins, CO)
+server time-a-wwv.nist.gov iburst prefer
+
+# NIST Internet Time Service - Gaithersburg Campus (Gaithersburg, MD)
+server time-a-g.nist.gov iburst prefer
+
+# ------------------------------------------------------------------------------
+# Tier 2: # Tier 2: NTS-Authenticated Stratum 1 &  Anycast Backups
+# ------------------------------------------------------------------------------
+
+# All Netnod nodes are located in Sweden causing transatlantic latency
 server nts.netnod.se iburst nts
+
+# This resolves to a Cloudflare edge node running at Stratum 3
+server time.cloudflare.com iburst nts
+
+# ------------------------------------------------------------------------------
+# Tier 3: Canonical NTS Pools (no 'prefer' so they stay strict backups)
+# ------------------------------------------------------------------------------
+
+pool ntp.ubuntu.com iburst maxsources 4 nts

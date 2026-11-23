@@ -50,6 +50,9 @@ stow-mjolnir: ## Stow dot-files for Mjolnir Linux machine
 	# So making a copy of those files
 	sudo install -o root -g root -m 0440 ENV-Chander-Mjolnir/etc/sudoers.d/nix-path /etc/sudoers.d/nix-path
 
+ 	sudo install -o root -g root -m 644 ENV-Chander-Mjolnir/etc/chrony/sources.d/dfw-stratum-1.sources /etc/chrony/sources.d/dfw-stratum-1.sources
+	sudo chronyc reload sources
+
 	printf "✅ Mjolnir Dot-Files stowed successfully\n"
 
 .PHONY: stow-elebook
