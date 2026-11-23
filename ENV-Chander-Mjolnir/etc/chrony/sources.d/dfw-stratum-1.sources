@@ -1,0 +1,28 @@
+# 🅲 🅷 🅰 🅽 🅳 🅴 🆁
+# ==============================================================================
+# Custom Non-Smeared Stratum 1 NTP Sources (Optimized for North Texas / DFW)
+# All sources below use standard UTC leap-second stepping (no leap-smearing).
+# ==============================================================================
+
+# Cloudflare Anycast NTP (Stratum 1, NTS-authenticated)
+# Routes directly to Cloudflare's Dallas-Fort Worth (DFW) edge (<5-10ms latency).
+# 'nts' enables cryptographic TLS/AEAD authentication; 'prefer' favors it as primary.
+server time.cloudflare.com iburst nts prefer
+
+# Matt Nordhoff Public Stratum 1 (Dallas, TX)
+# Independent GPS/PPS Stratum 1 server hosted locally in Dallas, TX.
+# Provides non-anycast local redundancy in the same metroplex.
+server tick.mattnordhoff.com iburst
+
+# NIST Internet Time Service - WWV Radio Station (Fort Collins, CO)
+# Directly tied to NIST's primary atomic clock ensemble in Fort Collins, CO (~15-25ms).
+server time-a-wwv.nist.gov iburst
+
+# NIST Internet Time Service - Boulder Labs (Boulder, CO)
+# Directly tied to NIST's primary atomic clock facility in Boulder, CO (~15-25ms).
+server time-d-b.nist.gov iburst
+
+# Netnod Anycast NTP (Stratum 1, NTS-authenticated)
+# Operated by Netnod (Swedish Internet infrastructure operator) using atomic clocks.
+# Provides a second independent NTS-authenticated Stratum 1 source via anycast.
+server nts.netnod.se iburst nts
