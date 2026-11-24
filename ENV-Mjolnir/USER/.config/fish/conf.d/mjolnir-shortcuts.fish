@@ -47,24 +47,27 @@ function mj-help --description "List all Tinn-related shortcuts"
     printf 'tinn-vol     --> Sets system volume to max level  \n'
 end
 
-function ntp_sources --description "Live-monitor chrony NTP sources"
-    # Default to a 1-second refresh interval
-    set -l interval 1
-
-    set -l awk_script '
-        # Highlight the active winning sync source (* / =* / #*) in bold yellow
-        /^[=^#]\*/    { print "'(set_color --bold yellow)'" $0 "'(set_color normal)'"; next }
-
-        # Highlight backup sources (+ / =+ / #+) in bright purple
-        /^[=^#]\+/    { print "'(set_color brpurple)'" $0 "'(set_color normal)'"; next }
-
-        # Dim unusable (?), falseticker (x), or overly variable (~) sources
-        /^[=^#][?x~]/ { print "'(set_color --dim)'" $0 "'(set_color normal)'"; next }
-
-        # Print headers and non-combined (-) standby sources in default color
-        { print }
+function ntp --description "List chrony NTP sources, and current clock offset"
+    # Highlight the active winning sync source (* / =* / #*) in bold yellow
+    # Highlight backup sources (+ / =+ / #+) in bright purple
+    # Dim unusable (?), falseticker (x), or overly variable (~) sources
+    chronyc sources | awk \
+        -v y=(set_color --bold yellow) \
+        -v p=(set_color brpurple) \
+        -v d=(set_color --dim) \
+        -v n=(set_color normal) \
+        '{ print (/^[=^#]\*/ ? y : /^[=^#]\+/ ? p : /^[=^#][?x~]/ ? d : "") $0 n }'
+    and echo
+    and chronyc tracking | awk -F': ' -v b=(set_color --bold) -v n=(set_color normal) '
+        /^Stratum/ { printf "%-14s %s%s%s\n", $1":", b, $2, n }
+        /^System time/ {
+            split($2, a, " ")
+            v = a[1] + 0
+            if (v < 0.001)      val = sprintf("%.1fus", v * 1e6)
+            else if (v < 1.0)   val = sprintf("%.2fms", v * 1e3)
+            else                val = sprintf("%.3fs", v)
+            sub(a[1] " seconds", val, $2)
+            printf "%-14s %s%s%s\n", $1":", b, $2, n
+        }
     '
-
-    # -c preserves ANSI color escape sequences inside `watch`
-    watch -c -n $interval "chronyc sources | awk '$awk_script'"
 end
