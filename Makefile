@@ -30,14 +30,18 @@ SUDO_USER_INCLUDE_OS-Linux       := .config/bash
 # ------------------------------------------------------------------------------
 # Machine Targets (Convention: PACKAGES_<Machine>, SKIP_SUDO_USER_<Machine>, POST_HOOK_<Machine>)
 # ------------------------------------------------------------------------------
-MACHINES := macbookpro mjolnir
+MACHINES := macbookpro mjolnir elebook
 
+# macbookpro config
 PACKAGES_macbookpro       := OS-Common-Unix OS-MacOS ENV-MacBookPro
 SKIP_SUDO_USER_macbookpro := 1
 POST_HOOK_macbookpro      := defaults write org.hammerspoon.Hammerspoon MJConfigFile "~/.config/hammerspoon/init.lua"
 
+# mjolnir config
 PACKAGES_mjolnir          := OS-Common-Unix OS-Linux ENV-Mjolnir
 
+# elebook config
+PACKAGES_elebook          := OS-Common-Unix OS-Linux OS-ElementaryOS ENV-Elebook
 
 # PACKAGES_windows-pc := OS-Windows
 
@@ -55,7 +59,7 @@ $(MACHINES):
 		echo "Running post-deploy hooks for $@"; \
 		echo "=================================================================="; \
 		if [ "$(ROOT_TARGET)" = "/" ] || [ "$(ROOT_TARGET)" = "/c/" ]; then \
-			$(POST_HOOK_$@); \
+			$(or $(POST_HOOK_$@),:); \
 		else \
 			echo "-> Sandbox mode (ROOT_TARGET=$(ROOT_TARGET)): skipping '$(POST_HOOK_$@)'"; \
 		fi; \

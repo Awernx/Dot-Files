@@ -93,9 +93,7 @@ remove_tree() {
 }
 
 deploy_pkg() {
-    echo "=================================================================="
-    echo "Deploying package: $PKG (Windows mode: ${IS_WINDOWS:-0})"
-    echo "=================================================================="
+    echo "Deploying package: $PKG"
 
     if [ "${IS_WINDOWS:-0}" = "1" ] || [ -z "$STOW_BIN" ]; then
         copy_tree "$PKG/USER" "$USER_TARGET"
@@ -174,9 +172,7 @@ deploy_pkg() {
 }
 
 remove_pkg() {
-    echo "=================================================================="
     echo "Removing package: $PKG"
-    echo "=================================================================="
 
     if [ "${IS_WINDOWS:-0}" = "1" ] || [ -z "$STOW_BIN" ]; then
         remove_tree "$PKG/USER" "$USER_TARGET"
