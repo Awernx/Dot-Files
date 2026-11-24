@@ -1,86 +1,65 @@
-# *****************************************************************************
-# 🅲 🅷 🅰 🅽 🅳 🅴 🆁
-# Makefile for Stowing Dot-Files
-# *****************************************************************************
+SHELL := /bin/sh
 
-STOW_PATH                := $(shell which stow)
-DOT_FILES_LOCATION       := $$HOME/Workspace/Dot-Files
-ROOT_FOLDER_LOCATION     := /root
-BASH_CONFIG_LOCATION     := .config/bash
-STOW_COMMAND_PREFIX_HOME := $(STOW_PATH) --dir=$(DOT_FILES_LOCATION) --target=$$HOME
-STOW_COMMAND_PREFIX_ROOT := $(STOW_PATH) --dir=$(DOT_FILES_LOCATION) --target=/
+# ------------------------------------------------------------------------------
+# OS Detection: Windows (MSYS2 / Git Bash) vs. Unix (Linux / macOS)
+# ------------------------------------------------------------------------------
+ifeq ($(OS),Windows_NT)
+	IS_WINDOWS       := 1
+	USER_TARGET      ?= $(shell cygpath -u "$(USERPROFILE)" 2>/dev/null || echo "$(HOME)")
+	ROOT_TARGET      ?= /c/
+	SUDO_USER_TARGET ?=
+	ROOT_GROUP       :=
+else
+	IS_WINDOWS       := 0
+	USER_TARGET      ?= $(HOME)
+	ROOT_TARGET      ?= /
+	SUDO_USER_TARGET ?= $(patsubst %//,%/,$(ROOT_TARGET)/root)
+	ROOT_GROUP       := $(shell id -gn root)
+endif
 
-.SILENT:
+# ------------------------------------------------------------------------------
+# Per-Package Configurations (Convention-Based)
+# ------------------------------------------------------------------------------
+COPY_LIST_OS-ElementaryOS        := etc/sudoers.d/nix-path
+COPY_LIST_OS-Linux               := etc/chrony
 
-.PHONY: all
-all: help
+SUDO_USER_INCLUDE_OS-Common-Unix := .bashrc .config/bash .config/direnv .config/fish .config/htop .config/vim .config/yazi
+SUDO_USER_INCLUDE_OS-Linux       := .config/bash .config/fish
 
-.PHONY: help
-help:
-	echo "Please specify a target. Available targets are listed below:"
-	grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2}'
+# ------------------------------------------------------------------------------
+# Machine Targets (Convention: PACKAGES_<Machine> and POST_HOOK_<Machine>)
+# ------------------------------------------------------------------------------
+MACHINES := macbookpro
 
-.PHONY: stow-mbp
-stow-mbp: ## Stow dot-files for Chander's MacBook Pro
-	$(STOW_COMMAND_PREFIX_HOME) \
-	    --ignore='(\.bashrc)' \
-       	--stow OS-Common-Unix OS-MacOS ENV-Chander-MBP
+PACKAGES_macbookpro       := OS-Common-Unix OS-MacOS ENV-MacBookPro
+SKIP_SUDO_USER_macbookpro := 1
+POST_HOOK_macbookpro      := defaults write org.hammerspoon.Hammerspoon MJConfigFile "~/.config/hammerspoon/init.lua"
 
-	printf "✅ Chander's MBP Dot-Files stowed successfully\n"
+# PACKAGES_laptop     := OS-Common-Unix OS-Linux OS-ElementaryOS
+# POST_HOOK_laptop    := sudo systemctl restart chrony
+#
+# PACKAGES_server     := OS-Common-Unix OS-Linux
+# POST_HOOK_server    := sudo systemctl restart chrony && sudo systemctl daemon-reload
+#
+# PACKAGES_windows-pc := OS-Windows
 
-.PHONY: stow-mjolnir
-stow-mjolnir: ## Stow dot-files for Mjolnir Linux machine
-	# Ignore etc/ when running as USER
-	$(STOW_COMMAND_PREFIX_HOME) \
-		--ignore='etc' \
-		--stow OS-Common-Unix OS-Linux ENV-Chander-Mjolnir
+export IS_WINDOWS USER_TARGET ROOT_TARGET SUDO_USER_TARGET ROOT_GROUP
 
-	# Stow /etc files to / (ROOT)
-	sudo $(STOW_COMMAND_PREFIX_ROOT) \
-		--ignore='(\.config|\.local)' \
-		--stow ENV-Chander-Mjolnir
+# ------------------------------------------------------------------------------
+# Phony Rules
+# ------------------------------------------------------------------------------
+.PHONY: $(MACHINES) $(addprefix unstow-,$(MACHINES))
 
-	# Stow .bashrc and .config to /root
-	sudo $(STOW_PATH) \
-	    --dir=$(DOT_FILES_LOCATION) \
-		--target=$(ROOT_FOLDER_LOCATION) \
-		--stow OS-Common-Unix
+$(MACHINES):
+	@$(foreach pkg,$(PACKAGES_$@),SKIP_SUDO_USER="$(SKIP_SUDO_USER_$@)" COPY_LIST="$(COPY_LIST_$(pkg))" USER_IGNORE="$(USER_IGNORE_$(pkg))" USER_IGNORE_REGEX="$(USER_IGNORE_REGEX_$(pkg))" SUDO_USER_INCLUDE="$(SUDO_USER_INCLUDE_$(pkg))" sh ./Makefile.helper deploy "$(pkg)" && ) true
+	@if [ -n "$(POST_HOOK_$@)" ]; then \
+		echo "Running post-deploy hooks for $@"; \
+		if [ "$(ROOT_TARGET)" = "/" ] || [ "$(ROOT_TARGET)" = "/c/" ]; then \
+			$(POST_HOOK_$@); \
+		else \
+			echo "-> Sandbox mode (ROOT_TARGET=$(ROOT_TARGET)): skipping '$(POST_HOOK_$@)'"; \
+		fi; \
+	fi
 
-	# sudoers.d files cannot be stowed because they require to be owned by root!
-	# So making a copy of those files
-	sudo install -o root -g root -m 0440 ENV-Chander-Mjolnir/etc/sudoers.d/nix-path /etc/sudoers.d/nix-path
-
-	sudo install -o root -g root -m 644 ENV-Chander-Mjolnir/etc/chrony/sources.d/dfw-stratum-1.sources /etc/chrony/sources.d/dfw-stratum-1.sources
-	sudo chronyc reload sources
-
-	printf "✅ Mjolnir Dot-Files stowed successfully\n"
-
-.PHONY: stow-elebook
-stow-elebook: ## Stow dot-files for elebook (Elementary) laptop
-	$(STOW_COMMAND_PREFIX_HOME) \
-	    --ignore='(etc|usr)' \
-		--stow OS-Common-Unix OS-Linux OS-ElementaryOS ENV-Chander-Elebook
-
-	# Stow /etc files to / (ROOT)
-	sudo $(STOW_COMMAND_PREFIX_ROOT) \
-	    --ignore='(\.config|\.local)' \
-		--stow OS-ElementaryOS ENV-Chander-Elebook
-
-	# Stow .bashrc and .config to /root
-	sudo $(STOW_PATH) \
-	    --dir=$(DOT_FILES_LOCATION) \
-		--target=$(ROOT_FOLDER_LOCATION) \
-		--stow OS-Common-Unix
-
-	# sudoers.d files cannot be stowed because they require to be owned by root!
-	# So making a copy of those files
-	sudo install -o root -g root -m 0440 OS-ElementaryOS/etc/sudoers.d/nix-path /etc/sudoers.d/nix-path
-
-	printf "✅ Elebook Dot-Files stowed successfully\n"
-
-.PHONY: stow-sath
-stow-sath: ## Stow dot-files for Sath (Elementary) machine
-	$(STOW_COMMAND_PREFIX_HOME) \
-		--stow OS-Common-Unix OS-Linux OS-ElementaryOS ENV-Chander-Sath
-
-	printf "✅ Sath Dot-Files stowed successfully\n"
+$(addprefix unstow-,$(MACHINES)): unstow-%:
+	@$(foreach pkg,$(PACKAGES_$*),SKIP_SUDO_USER="$(SKIP_SUDO_USER_$*)" COPY_LIST="$(COPY_LIST_$(pkg))" USER_IGNORE="$(USER_IGNORE_$(pkg))" USER_IGNORE_REGEX="$(USER_IGNORE_REGEX_$(pkg))" SUDO_USER_INCLUDE="$(SUDO_USER_INCLUDE_$(pkg))" sh ./Makefile.helper remove "$(pkg)" && ) true

@@ -47,19 +47,21 @@ function mj-help --description "List all Tinn-related shortcuts"
     printf 'tinn-vol     --> Sets system volume to max level  \n'
 end
 
-function ntp_sources --description "Live-monitor chrony NTP sources with color highlighting"
+function ntp_sources --description "Live-monitor chrony NTP sources"
     # Default to a 1-second refresh interval
     set -l interval 1
 
-    # Build the awk script with inline set_color substitutions
     set -l awk_script '
         # Highlight the active winning sync source (* / =* / #*) in bold yellow
         /^[=^#]\*/    { print "'(set_color --bold yellow)'" $0 "'(set_color normal)'"; next }
 
+        # Highlight backup sources (+ / =+ / #+) in bright purple
+        /^[=^#]\+/    { print "'(set_color brpurple)'" $0 "'(set_color normal)'"; next }
+
         # Dim unusable (?), falseticker (x), or overly variable (~) sources
         /^[=^#][?x~]/ { print "'(set_color --dim)'" $0 "'(set_color normal)'"; next }
 
-        # Print headers and healthy standby (+ / -) sources in default color
+        # Print headers and non-combined (-) standby sources in default color
         { print }
     '
 

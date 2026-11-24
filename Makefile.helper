@@ -1,0 +1,208 @@
+#!/bin/sh
+set -eu
+
+ACTION="${1:?Usage: Makefile.helper <deploy|remove> <package>}"
+PKG="${2:?Usage: Makefile.helper <deploy|remove> <package>}"
+COPY_LIST="${COPY_LIST:-}"
+SUDO_USER_INCLUDE="${SUDO_USER_INCLUDE:-}"
+
+# Global filenames ignored everywhere (both Stow and direct file copies)
+GLOBAL_IGNORES=".DS_Store .stow-local-ignore Thumbs.db desktop.ini"
+
+escape_dots() {
+    printf '%s' "$1" | sed 's/\./\\./g'
+}
+
+build_ignore_flags() {
+    flags=""
+    for name in $GLOBAL_IGNORES; do
+        escaped=$(escape_dots "$name")
+        flags="$flags --ignore=(^|/)${escaped}\$"
+    done
+    for item in ${1:-}; do
+        escaped=$(escape_dots "$item")
+        flags="$flags --ignore=^/?${escaped}(/|\$)"
+    done
+    for regex in ${2:-}; do
+        flags="$flags --ignore=$regex"
+    done
+    printf '%s' "$flags"
+}
+
+is_global_ignored() {
+    base=$(basename "$1")
+    for name in $GLOBAL_IGNORES; do
+        [ "$base" = "$name" ] && return 0
+    done
+    return 1
+}
+
+clean_global_ignores() {
+    target_dir="$1"
+    for name in $GLOBAL_IGNORES; do
+        sudo find "$target_dir" -name "$name" -delete
+    done
+}
+
+copy_tree() {
+    src_dir="$1"
+    dst_dir="$2"
+    [ -d "$src_dir" ] || return 0
+    echo "-> Copying $src_dir -> $dst_dir"
+    (
+        cd "$src_dir"
+        find . -type f | while IFS= read -r rel; do
+            rel="${rel#./}"
+            is_global_ignored "$rel" && continue
+            mkdir -p "$dst_dir/$(dirname "$rel")"
+            cp -f "$rel" "$dst_dir/$rel"
+        done
+    )
+}
+
+remove_tree() {
+    src_dir="$1"
+    dst_dir="$2"
+    [ -d "$src_dir" ] || return 0
+    (
+        cd "$src_dir"
+        find . -type f | while IFS= read -r rel; do
+            rel="${rel#./}"
+            is_global_ignored "$rel" && continue
+            rm -f "$dst_dir/$rel"
+        done
+    )
+}
+
+deploy_pkg() {
+    echo "Deploying package: $PKG (Windows mode: ${IS_WINDOWS:-0})"
+
+    if [ "${IS_WINDOWS:-0}" = "1" ] || ! command -v stow >/dev/null 2>&1; then
+        copy_tree "$PKG/USER" "$USER_TARGET"
+        copy_tree "$PKG/ROOT" "${ROOT_TARGET%/}"
+        return 0
+    fi
+
+    base_ignore_flags=$(build_ignore_flags)
+
+    # 1. Stow USER -> USER_TARGET (and selectively into SUDO_USER_TARGET)
+    if [ -d "$PKG/USER" ]; then
+        echo "-> Stowing $PKG/USER -> $USER_TARGET"
+        # shellcheck disable=SC2086
+        stow --no-folding $base_ignore_flags -R -d "$PKG" -t "$USER_TARGET" USER
+
+# Inside deploy_pkg():
+        if [ "${SKIP_SUDO_USER:-0}" != "1" ] && [ -n "$SUDO_USER_INCLUDE" ]; then
+            echo "-> Stowing selected items from $PKG/USER -> $SUDO_USER_TARGET ($SUDO_USER_INCLUDE)"
+            pkg_user_abs=$(cd "$PKG/USER" && pwd)
+            for item in $SUDO_USER_INCLUDE; do
+                src="$pkg_user_abs/$item"
+                dst="$SUDO_USER_TARGET/$item"
+                if [ -d "$src" ]; then
+                    sudo mkdir -p "$dst"
+                    # shellcheck disable=SC2086
+                    sudo stow --no-folding $base_ignore_flags -R -d "$(dirname "$src")" -t "$(dirname "$dst")" "$(basename "$src")"
+                elif [ -f "$src" ]; then
+                    sudo mkdir -p "$(dirname "$dst")"
+                    sudo ln -sf "$src" "$dst"
+                else
+                    echo "Warning: SUDO_USER_INCLUDE item '$src' not found!" >&2
+                fi
+            done
+        fi
+    fi
+
+    # 2. Stow ROOT -> ROOT_TARGET (excluding COPY_LIST)
+    if [ -d "$PKG/ROOT" ]; then
+        root_ignore_flags=$(build_ignore_flags "$COPY_LIST")
+        echo "-> Stowing $PKG/ROOT -> $ROOT_TARGET (ignoring: ${COPY_LIST:-none})"
+        # shellcheck disable=SC2086
+        sudo stow --no-folding $root_ignore_flags -R -d "$PKG" -t "$ROOT_TARGET" ROOT
+    fi
+
+    # 3. Direct copy for COPY_LIST exceptions
+    for item in $COPY_LIST; do
+        src="$PKG/ROOT/$item"
+        dst="$ROOT_TARGET$item"
+        if [ -d "$src" ]; then
+            echo "-> Copying directory $src -> $dst"
+            sudo mkdir -p "$dst"
+            sudo rm -rf "${dst:?}"/*
+            sudo cp -a "$src/." "$dst/"
+            clean_global_ignores "$dst"
+            sudo chown -R "root:$ROOT_GROUP" "$dst"
+        elif [ -f "$src" ] || [ -L "$src" ]; then
+            echo "-> Copying file $src -> $dst"
+            sudo mkdir -p "$(dirname "$dst")"
+            sudo rm -f "$dst"
+            case "$item" in
+                etc/sudoers.d/*)
+                    sudo install -o root -g "$ROOT_GROUP" -m 440 "$src" "$dst"
+                    ;;
+                *)
+                    if [ -x "$src" ]; then
+                        sudo install -o root -g "$ROOT_GROUP" -m 755 "$src" "$dst"
+                    else
+                        sudo install -o root -g "$ROOT_GROUP" -m 644 "$src" "$dst"
+                    fi
+                    ;;
+            esac
+        else
+            echo "Warning: $src not found!" >&2
+        fi
+    done
+}
+
+remove_pkg() {
+    echo "Removing package: $PKG"
+
+    if [ "${IS_WINDOWS:-0}" = "1" ] || ! command -v stow >/dev/null 2>&1; then
+        remove_tree "$PKG/USER" "$USER_TARGET"
+        remove_tree "$PKG/ROOT" "${ROOT_TARGET%/}"
+        return 0
+    fi
+
+    base_ignore_flags=$(build_ignore_flags)
+
+    if [ -d "$PKG/USER" ]; then
+        echo "-> Unstowing $PKG/USER from $USER_TARGET"
+        # shellcheck disable=SC2086
+        stow --no-folding $base_ignore_flags -D -d "$PKG" -t "$USER_TARGET" USER
+
+        if [ -n "$SUDO_USER_INCLUDE" ] && [ -d "$SUDO_USER_TARGET" ]; then
+            echo "-> Removing selected items from $SUDO_USER_TARGET"
+            pkg_user_abs=$(cd "$PKG/USER" && pwd)
+            for item in $SUDO_USER_INCLUDE; do
+                src="$pkg_user_abs/$item"
+                dst="$SUDO_USER_TARGET/$item"
+                if [ -d "$src" ] && [ -d "$dst" ]; then
+                    # shellcheck disable=SC2086
+                    sudo stow --no-folding $base_ignore_flags -D -d "$(dirname "$src")" -t "$(dirname "$dst")" "$(basename "$src")"
+                    sudo rmdir -p "$dst" 2>/dev/null || true
+                elif [ -L "$dst" ] || [ -f "$dst" ]; then
+                    sudo rm -f "$dst"
+                fi
+            done
+        fi
+    fi
+
+    if [ -d "$PKG/ROOT" ]; then
+        root_ignore_flags=$(build_ignore_flags "$COPY_LIST")
+        echo "-> Unstowing $PKG/ROOT from $ROOT_TARGET"
+        sudo stow --no-folding $root_ignore_flags -D -d "$PKG" -t "$ROOT_TARGET" ROOT
+    fi
+
+    for item in $COPY_LIST; do
+        dst="$ROOT_TARGET$item"
+        if [ -e "$dst" ] || [ -L "$dst" ]; then
+            echo "-> Removing copied path $dst"
+            sudo rm -rf "$dst"
+        fi
+    done
+}
+
+case "$ACTION" in
+    deploy) deploy_pkg ;;
+    remove) remove_pkg ;;
+    *) echo "Unknown action: $ACTION" >&2; exit 1 ;;
+esac

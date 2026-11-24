@@ -1,17 +1,18 @@
 # 🅲 🅷 🅰 🅽 🅳 🅴 🆁
-# ==============================================================================
+# ===============================================================================
 # Custom Non-Smeared Stratum 1 NTP Sources (Optimized for North Texas / DFW)
 # All sources below use standard UTC leap-second stepping (no leap-smearing).
+# NOTE: The '99' prefix has no relevance for 'source' files; used for consistency
 
 # Since Ubuntu's NTP pool has 'prefer', disable with the following command
 # sudo dpkg-divert --add --rename --divert /etc/chrony/sources.d/ubuntu-ntp-pools.sources.disabled /etc/chrony/sources.d/ubuntu-ntp-pools.sources
 
 # After installing this file, run 'sudo chronyc reload sources'
-# ==============================================================================
+# ===============================================================================
 
-# ------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 # Tier 1: Stratum 1 Clocks (3 sources prevent 1 hiccup from losing consensus)
-# ------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 
 # NIST Internet Time Service - Boulder Labs (Boulder, CO)
 server time-d-b.nist.gov iburst prefer
@@ -22,18 +23,12 @@ server time-a-wwv.nist.gov iburst prefer
 # NIST Internet Time Service - Gaithersburg Campus (Gaithersburg, MD)
 server time-a-g.nist.gov iburst prefer
 
-# ------------------------------------------------------------------------------
-# Tier 2: # Tier 2: NTS-Authenticated Stratum 1 &  Anycast Backups
-# ------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
+# Tier 2: NTS-Authenticated Stratum 1 &  Anycast Backups
+# -------------------------------------------------------------------------------
 
 # All Netnod nodes are located in Sweden causing transatlantic latency
 server nts.netnod.se iburst nts
 
 # This resolves to a Cloudflare edge node running at Stratum 3
 server time.cloudflare.com iburst nts
-
-# ------------------------------------------------------------------------------
-# Tier 3: Canonical NTS Pools (no 'prefer' so they stay strict backups)
-# ------------------------------------------------------------------------------
-
-pool ntp.ubuntu.com iburst maxsources 4 nts
