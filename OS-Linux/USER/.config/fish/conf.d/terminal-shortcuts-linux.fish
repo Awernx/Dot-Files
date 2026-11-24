@@ -61,11 +61,11 @@ function upgrade --description "Upgrade installed package managers"
     end
 
     if command -sq nix; and command -sq home-manager
-        set -l hm_dir "$HOME/.config/home-manager"
+        set -l hm_dir (path dirname (path resolve "$HOME/.config/home-manager/flake.nix"))
 
         if test -f "$hm_dir/flake.nix"
             printf '\nUpgrading Home Manager\n'
-            nix flake update --flake "$hm_dir"; or return
+            nix flake update --flake "path:$hm_dir"
             home-manager switch --flake "$hm_dir"; or return
         else
             printf '\nSkipping Home Manager: no flake.nix in %s\n' "$hm_dir"
