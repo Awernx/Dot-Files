@@ -20,27 +20,23 @@ endif
 # ------------------------------------------------------------------------------
 # Per-Package Configurations (Convention-Based)
 # ------------------------------------------------------------------------------
-COPY_LIST_OS-ElementaryOS        := etc/sudoers.d/nix-path
-COPY_LIST_OS-Linux               := etc/chrony
+COPY_LIST_ENV-Mjolnir            := etc/chrony etc/sudoers.d
 
-SUDO_USER_INCLUDE_OS-Common-Unix := .bashrc .config/bash .config/direnv .config/fish .config/htop .config/vim .config/yazi
-SUDO_USER_INCLUDE_OS-Linux       := .config/bash .config/fish
+SUDO_USER_INCLUDE_OS-Common-Unix := .bashrc .config/bash .config/direnv .config/htop .config/vim
+SUDO_USER_INCLUDE_OS-Linux       := .config/bash
 
 # ------------------------------------------------------------------------------
 # Machine Targets (Convention: PACKAGES_<Machine> and POST_HOOK_<Machine>)
 # ------------------------------------------------------------------------------
-MACHINES := macbookpro
+MACHINES := macbookpro mjolnir
 
 PACKAGES_macbookpro       := OS-Common-Unix OS-MacOS ENV-MacBookPro
 SKIP_SUDO_USER_macbookpro := 1
 POST_HOOK_macbookpro      := defaults write org.hammerspoon.Hammerspoon MJConfigFile "~/.config/hammerspoon/init.lua"
 
-# PACKAGES_laptop     := OS-Common-Unix OS-Linux OS-ElementaryOS
-# POST_HOOK_laptop    := sudo systemctl restart chrony
-#
-# PACKAGES_server     := OS-Common-Unix OS-Linux
-# POST_HOOK_server    := sudo systemctl restart chrony && sudo systemctl daemon-reload
-#
+PACKAGES_mjolnir          := OS-Common-Unix OS-Linux ENV-Mjolnir
+# POST_HOOK_mjolnir         := defaults write org.hammerspoon.Hammerspoon MJConfigFile "~/.config/hammerspoon/init.lua"
+
 # PACKAGES_windows-pc := OS-Windows
 
 export IS_WINDOWS USER_TARGET ROOT_TARGET SUDO_USER_TARGET ROOT_GROUP
