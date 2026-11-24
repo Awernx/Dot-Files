@@ -13,20 +13,22 @@ else
 	IS_WINDOWS       := 0
 	USER_TARGET      ?= $(HOME)
 	ROOT_TARGET      ?= /
-	SUDO_USER_TARGET ?= $(patsubst %//,%/,$(ROOT_TARGET)/root)
+	SUDO_USER_TARGET ?= $(if $(filter /,$(ROOT_TARGET)),/root,$(ROOT_TARGET)root)
 	ROOT_GROUP       := $(shell id -gn root)
 endif
 
 # ------------------------------------------------------------------------------
 # Per-Package Configurations (Convention-Based)
 # ------------------------------------------------------------------------------
-COPY_LIST_ENV-Mjolnir            := etc/chrony etc/sudoers.d
+COPY_LIST_ENV-Mjolnir 			 := etc/chrony/conf.d/99-stratum-1-priority.conf etc/chrony/sources.d/99-stratum-1.sources etc/sudoers.d/nix-path
+
+USER_IGNORE_REGEX_OS-MacOS       := com\.googlecode\.iterm2\.plist
 
 SUDO_USER_INCLUDE_OS-Common-Unix := .bashrc .config/bash .config/direnv .config/htop .config/vim
 SUDO_USER_INCLUDE_OS-Linux       := .config/bash
 
 # ------------------------------------------------------------------------------
-# Machine Targets (Convention: PACKAGES_<Machine> and POST_HOOK_<Machine>)
+# Machine Targets (Convention: PACKAGES_<Machine>, SKIP_SUDO_USER_<Machine>, POST_HOOK_<Machine>)
 # ------------------------------------------------------------------------------
 MACHINES := macbookpro mjolnir
 
@@ -35,7 +37,7 @@ SKIP_SUDO_USER_macbookpro := 1
 POST_HOOK_macbookpro      := defaults write org.hammerspoon.Hammerspoon MJConfigFile "~/.config/hammerspoon/init.lua"
 
 PACKAGES_mjolnir          := OS-Common-Unix OS-Linux ENV-Mjolnir
-# POST_HOOK_mjolnir         := defaults write org.hammerspoon.Hammerspoon MJConfigFile "~/.config/hammerspoon/init.lua"
+
 
 # PACKAGES_windows-pc := OS-Windows
 
@@ -49,7 +51,9 @@ export IS_WINDOWS USER_TARGET ROOT_TARGET SUDO_USER_TARGET ROOT_GROUP
 $(MACHINES):
 	@$(foreach pkg,$(PACKAGES_$@),SKIP_SUDO_USER="$(SKIP_SUDO_USER_$@)" COPY_LIST="$(COPY_LIST_$(pkg))" USER_IGNORE="$(USER_IGNORE_$(pkg))" USER_IGNORE_REGEX="$(USER_IGNORE_REGEX_$(pkg))" SUDO_USER_INCLUDE="$(SUDO_USER_INCLUDE_$(pkg))" sh ./Makefile.helper deploy "$(pkg)" && ) true
 	@if [ -n "$(POST_HOOK_$@)" ]; then \
+		echo "=================================================================="; \
 		echo "Running post-deploy hooks for $@"; \
+		echo "=================================================================="; \
 		if [ "$(ROOT_TARGET)" = "/" ] || [ "$(ROOT_TARGET)" = "/c/" ]; then \
 			$(POST_HOOK_$@); \
 		else \

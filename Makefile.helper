@@ -3,8 +3,16 @@ set -eu
 
 ACTION="${1:?Usage: Makefile.helper <deploy|remove> <package>}"
 PKG="${2:?Usage: Makefile.helper <deploy|remove> <package>}"
+
 COPY_LIST="${COPY_LIST:-}"
+USER_IGNORE="${USER_IGNORE:-}"
+USER_IGNORE_REGEX="${USER_IGNORE_REGEX:-}"
 SUDO_USER_INCLUDE="${SUDO_USER_INCLUDE:-}"
+SKIP_SUDO_USER="${SKIP_SUDO_USER:-0}"
+
+# Resolve stow binary from current user's PATH so `sudo "$STOW_BIN"` works even
+# when stow is installed via Homebrew or Nix outside sudo's secure_path.
+STOW_BIN="$(command -v stow 2>/dev/null || true)"
 
 # Global filenames ignored everywhere (both Stow and direct file copies)
 GLOBAL_IGNORES=".DS_Store .stow-local-ignore Thumbs.db desktop.ini"
@@ -13,19 +21,29 @@ escape_dots() {
     printf '%s' "$1" | sed 's/\./\\./g'
 }
 
+# Builds Stow --ignore flags from:
+#   - GLOBAL_IGNORES (matched at any depth via (^|/)${escaped}$)
+#   - $1: space-separated relative paths (escaped automatically)
+#   - $2: space-separated raw Perl regexes (passed through unchanged)
 build_ignore_flags() {
+    extra_paths="${1:-}"
+    extra_regexes="${2:-}"
     flags=""
+
     for name in $GLOBAL_IGNORES; do
         escaped=$(escape_dots "$name")
         flags="$flags --ignore=(^|/)${escaped}\$"
     done
-    for item in ${1:-}; do
+
+    for item in $extra_paths; do
         escaped=$(escape_dots "$item")
         flags="$flags --ignore=^/?${escaped}(/|\$)"
     done
-    for regex in ${2:-}; do
+
+    for regex in $extra_regexes; do
         flags="$flags --ignore=$regex"
     done
+
     printf '%s' "$flags"
 }
 
@@ -75,24 +93,26 @@ remove_tree() {
 }
 
 deploy_pkg() {
+    echo "=================================================================="
     echo "Deploying package: $PKG (Windows mode: ${IS_WINDOWS:-0})"
+    echo "=================================================================="
 
-    if [ "${IS_WINDOWS:-0}" = "1" ] || ! command -v stow >/dev/null 2>&1; then
+    if [ "${IS_WINDOWS:-0}" = "1" ] || [ -z "$STOW_BIN" ]; then
         copy_tree "$PKG/USER" "$USER_TARGET"
         copy_tree "$PKG/ROOT" "${ROOT_TARGET%/}"
         return 0
     fi
 
     base_ignore_flags=$(build_ignore_flags)
+    user_ignore_flags=$(build_ignore_flags "$USER_IGNORE" "$USER_IGNORE_REGEX")
 
     # 1. Stow USER -> USER_TARGET (and selectively into SUDO_USER_TARGET)
     if [ -d "$PKG/USER" ]; then
         echo "-> Stowing $PKG/USER -> $USER_TARGET"
         # shellcheck disable=SC2086
-        stow --no-folding $base_ignore_flags -R -d "$PKG" -t "$USER_TARGET" USER
+        "$STOW_BIN" --no-folding $user_ignore_flags -R -d "$PKG" -t "$USER_TARGET" USER
 
-# Inside deploy_pkg():
-        if [ "${SKIP_SUDO_USER:-0}" != "1" ] && [ -n "$SUDO_USER_INCLUDE" ]; then
+        if [ "$SKIP_SUDO_USER" != "1" ] && [ -n "$SUDO_USER_INCLUDE" ]; then
             echo "-> Stowing selected items from $PKG/USER -> $SUDO_USER_TARGET ($SUDO_USER_INCLUDE)"
             pkg_user_abs=$(cd "$PKG/USER" && pwd)
             for item in $SUDO_USER_INCLUDE; do
@@ -101,7 +121,7 @@ deploy_pkg() {
                 if [ -d "$src" ]; then
                     sudo mkdir -p "$dst"
                     # shellcheck disable=SC2086
-                    sudo stow --no-folding $base_ignore_flags -R -d "$(dirname "$src")" -t "$(dirname "$dst")" "$(basename "$src")"
+                    sudo "$STOW_BIN" --no-folding $base_ignore_flags -R -d "$(dirname "$src")" -t "$dst" "$(basename "$src")"
                 elif [ -f "$src" ]; then
                     sudo mkdir -p "$(dirname "$dst")"
                     sudo ln -sf "$src" "$dst"
@@ -117,7 +137,7 @@ deploy_pkg() {
         root_ignore_flags=$(build_ignore_flags "$COPY_LIST")
         echo "-> Stowing $PKG/ROOT -> $ROOT_TARGET (ignoring: ${COPY_LIST:-none})"
         # shellcheck disable=SC2086
-        sudo stow --no-folding $root_ignore_flags -R -d "$PKG" -t "$ROOT_TARGET" ROOT
+        sudo "$STOW_BIN" --no-folding $root_ignore_flags -R -d "$PKG" -t "$ROOT_TARGET" ROOT
     fi
 
     # 3. Direct copy for COPY_LIST exceptions
@@ -154,22 +174,25 @@ deploy_pkg() {
 }
 
 remove_pkg() {
+    echo "=================================================================="
     echo "Removing package: $PKG"
+    echo "=================================================================="
 
-    if [ "${IS_WINDOWS:-0}" = "1" ] || ! command -v stow >/dev/null 2>&1; then
+    if [ "${IS_WINDOWS:-0}" = "1" ] || [ -z "$STOW_BIN" ]; then
         remove_tree "$PKG/USER" "$USER_TARGET"
         remove_tree "$PKG/ROOT" "${ROOT_TARGET%/}"
         return 0
     fi
 
     base_ignore_flags=$(build_ignore_flags)
+    user_ignore_flags=$(build_ignore_flags "$USER_IGNORE" "$USER_IGNORE_REGEX")
 
     if [ -d "$PKG/USER" ]; then
         echo "-> Unstowing $PKG/USER from $USER_TARGET"
         # shellcheck disable=SC2086
-        stow --no-folding $base_ignore_flags -D -d "$PKG" -t "$USER_TARGET" USER
+        "$STOW_BIN" --no-folding $user_ignore_flags -D -d "$PKG" -t "$USER_TARGET" USER
 
-        if [ -n "$SUDO_USER_INCLUDE" ] && [ -d "$SUDO_USER_TARGET" ]; then
+        if [ "$SKIP_SUDO_USER" != "1" ] && [ -n "$SUDO_USER_INCLUDE" ] && [ -d "$SUDO_USER_TARGET" ]; then
             echo "-> Removing selected items from $SUDO_USER_TARGET"
             pkg_user_abs=$(cd "$PKG/USER" && pwd)
             for item in $SUDO_USER_INCLUDE; do
@@ -177,7 +200,7 @@ remove_pkg() {
                 dst="$SUDO_USER_TARGET/$item"
                 if [ -d "$src" ] && [ -d "$dst" ]; then
                     # shellcheck disable=SC2086
-                    sudo stow --no-folding $base_ignore_flags -D -d "$(dirname "$src")" -t "$(dirname "$dst")" "$(basename "$src")"
+                    sudo "$STOW_BIN" --no-folding $base_ignore_flags -D -d "$(dirname "$src")" -t "$dst" "$(basename "$src")"
                     sudo rmdir -p "$dst" 2>/dev/null || true
                 elif [ -L "$dst" ] || [ -f "$dst" ]; then
                     sudo rm -f "$dst"
@@ -189,7 +212,8 @@ remove_pkg() {
     if [ -d "$PKG/ROOT" ]; then
         root_ignore_flags=$(build_ignore_flags "$COPY_LIST")
         echo "-> Unstowing $PKG/ROOT from $ROOT_TARGET"
-        sudo stow --no-folding $root_ignore_flags -D -d "$PKG" -t "$ROOT_TARGET" ROOT
+        # shellcheck disable=SC2086
+        sudo "$STOW_BIN" --no-folding $root_ignore_flags -D -d "$PKG" -t "$ROOT_TARGET" ROOT
     fi
 
     for item in $COPY_LIST; do
