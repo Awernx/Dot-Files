@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<doublecmd DCVersion="1.1.30 gamma" ConfigVersion="15">
+<doublecmd DCVersion="1.2.11 gamma" ConfigVersion="16">
   <Toolbars>
     <MainToolbar>
       <Row>
@@ -158,8 +158,8 @@
   </Toolbars>
   <MainWindow>
     <Position Save="True">
-      <Left>1032</Left>
-      <Top>42</Top>
+      <Left>285</Left>
+      <Top>48</Top>
       <Width>1414</Width>
       <Height>766</Height>
       <PixelsPerInch>96</PixelsPerInch>
@@ -206,6 +206,7 @@
       <SingleClickStart>0</SingleClickStart>
       <ScrollMode>1</ScrollMode>
       <WheelScrollLines>3</WheelScrollLines>
+      <ZoomWithCtrlWheel>True</ZoomWithCtrlWheel>
     </Mouse>
     <AutoFillColumns>True</AutoFillColumns>
     <AutoSizeColumn>1</AutoSizeColumn>
@@ -352,6 +353,7 @@
     <DriveBar1>False</DriveBar1>
     <DriveBar2>True</DriveBar2>
     <DriveBarFlat>True</DriveBarFlat>
+    <DriveBarFreeSpace>False</DriveBarFreeSpace>
     <DrivesListButton Enabled="True">
       <ShowLabel>True</ShowLabel>
       <ShowFileSystem>False</ShowFileSystem>
@@ -474,6 +476,7 @@
       <MulRenFilenameWithFullPathInLog>False</MulRenFilenameWithFullPathInLog>
       <MulRenPathRangeSeparator>- </MulRenPathRangeSeparator>
     </MultiRename>
+    <AutoCopyBackward>True</AutoCopyBackward>
   </FileOperations>
   <Tabs>
     <Options>49937</Options>
@@ -488,7 +491,7 @@
   <Configuration Save="True" SortOrder="1" TreeType="0">
     <FolderTabs Save="True"/>
   </Configuration>
-  <History>
+  <History MaxStringItems="50">
     <SearchReplaceHistory Save="True"/>
     <DirHistory Save="True" Count="30"/>
     <CmdLineHistory Save="True"/>
@@ -562,26 +565,6 @@
   <IgnoreList Enabled="False">
     <IgnoreListFile>%DC_CONFIG_PATH%\ignorelist.txt</IgnoreListFile>
   </IgnoreList>
-  <DirectoryHotList>
-    <HotDir Name="Scoop Apps" Path="C:\Users\chand\AppData\Local\Programs\Scoop\apps"/>
-    <HotDir Name="Scoop Persist" Path="C:\Users\chand\AppData\Local\Programs\Scoop\persist"/>
-    <HotDir Name="MEGA" Path="C:\Users\chand\Documents\MEGA"/>
-    <HotDir Name="Workspace" Path="C:\Users\chand\Workspace"/>
-    <HotDir Name="Dot-Files" Path="C:\Users\chand\Workspace\Dot-Files"/>
-    <HotDir Name="OS-Windows" Path="C:\Users\chand\Workspace\Dot-Files\OS-Windows"/>
-    <HotDir Name="AppData Local" Path="C:\Users\chand\AppData\Local"/>
-    <HotDir Name="AppData Local Programs" Path="C:\Users\chand\AppData\Local\Programs"/>
-    <HotDir Name="Program Files (x86)" Path="C:\Program Files (x86)"/>
-    <HotDir Name="Program Files" Path="C:\Program Files"/>
-    <HotDir Name="-" Path=""/>
-    <HotDir Name="Home" Path="C:\Users\chand"/>
-    <HotDir Name="BK1 (E:)" Path="E:\"/>
-    <HotDir Name="-" Path=""/>
-    <HotDir Name="-XDG Locations" Path=""/>
-    <HotDir Name=".config" Path="C:\Users\chand\.config"/>
-    <HotDir Name=".ssh" Path="C:\Users\chand\.ssh"/>
-    <HotDir Name="--" Path=""/>
-  </DirectoryHotList>
   <Viewer>
     <PreviewVisible>False</PreviewVisible>
     <ImageStretch>False</ImageStretch>
@@ -619,6 +602,7 @@
     <SynEditRightEdge>80</SynEditRightEdge>
     <SynEditBlockIndent>2</SynEditBlockIndent>
     <FindWordAtCursor>True</FindWordAtCursor>
+    <SynEditSpecialChars>5</SynEditSpecialChars>
   </Editor>
   <Differ>
     <IgnoreCase>False</IgnoreCase>
@@ -714,7 +698,7 @@
     <DfltRightGoTo>1</DfltRightGoTo>
     <DfltKeep>5</DfltKeep>
     <DfltSaveDirHistory>False</DfltSaveDirHistory>
-    <FavTabsLastUniqueID>{1962FA66-CB19-4370-A17F-074022B6A741}</FavTabsLastUniqueID>
+    <FavTabsLastUniqueID>{3CBD472E-52CA-4E5D-BBFB-B22ABDF350F9}</FavTabsLastUniqueID>
   </FavoriteTabsOptions>
   <Lua>
     <PathToLibrary>lua5.1.dll</PathToLibrary>
@@ -807,7 +791,7 @@
       </Columns>
     </ColumnsSet>
   </ColumnsSets>
-  <Plugins>
+  <Plugins Version="3">
     <DsxPlugins/>
     <WcxPlugins>
       <WcxPlugin Enabled="True">
@@ -984,6 +968,11 @@
         <ArchiveExt>b64</ArchiveExt>
         <Path>%commander_path%\plugins\wcx\base64\base64.wcx</Path>
         <Flags>1</Flags>
+      </WcxPlugin>
+      <WcxPlugin Enabled="True">
+        <ArchiveExt>br</ArchiveExt>
+        <Path>%commander_path%\plugins\wcx\zip\zip.wcx</Path>
+        <Flags>64</Flags>
       </WcxPlugin>
     </WcxPlugins>
     <WdxPlugins>
