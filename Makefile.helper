@@ -1,14 +1,32 @@
 #!/bin/sh
 set -eu
 
-ACTION="${1:?Usage: Makefile.helper <deploy|remove> <package>}"
-PKG="${2:?Usage: Makefile.helper <deploy|remove> <package>}"
+ACTION="${1:?Usage: Makefile.helper <deploy|remove> <package> [options]}"
+PKG="${2:?Usage: Makefile.helper <deploy|remove> <package> [options]}"
+shift 2
 
-COPY_LIST="${COPY_LIST:-}"
-USER_IGNORE="${USER_IGNORE:-}"
-USER_IGNORE_REGEX="${USER_IGNORE_REGEX:-}"
-SUDO_USER_INCLUDE="${SUDO_USER_INCLUDE:-}"
-SKIP_SUDO_USER="${SKIP_SUDO_USER:-0}"
+USER_TARGET="${USER_TARGET:-$HOME}"
+SUDO_USER_TARGET="${SUDO_USER_TARGET:-$(getent passwd root 2>/dev/null | cut -d: -f6 || echo /root)}"
+ROOT_TARGET="${ROOT_TARGET:-/}"
+ROOT_GROUP="${ROOT_GROUP:-$(id -gn root 2>/dev/null || echo root)}"
+
+COPY_LIST=""
+USER_IGNORE=""
+USER_IGNORE_REGEX=""
+SUDO_USER_INCLUDE=""
+SKIP_SUDO_USER="0"
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        -CopyList)         COPY_LIST="${2:-}"; shift 2 ;;
+        -UserIgnore)       USER_IGNORE="${2:-}"; shift 2 ;;
+        -UserIgnoreRegex)  USER_IGNORE_REGEX="${2:-}"; shift 2 ;;
+        -SudoInclude)      SUDO_USER_INCLUDE="${2:-}"; shift 2 ;;
+        -SkipSudo)         SKIP_SUDO_USER="${2:-0}"; shift 2 ;;
+        -UserLnk|-RootLnk) shift 2 ;;
+        *)                 shift 1 ;;
+    esac
+done
 
 # Resolve stow binary from current user's PATH so `sudo "$STOW_BIN"` works even
 # when stow is installed via Homebrew or Nix outside sudo's secure_path.

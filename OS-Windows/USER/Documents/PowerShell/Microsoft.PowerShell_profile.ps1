@@ -3,11 +3,12 @@
 # PowerShell script that adds sane defaults to any Windows environment
 # Location: $PROFILE --> ~\Documents\PowerShell\Microsoft.PowerShell_profile.ps1
 
-# Quick directory navigation
+# Quick alias functions
 function ..   { Set-Location .. }
 function ...  { Set-Location ..\.. }
 function .... { Set-Location ..\..\.. }
 function / { Set-Location C:\ }
+function pull { git pull }
 
 # Character printing
 $e     = [char]27

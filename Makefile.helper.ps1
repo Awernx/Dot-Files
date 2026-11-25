@@ -4,17 +4,25 @@ param(
     [string]$Action,
 
     [Parameter(Mandatory = $true, Position = 1)]
-    [string]$Package
+    [string]$Package,
+
+    [string]$CopyList = "",
+    [string]$UserLnk = "",
+    [string]$RootLnk = "",
+    [string]$UserIgnore = "",
+    [string]$UserIgnoreRegex = "",
+    [string]$SudoInclude = "",
+    [string]$SkipSudo = ""
 )
 
 $ErrorActionPreference = "Stop"
 
-$UserTarget      = $env:USER_TARGET
-$RootTarget      = $env:ROOT_TARGET
-$UserIgnore      = if ($env:USER_IGNORE)       { $env:USER_IGNORE -split '\s+' }       else { @() }
-$UserIgnoreRegex = if ($env:USER_IGNORE_REGEX) { $env:USER_IGNORE_REGEX -split '\s+' } else { @() }
-$UserLnk         = if ($env:USER_LNK)          { $env:USER_LNK -split '(?<!\\)\s+' | ForEach-Object { $_ -replace '\\ ', ' ' } } else { @() }
-$RootLnk         = if ($env:ROOT_LNK)          { $env:ROOT_LNK -split '(?<!\\)\s+' | ForEach-Object { $_ -replace '\\ ', ' ' } } else { @() }
+$UserTarget      = if ($env:USER_TARGET) { $env:USER_TARGET } else { $env:USERPROFILE }
+$RootTarget      = if ($env:ROOT_TARGET) { $env:ROOT_TARGET } else { "C:\" }
+$UserIgnoreList  = if ($UserIgnore)      { $UserIgnore -split '\s+' }      else { @() }
+$UserRegexList   = if ($UserIgnoreRegex) { $UserIgnoreRegex -split '\s+' } else { @() }
+$UserLnkList     = if ($UserLnk)         { $UserLnk -split '(?<!\\)\s+' | ForEach-Object { $_ -replace '\\ ', ' ' } } else { @() }
+$RootLnkList     = if ($RootLnk)         { $RootLnk -split '(?<!\\)\s+' | ForEach-Object { $_ -replace '\\ ', ' ' } } else { @() }
 $GlobalIgnores   = @(".DS_Store", ".stow-local-ignore", "Thumbs.db", "desktop.ini")
 
 function Sync-Tree {
@@ -103,11 +111,11 @@ Write-Host "$($Action.ToUpper()) package: $Package"
 $userSrc = Join-Path $Package "USER"
 if (Test-Path $userSrc) {
     Write-Host "-> $($Action.ToUpper()) $Package\USER -> $UserTarget"
-    Sync-Tree -SourceDir $userSrc -DestDir $UserTarget -IgnorePaths $UserIgnore -IgnoreRegexes $UserIgnoreRegex -LnkPaths $UserLnk
+    Sync-Tree -SourceDir $userSrc -DestDir $UserTarget -IgnorePaths $UserIgnoreList -IgnoreRegexes $UserRegexList -LnkPaths $UserLnkList
 }
 
 $rootSrc = Join-Path $Package "ROOT"
 if (Test-Path $rootSrc) {
     Write-Host "-> $($Action.ToUpper()) $Package\ROOT -> $RootTarget"
-    Sync-Tree -SourceDir $rootSrc -DestDir $RootTarget -LnkPaths $RootLnk
+    Sync-Tree -SourceDir $rootSrc -DestDir $RootTarget -LnkPaths $RootLnkList
 }

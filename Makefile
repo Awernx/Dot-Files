@@ -12,7 +12,7 @@ else
 	SHELL            := /bin/sh
 	HELPER           := sh ./Makefile.helper
 	USER_TARGET      ?= $(HOME)
-	SUDO_USER_TARGET ?= $(shell eval echo ~root)
+	SUDO_USER_TARGET ?= $(shell getent passwd root 2>/dev/null | cut -d: -f6 || eval echo ~root)
 	ROOT_TARGET      ?= /
 	ROOT_GROUP       := $(shell id -gn root)
 	IS_WINDOWS       := 0
@@ -54,7 +54,7 @@ ergo.packages             := OS-Windows
 ergo.sudo_user.skip       := 1
 
 # ==============================================================================
-# 3. TARGETS & EXECUTION RULES (100% Unified)
+# 3. TARGETS & EXECUTION RULES (100% Unified & Cross-Platform)
 # ==============================================================================
 .PHONY: $(MACHINES) $(addprefix unstow-,$(MACHINES))
 
@@ -66,14 +66,7 @@ $(addprefix unstow-,$(MACHINES)): unstow-%:
 	$(foreach pkg,$($*.packages),$(call run_helper,remove,$(pkg),$*))
 
 define run_helper
-	$(eval export SKIP_SUDO_USER    := $($3.sudo_user.skip))
-	$(eval export COPY_LIST         := $($(2).root.copy))
-	$(eval export USER_LNK          := $($(2).user.lnk))
-	$(eval export ROOT_LNK          := $($(2).root.lnk))
-	$(eval export USER_IGNORE       := $($(2).user.ignore))
-	$(eval export USER_IGNORE_REGEX := $($(2).user.ignore_regex))
-	$(eval export SUDO_USER_INCLUDE := $($(2).sudo_user.include))
-	$(HELPER) $(1) "$(2)"
+	$(HELPER) $(1) "$(2)" -CopyList "$($(2).root.copy)" -UserLnk "$($(2).user.lnk)" -RootLnk "$($(2).root.lnk)" -UserIgnore "$($(2).user.ignore)" -UserIgnoreRegex "$($(2).user.ignore_regex)" -SudoInclude "$($(2).sudo_user.include)" -SkipSudo "$($3.sudo_user.skip)";
 endef
 
 define run_post_hook
