@@ -32,6 +32,8 @@ OS-MacOS.user.ignore_regex       := com\.googlecode\.iterm2\.plist
 ENV-Mjolnir.root.copy            := etc/sudoers.d/nix-path \
                                     etc/chrony/conf.d/99-stratum-1-priority.conf \
                                     etc/chrony/sources.d/99-stratum-1.sources
+# Create hard links (Windows) for all files under these folders
+OS-Windows.user.lnk              := Documents AppData/Roaming
 
 # ==============================================================================
 # 2. MACHINES
@@ -48,7 +50,6 @@ elebook.packages          := OS-Common-Unix OS-Linux OS-ElementaryOS ENV-Elebook
 
 ergo.packages             := OS-Windows
 ergo.sudo_user.skip       := 1
-ergo.post_hook 			  := $$t = Get-ChildItem -Path ".\OS-Windows" -Filter "*.ahk" -Recurse -File | Select-Object -First 1; if ($$t) { $$s = (New-Object -ComObject WScript.Shell).CreateShortcut("$$([Environment]::GetFolderPath('Startup'))\$$($$t.BaseName).lnk"); $$s.TargetPath = $$t.FullName; $$s.WorkingDirectory = $$t.DirectoryName; $$s.Save() }
 
 # ==============================================================================
 # 3. TARGETS & EXECUTION RULES (100% Unified)
@@ -65,12 +66,14 @@ $(addprefix unstow-,$(MACHINES)): unstow-%:
 define run_helper
 	$(eval export SKIP_SUDO_USER=$($3.sudo_user.skip))
 	$(eval export COPY_LIST=$($(2).root.copy))
+	$(eval export USER_LNK=$($(2).user.lnk))
+	$(eval export ROOT_LNK=$($(2).root.lnk))
 	$(eval export USER_IGNORE=$($(2).user.ignore))
 	$(eval export USER_IGNORE_REGEX=$($(2).user.ignore_regex))
 	$(eval export SUDO_USER_INCLUDE=$($(2).sudo_user.include))
 	$(HELPER) $(1) "$(2)"
-
 endef
+
 
 define run_post_hook
 	$(if $($1.post_hook), \

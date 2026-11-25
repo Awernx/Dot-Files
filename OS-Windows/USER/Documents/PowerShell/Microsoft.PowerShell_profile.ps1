@@ -1,10 +1,13 @@
 # 🅲 🅷 🅰 🅽 🅳 🅴 🆁
 # ------------------------------------------------------------------------------
 # PowerShell script that adds sane defaults to any Windows environment
-#
 # Location: $PROFILE --> ~\Documents\PowerShell\Microsoft.PowerShell_profile.ps1
-# Link this file using the command below
-# New-Item -ItemType SymbolicLink -Path $PROFILE -Target "...\Dot-Files\OS-Windows\Documents\PowerShell\Microsoft.PowerShell_profile.ps1" -Force
+
+# Quick directory navigation
+function ..   { Set-Location .. }
+function ...  { Set-Location ..\.. }
+function .... { Set-Location ..\..\.. }
+function / { Set-Location C:\ }
 
 # Character printing
 $e     = [char]27
@@ -185,18 +188,24 @@ function l {
     $bold      = "$e[1m"
     $brCyan    = "$e[96m"
     $bldCyan   = "$e[1;96m"
+    $brYellow  = "$e[93m"
     $brPurple  = "$e[95m"
     $bldPurple = "$e[1;95m"
     $reset     = "$e[0m"
 
     Get-ChildItem -Force @Args | ForEach-Object {
-        $isHidden = ($_.Attributes -band [System.IO.FileAttributes]::Hidden) -or ($_.Name.StartsWith('.'))
-        $isLink   = [bool]$_.LinkType
+        $fullPath   = $_.FullName
+        $isHidden   = ($_.Attributes -band [System.IO.FileAttributes]::Hidden) -or ($_.Name.StartsWith('.'))
+        $linkType   = $_.LinkType
+        $isHardLink = $linkType -eq 'HardLink'
+        $isSoftLink = $linkType -in @('SymbolicLink', 'Junction')
 
-        $size = if ($isLink) {
-            "${dim}<LINK>${reset}"
+        $size = if ($isHardLink) {
+            "${brYellow}<HARDLINK>${reset}"
+        } elseif ($isSoftLink) {
+            if ($linkType -eq 'Junction') { "${brYellow}<JUNCTION>${reset}" } else { "${brYellow}<SYMLINK>${reset}" }
         } elseif ($_.PSIsContainer) {
-            "${dim}<DIR>${reset}"
+            "<DIR>"
         } elseif ($_.Length -ge 1GB) {
             '{0:N1} GB' -f ($_.Length / 1GB)
         } elseif ($_.Length -ge 1MB) {
@@ -207,26 +216,45 @@ function l {
             "$($_.Length) B"
         }
 
-        $targetSuffix = if ($isLink -and $_.Target) {
-            " ${dim}-> $($_.Target -join ', ')${reset}"
+        # Resolve hard link targets via $_.Target, falling back to fsutil if needed
+        $targets = if ($isHardLink) {
+            $rawTargets = if ($_.Target) {
+                $_.Target
+            } else {
+                $drive = [System.IO.Path]::GetPathRoot($fullPath).TrimEnd('\')
+                (fsutil hardlink list $fullPath 2>$null) | ForEach-Object { "$drive$_" }
+            }
+            $rawTargets | Where-Object { $_ -and ($_ -ne $fullPath) }
+        } else {
+            $_.Target
+        }
+
+        $targetSuffix = if (($isHardLink -or $isSoftLink) -and $targets) {
+            " ${dim}-> $($targets -join ', ')${reset}"
         } else {
             ''
         }
 
-        $name = if ($isLink) {
-            $linkColor = if ($isHidden) { $bldPurple } elseif ($_.PSIsContainer) { $bldCyan } else { $brCyan }
-            "${linkColor}$($_.Name)${reset}${targetSuffix}"
+        $name = if ($isHardLink) {
+            $color = if ($isHidden) { $bldPurple } else { $brPurple }
+            "${color}$($_.Name)${reset}${targetSuffix}"
+        } elseif ($isSoftLink) {
+            $color = if ($isHidden -or ($linkType -eq 'Junction')) { $bldPurple } elseif ($_.PSIsContainer) { $bldCyan } else { $brCyan }
+            "${color}$($_.Name)${reset}${targetSuffix}"
+        } elseif ($isHidden) {
+            $color = if ($_.PSIsContainer) { $bldPurple } else { $brPurple }
+            "${color}$($_.Name)${reset}"
         } elseif ($_.PSIsContainer) {
-            if ($isHidden) { "${bldPurple}$($_.Name)/${reset}" } else { "${bold}$($_.Name)/${reset}" }
+            "${bold}$($_.Name)${reset}"
         } else {
-            if ($isHidden) { "${brPurple}$($_.Name)${reset}" } else { $_.Name }
+            $_.Name
         }
 
         [PSCustomObject]@{
-            Mode     = "${dim}$($_.Mode)${reset}"
-            Modified = "${dim}$($_.LastWriteTime.ToString('yyyy-MM-dd HH:mm'))${reset}"
-            Size     = $size
-            Name     = $name
+            Mode   = "${dim}$($_.Mode)${reset}"
+            Date   = "${dim}$($_.LastWriteTime.ToString('yyyy-MM-dd HH:mm'))${reset}"
+            Size   = $size
+            Name   = $name
         }
-    } | Format-Table -AutoSize
+    } | Format-Table -AutoSize -HideTableHeaders
 }

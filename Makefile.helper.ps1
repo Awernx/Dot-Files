@@ -13,6 +13,8 @@ $UserTarget      = $env:USER_TARGET
 $RootTarget      = $env:ROOT_TARGET
 $UserIgnore      = if ($env:USER_IGNORE)       { $env:USER_IGNORE -split '\s+' }       else { @() }
 $UserIgnoreRegex = if ($env:USER_IGNORE_REGEX) { $env:USER_IGNORE_REGEX -split '\s+' } else { @() }
+$UserLnk         = if ($env:USER_LNK)          { $env:USER_LNK -split '(?<!\\)\s+' | ForEach-Object { $_ -replace '\\ ', ' ' } } else { @() }
+$RootLnk         = if ($env:ROOT_LNK)          { $env:ROOT_LNK -split '(?<!\\)\s+' | ForEach-Object { $_ -replace '\\ ', ' ' } } else { @() }
 $GlobalIgnores   = @(".DS_Store", ".stow-local-ignore", "Thumbs.db", "desktop.ini")
 
 function Sync-Tree {
@@ -20,7 +22,8 @@ function Sync-Tree {
         [string]$SourceDir,
         [string]$DestDir,
         [string[]]$IgnorePaths = @(),
-        [string[]]$IgnoreRegexes = @()
+        [string[]]$IgnoreRegexes = @(),
+        [string[]]$LnkPaths = @()
     )
     if (-not (Test-Path $SourceDir)) { return }
 
@@ -43,13 +46,38 @@ function Sync-Tree {
             if ($relUnix -match $rx -or $_.Name -match $rx) { return }
         }
 
-        $targetPath = Join-Path $DestDir $relWin
+        # Check if this file should be deployed as a hard link
+        $isHardLink = $false
+        $customDestRel = $null
+        foreach ($entry in $LnkPaths) {
+            if ([string]::IsNullOrWhiteSpace($entry)) { continue }
+            $parts = $entry -split ':', 2
+            $lnkSrcNorm = ($parts[0] -replace '\\', '/').Trim('/')
+            if ($relUnix -eq $lnkSrcNorm -or $relUnix.StartsWith("$lnkSrcNorm/")) {
+                $isHardLink = $true
+                if ($parts.Count -eq 2 -and -not [string]::IsNullOrWhiteSpace($parts[1])) {
+                    $customDestRel = $parts[1] -replace '/', '\'
+                }
+                break
+            }
+        }
+
+        $destRel    = if ($customDestRel) { $customDestRel } else { $relWin }
+        $targetPath = Join-Path $DestDir $destRel
+
         if ($Action -eq "deploy") {
             $parentDir = Split-Path -Path $targetPath -Parent
             if (-not (Test-Path $parentDir)) {
                 New-Item -ItemType Directory -Path $parentDir -Force | Out-Null
             }
-            Copy-Item -Path $_.FullName -Destination $targetPath -Force
+            if ($isHardLink) {
+                if (Test-Path $targetPath) {
+                    Remove-Item -Path $targetPath -Force
+                }
+                New-Item -ItemType HardLink -Path $targetPath -Target $_.FullName | Out-Null
+            } else {
+                Copy-Item -Path $_.FullName -Destination $targetPath -Force
+            }
         } else {
             if (Test-Path $targetPath) {
                 Remove-Item -Path $targetPath -Force
@@ -75,11 +103,11 @@ Write-Host "$($Action.ToUpper()) package: $Package"
 $userSrc = Join-Path $Package "USER"
 if (Test-Path $userSrc) {
     Write-Host "-> $($Action.ToUpper()) $Package\USER -> $UserTarget"
-    Sync-Tree -SourceDir $userSrc -DestDir $UserTarget -IgnorePaths $UserIgnore -IgnoreRegexes $UserIgnoreRegex
+    Sync-Tree -SourceDir $userSrc -DestDir $UserTarget -IgnorePaths $UserIgnore -IgnoreRegexes $UserIgnoreRegex -LnkPaths $UserLnk
 }
 
 $rootSrc = Join-Path $Package "ROOT"
 if (Test-Path $rootSrc) {
     Write-Host "-> $($Action.ToUpper()) $Package\ROOT -> $RootTarget"
-    Sync-Tree -SourceDir $rootSrc -DestDir $RootTarget
+    Sync-Tree -SourceDir $rootSrc -DestDir $RootTarget -LnkPaths $RootLnk
 }

@@ -1,6 +1,6 @@
 @REM 🅲 🅷 🅰 🅽 🅳 🅴 🆁
 @REM ------------------------------
-@REM Chander's DOS shell shortcuts 
+@REM Chander's DOS shell shortcuts
 
 @ECHO OFF
 SETLOCAL
@@ -14,5 +14,3 @@ DOSKEY ..=CD..
 DOSKEY ...=CD..\..
 DOSKEY ~=CD /D "%USERPROFILE%"
 DOSKEY /=CD \
-
-DOSKEY upgrade="scoop update --all"

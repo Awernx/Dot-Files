@@ -27,7 +27,21 @@
         {
             "command": "find",
             "id": "User.find"
-        }
+        },
+        {
+              "command": {
+                  "action": "sendInput",
+                  "input": "exit\r"
+              },
+              "keys": "ctrl+d"
+          },
+          {
+              "command": {
+                  "action": "sendInput",
+                  "input": "cls\r"
+              },
+              "keys": "ctrl+l"
+          }
     ],
     "alwaysShowNotificationIcon": false,
     "alwaysShowTabs": false,
@@ -67,7 +81,7 @@
             {
                 "colorScheme": "Deep Ocean Blue",
                 "commandline": "pwsh.exe -NoLogo",
-                "elevate": true ,
+                "elevate": false ,
                 "font": {
                     "face": "Consolas",
                     "size": 9,
@@ -80,7 +94,7 @@
             {
                 "colorScheme": "matrix",
                 "commandline": "cmd /k \"C:\\Users\\chand\\Documents\\CMD\\windows-terminal-shortcuts.cmd",
-                "elevate": true,
+                "elevate": false,
                 "font":
                 {
                     "face": "Consolas",
