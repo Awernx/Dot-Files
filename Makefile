@@ -66,14 +66,14 @@ $(addprefix unstow-,$(MACHINES)): unstow-%:
 	$(foreach pkg,$($*.packages),$(call run_helper,remove,$(pkg),$*))
 
 define run_helper
-	SKIP_SUDO_USER="$($3.sudo_user.skip)" \
-	COPY_LIST="$($(2).root.copy)" \
-	USER_LNK="$($(2).user.lnk)" \
-	ROOT_LNK="$($(2).root.lnk)" \
-	USER_IGNORE="$($(2).user.ignore)" \
-	USER_IGNORE_REGEX="$($(2).user.ignore_regex)" \
-	SUDO_USER_INCLUDE="$($(2).sudo_user.include)" \
-	$(HELPER) $(1) "$(2)";
+	$(eval export SKIP_SUDO_USER    := $($3.sudo_user.skip))
+	$(eval export COPY_LIST         := $($(2).root.copy))
+	$(eval export USER_LNK          := $($(2).user.lnk))
+	$(eval export ROOT_LNK          := $($(2).root.lnk))
+	$(eval export USER_IGNORE       := $($(2).user.ignore))
+	$(eval export USER_IGNORE_REGEX := $($(2).user.ignore_regex))
+	$(eval export SUDO_USER_INCLUDE := $($(2).sudo_user.include))
+	$(HELPER) $(1) "$(2)"
 endef
 
 define run_post_hook
