@@ -9,17 +9,19 @@ ifeq ($(OS),Windows_NT)
 	ROOT_TARGET ?= C:/
 	IS_WINDOWS  := 1
 else
-	SHELL       := /bin/sh
-	HELPER      := sh ./Makefile.helper
-	USER_TARGET ?= $(HOME)
-	ROOT_TARGET ?= /
-	ROOT_GROUP  := $(shell id -gn root)
-	IS_WINDOWS  := 0
+	SHELL            := /bin/sh
+	HELPER           := sh ./Makefile.helper
+	USER_TARGET      ?= $(HOME)
+	SUDO_USER_TARGET ?= $(shell eval echo ~root)
+	ROOT_TARGET      ?= /
+	ROOT_GROUP       := $(shell id -gn root)
+	IS_WINDOWS       := 0
 endif
 
 NORMALIZED_ROOT := $(strip $(ROOT_TARGET))
 
-export IS_WINDOWS USER_TARGET ROOT_TARGET ROOT_GROUP
+export IS_WINDOWS USER_TARGET SUDO_USER_TARGET ROOT_TARGET ROOT_GROUP
+
 .SILENT:
 
 # ==============================================================================
@@ -64,16 +66,15 @@ $(addprefix unstow-,$(MACHINES)): unstow-%:
 	$(foreach pkg,$($*.packages),$(call run_helper,remove,$(pkg),$*))
 
 define run_helper
-	$(eval export SKIP_SUDO_USER=$($3.sudo_user.skip))
-	$(eval export COPY_LIST=$($(2).root.copy))
-	$(eval export USER_LNK=$($(2).user.lnk))
-	$(eval export ROOT_LNK=$($(2).root.lnk))
-	$(eval export USER_IGNORE=$($(2).user.ignore))
-	$(eval export USER_IGNORE_REGEX=$($(2).user.ignore_regex))
-	$(eval export SUDO_USER_INCLUDE=$($(2).sudo_user.include))
-	$(HELPER) $(1) "$(2)"
+	SKIP_SUDO_USER="$($3.sudo_user.skip)" \
+	COPY_LIST="$($(2).root.copy)" \
+	USER_LNK="$($(2).user.lnk)" \
+	ROOT_LNK="$($(2).root.lnk)" \
+	USER_IGNORE="$($(2).user.ignore)" \
+	USER_IGNORE_REGEX="$($(2).user.ignore_regex)" \
+	SUDO_USER_INCLUDE="$($(2).sudo_user.include)" \
+	$(HELPER) $(1) "$(2)";
 endef
-
 
 define run_post_hook
 	$(if $($1.post_hook), \
