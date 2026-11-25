@@ -1,12 +1,12 @@
 # ------------------------------------------------------------------------------
-# Platform Setup (Only difference between Windows and Unix is here)
+# Platform Setup
 # ------------------------------------------------------------------------------
 ifeq ($(OS),Windows_NT)
 	SHELL       := pwsh.exe
 	.SHELLFLAGS := -NoProfile -NonInteractive -Command
 	HELPER      := pwsh.exe -NoProfile -File ./Makefile.helper.ps1
 	USER_TARGET ?= $(USERPROFILE)
-	ROOT_TARGET ?= C:\
+	ROOT_TARGET ?= C:/
 	IS_WINDOWS  := 1
 else
 	SHELL       := /bin/sh
@@ -17,7 +17,10 @@ else
 	IS_WINDOWS  := 0
 endif
 
+NORMALIZED_ROOT := $(strip $(ROOT_TARGET))
+
 export IS_WINDOWS USER_TARGET ROOT_TARGET ROOT_GROUP
+.SILENT:
 
 # ==============================================================================
 # 1. PACKAGES Config
@@ -43,8 +46,9 @@ mjolnir.packages          := OS-Common-Unix OS-Linux ENV-Mjolnir
 
 elebook.packages          := OS-Common-Unix OS-Linux OS-ElementaryOS ENV-Elebook
 
-ergo.packages       	  := OS-Windows
-ergo.sudo_user.skip 	  := 1
+ergo.packages             := OS-Windows
+ergo.sudo_user.skip       := 1
+ergo.post_hook 			  := $$t = Get-ChildItem -Path ".\OS-Windows" -Filter "*.ahk" -Recurse -File | Select-Object -First 1; if ($$t) { $$s = (New-Object -ComObject WScript.Shell).CreateShortcut("$$([Environment]::GetFolderPath('Startup'))\$$($$t.BaseName).lnk"); $$s.TargetPath = $$t.FullName; $$s.WorkingDirectory = $$t.DirectoryName; $$s.Save() }
 
 # ==============================================================================
 # 3. TARGETS & EXECUTION RULES (100% Unified)
@@ -52,29 +56,25 @@ ergo.sudo_user.skip 	  := 1
 .PHONY: $(MACHINES) $(addprefix unstow-,$(MACHINES))
 
 $(MACHINES):
-	@$(foreach pkg,$($@.packages),$(call run_helper,deploy,$(pkg))$(newline))
-	@$(call run_post_hook,$@)
+	$(foreach pkg,$($@.packages),$(call run_helper,deploy,$(pkg),$@))
+	$(call run_post_hook,$@)
 
 $(addprefix unstow-,$(MACHINES)): unstow-%:
-	@$(foreach pkg,$($*.packages),$(call run_helper,remove,$(pkg))$(newline))
+	$(foreach pkg,$($*.packages),$(call run_helper,remove,$(pkg),$*))
 
-define newline
-
-
-endef
-
-# Helper macro: exports per-package vars and invokes $(HELPER)
 define run_helper
-	$(eval export SKIP_SUDO_USER=$($@.sudo_user.skip))
+	$(eval export SKIP_SUDO_USER=$($3.sudo_user.skip))
 	$(eval export COPY_LIST=$($(2).root.copy))
 	$(eval export USER_IGNORE=$($(2).user.ignore))
 	$(eval export USER_IGNORE_REGEX=$($(2).user.ignore_regex))
 	$(eval export SUDO_USER_INCLUDE=$($(2).sudo_user.include))
-	@$(HELPER) $(1) "$(2)"
+	$(HELPER) $(1) "$(2)"
+
 endef
 
 define run_post_hook
 	$(if $($1.post_hook), \
-		@echo "Running post-deploy hooks for $1" && \
-		$(if $(filter / C:\ C:/,$(ROOT_TARGET)),$($1.post_hook),@echo "-> Sandbox mode: skipping post_hook"))
+		echo "Running post-deploy hooks for $1"
+		$(if $(filter / C:/ c:/,$(NORMALIZED_ROOT)),$($1.post_hook),echo "-> Sandbox mode: skipping post_hook (ROOT_TARGET='$(NORMALIZED_ROOT)')")
+	)
 endef

@@ -82,7 +82,7 @@
             },
             {
                 "colorScheme": "Deep Ocean Blue",
-                "commandline": "pwsh.exe _NoLogo",
+                "commandline": "pwsh.exe -NoLogo",
                 "elevate": true ,
                 "font": {
                     "face": "Consolas",
