@@ -1,15 +1,8 @@
 # MacOS artifacts
 .DS_Store
 
-# Temporary AutoKey reference artifacts
-**/autokey-automation-scripts/Samples
-
 # VIM artifacts
 .netrwhist
-
-# Yazi artifacts
-**/yazi/package.toml
-**/yazi/flavors
 
 # Ignore sensitive
 *.key
