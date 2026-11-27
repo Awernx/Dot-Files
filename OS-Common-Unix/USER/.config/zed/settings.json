@@ -1,72 +1,47 @@
 // Zed settings
-// Reference: https://zed.dev/docs/configuring-zed
+// Reference: https://zed.dev
 {
-    "cli_default_open_behavior": "existing_window",
-    "agent_servers": {
-        "claude-acp": {
-            "type": "registry",
-        },
+    // =========================================================================
+    // 1. Appearance & Typography
+    // =========================================================================
+    "theme": {
+        "mode": "dark",
+        "light": "Tokyo Night Light",
+        "dark": "Tokyo Night Storm",
     },
-    "project_panel": {
-        "dock": "left",
-    },
-    "outline_panel": {
-        "dock": "left",
-    },
-    "collaboration_panel": {
-        "dock": "left",
-    },
-    "agent": {
-        "dock": "right",
-        "favorite_models": [],
-        "model_parameters": [],
-    },
-    "git_panel": {
-        "dock": "left",
-    },
-    "session": {
-        "trust_all_worktrees": true,
-    },
-    "disable_ai": false,
     "icon_theme": {
-        "mode": "system",
+        "mode": "dark",
         "light": "Colored Zed Icons Theme Dark",
         "dark": "Colored Zed Icons Theme Dark",
     },
+    "ui_font_size": 12.0,
+    "buffer_font_size": 12.0,
 
-    "auto_update": false,
+    // =========================================================================
+    // 2. Editor & Formatting
+    // =========================================================================
+    "tab_size": 4,
     "format_on_save": "on",
-    "ui_font_size": 15.0,
-    "buffer_font_size": 14.0,
-    "theme": {
-        "mode": "system",
-        "light": "Tokyo Night Storm",
-        "dark": "Tokyo Night Storm",
-    },
-    "terminal": {
-        "dock": "bottom",
-        "copy_on_select": true,
-        "blinking": "on",
-        "cursor_shape": "bar",
-        "env": { "LIGHT_PROMPT": "true" },
-        "shell": {
-            "with_arguments": {
-                "program": "fish",
-                "args": ["--interactive"],
-            },
-        },
-    },
-    "load_direnv": "direct",
     "indent_guides": {
         "enabled": true,
         "coloring": "indent_aware",
     },
-    "tab_size": 4,
     "minimap": {
         "show": "always",
         "thumb": "hover",
         "thumb_border": "full",
         "current_line_highlight": "all",
+    },
+    "file_types": {
+        "Shell Script": ["env*"], // Treat ".env" and ".enrc" files as Shell Script for syntax highlighting
+    },
+
+    // =========================================================================
+    // 3. Tabs, Windows & Session
+    // =========================================================================
+    "cli_default_open_behavior": "existing_window",
+    "session": {
+        "trust_all_worktrees": true,
     },
     "tabs": {
         "activate_on_close": "left_neighbour",
@@ -76,7 +51,78 @@
         "show_close_button": "hover",
         "show_diagnostics": "all",
     },
-    "file_types": {
-        "Shell Script": ["env*"], // Treat ".env" and ".enrc" files as Shell Script for syntax highlighting
+
+    // =========================================================================
+    // 4. Panels & Docks
+    // =========================================================================
+    "project_panel": {
+        "dock": "left",
+    },
+    "outline_panel": {
+        "dock": "left",
+    },
+    "git_panel": {
+        "dock": "left",
+    },
+    "collaboration_panel": {
+        "dock": "left",
+    },
+
+    // =========================================================================
+    // 5. Terminal & Environment
+    // =========================================================================
+    "load_direnv": "direct",
+    "terminal": {
+        "dock": "bottom",
+        "copy_on_select": true,
+        "blinking": "on",
+        "cursor_shape": "bar",
+        "env": {
+            "LIGHT_PROMPT": "true",
+        },
+        "shell": {
+            "with_arguments": {
+                "program": "fish",
+                "args": ["--interactive"],
+            },
+        },
+    },
+
+    // =========================================================================
+    // 6. AI & Agents
+    // =========================================================================
+    "disable_ai": false,
+    "agent": {
+        "dock": "right",
+        "favorite_models": [],
+        "model_parameters": [],
+        "threads_sidebar": {
+            "auto_open": false,
+        },
+    },
+    "agent_servers": {
+        "claude-acp": {
+            "type": "registry",
+        },
+    },
+
+    // =========================================================================
+    // 7. Updates & Extensions
+    // =========================================================================
+    "auto_update": false,
+    "auto_install_extensions": {
+        "tokyo-night": true,
+        "colored-zed-icons-theme": true,
+    },
+
+    // =========================================================================
+    // 8. Platform Overrides
+    // =========================================================================
+    "windows": {
+        "terminal": {
+            "shell": {
+                "program": "pwsh.exe -NoLogo",
+            },
+        },
     },
 }
