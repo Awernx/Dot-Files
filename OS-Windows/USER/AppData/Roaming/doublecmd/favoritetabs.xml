@@ -509,7 +509,7 @@
         </Tab>
       </Left>
       <Right>
-        <ActiveTab>3</ActiveTab>
+        <ActiveTab>5</ActiveTab>
         <Tab>
           <FileView Type="columns">
             <Sortings>
@@ -607,7 +607,7 @@
               <Entry Active="True">
                 <FileSource Type="FileSystem"/>
                 <Paths>
-                  <Path>C:\Users\chand\AppData\Local\Programs\Scoop\persist\doublecmd\settings\</Path>
+                  <Path>C:\Users\chand\AppData\Roaming\doublecmd\</Path>
                 </Paths>
               </Entry>
             </History>
@@ -615,7 +615,28 @@
               <ColumnsSet>Default</ColumnsSet>
             </ColumnsView>
           </FileView>
-          <Title>DoucbleCmd Settings</Title>
+          <Title>DoubleCmd</Title>
+        </Tab>
+        <Tab>
+          <FileView Type="columns">
+            <Sortings>
+              <Sorting>
+                <Direction>1</Direction>
+                <Function>12</Function>
+              </Sorting>
+            </Sortings>
+            <History>
+              <Entry Active="True">
+                <FileSource Type="FileSystem"/>
+                <Paths>
+                  <Path>C:\Users\chand\AppData\Roaming\Zed\</Path>
+                </Paths>
+              </Entry>
+            </History>
+            <ColumnsView>
+              <ColumnsSet>Default</ColumnsSet>
+            </ColumnsView>
+          </FileView>
         </Tab>
       </Right>
     </GUID92923324-111A-4A79-9487-C8C787C2F237>

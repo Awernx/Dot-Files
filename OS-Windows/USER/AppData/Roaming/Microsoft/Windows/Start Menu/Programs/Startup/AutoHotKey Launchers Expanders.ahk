@@ -33,7 +33,7 @@ ScoopAppsDirectory := EnvGet("LocalAppData") . "\Programs\scoop\apps"
 ^!#B::Run A_ProgramFiles . "\Mozilla Firefox\firefox.exe"
 
 ; Ctrl + Alt + Win + V ---> Zed Editor
-^!#V:: ActivateOrLaunch("Zed", ScoopAppsDirectory . "\zed\current\Zed.exe")
+^!#V:: ActivateOrLaunch("Zed", EnvGet("LOCALAPPDATA") "\Programs\Zed\Zed.exe")
 
 ; Ctrl + Alt + Win + Y ---> KeePass
 ^!#Y:: ActivateOrLaunch("Keepass", "KeePass.exe")
@@ -51,12 +51,13 @@ ActivateOrLaunch(windowName, executableLocation)
 ;    Folder Shortcuts --> Ctrl + Shift + ....
 ; ========================================================
 
-; Use Double Commander if available, otherwise default to Windows Explorer
-FolderOpener := RunWait('where /q doublecmd') == 0 ? "doublecmd.exe --no-splash -C -T" : "explorer"
+; Use Double Commander if installed in Program Files, otherwise default to Windows Explorer
+dcExe := A_ProgramFiles "\Double Commander\doublecmd.exe"
+FolderOpener := FileExist(dcExe) ? '"' dcExe '" --no-splash -C -T' : "explorer.exe"
 
 OpenFolder(folderName)
 {
-    Run FolderOpener . ' "' . folderName . '"'
+    Run FolderOpener ' "' folderName '"'
 }
 
 UserHomeDirectory := EnvGet("UserProfile")
