@@ -19,7 +19,7 @@
           <Command>cm_Options</Command>
         </Command>
         <Separator>
-          <Style>False</Style>
+          <Style>0</Style>
         </Separator>
         <Command>
           <ID>{14BB46EB-1DAF-4C71-B7A8-193909A2B6DA}</ID>
@@ -37,7 +37,7 @@
           <Command>cm_ThumbnailsView</Command>
         </Command>
         <Separator>
-          <Style>False</Style>
+          <Style>0</Style>
         </Separator>
         <Command>
           <ID>{D01F33B6-7B2D-469F-9FAD-16FC43563814}</ID>
@@ -45,7 +45,7 @@
           <Command>cm_FlatView</Command>
         </Command>
         <Separator>
-          <Style>False</Style>
+          <Style>0</Style>
         </Separator>
         <Command>
           <ID>{86210DAE-B334-4E9F-8CD0-4703ABFBABA5}</ID>
@@ -58,7 +58,7 @@
           <Command>cm_ViewHistoryNext</Command>
         </Command>
         <Separator>
-          <Style>False</Style>
+          <Style>0</Style>
         </Separator>
         <Command>
           <ID>{99FB0503-0A88-4A8A-8BC1-9C5BD2F01007}</ID>
@@ -76,7 +76,7 @@
           <Command>cm_MarkInvert</Command>
         </Command>
         <Separator>
-          <Style>False</Style>
+          <Style>0</Style>
         </Separator>
         <Command>
           <ID>{69E4A84E-46D4-42BD-A68B-42DF3372CDA6}</ID>
@@ -89,7 +89,7 @@
           <Command>cm_ExtractFiles</Command>
         </Command>
         <Separator>
-          <Style>False</Style>
+          <Style>0</Style>
         </Separator>
         <Command>
           <ID>{3D8FEEF2-9FAE-43D3-9449-564517E4FF4C}</ID>
@@ -157,7 +157,7 @@
     </MiddleToolbar>
   </Toolbars>
   <MainWindow>
-    <Position Save="True">
+    <Position Save="False">
       <Left>1112</Left>
       <Top>188</Top>
       <Width>1414</Width>
@@ -356,7 +356,7 @@
     <DriveBarFreeSpace>False</DriveBarFreeSpace>
     <DrivesListButton Enabled="True">
       <ShowLabel>True</ShowLabel>
-      <ShowFileSystem>False</ShowFileSystem>
+      <ShowFileSystem>True</ShowFileSystem>
       <ShowFreeSpace>True</ShowFreeSpace>
     </DrivesListButton>
     <SeparateTree>False</SeparateTree>
@@ -557,7 +557,7 @@
     <ExcludeDirs/>
     <CustomIcons>0</CustomIcons>
     <PixelsPerInch>96</PixelsPerInch>
-    <ShowInMenus Enabled="False">
+    <ShowInMenus Enabled="True">
       <Size>16</Size>
     </ShowInMenus>
     <ShowButtonGlyphs>0</ShowButtonGlyphs>
@@ -698,7 +698,7 @@
     <DfltRightGoTo>1</DfltRightGoTo>
     <DfltKeep>5</DfltKeep>
     <DfltSaveDirHistory>False</DfltSaveDirHistory>
-    <FavTabsLastUniqueID>{1962FA66-CB19-4370-A17F-074022B6A741}</FavTabsLastUniqueID>
+    <FavTabsLastUniqueID>{0139F2F8-2186-40BB-AA82-41A305BE7DEC}</FavTabsLastUniqueID>
   </FavoriteTabsOptions>
   <Lua>
     <PathToLibrary>lua5.1.dll</PathToLibrary>

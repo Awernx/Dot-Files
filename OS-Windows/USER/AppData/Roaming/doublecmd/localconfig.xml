@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doublecmd>
+  <DirectoryHotList>
+    <HotDir Name="Desktop" Path="C:\Users\chand\Desktop"/>
+    <HotDir Name="Downloads" Path="C:\Users\chand\Downloads"/>
+    <HotDir Name="Startup" Path="C:\Users\chand\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup"/>
+    <HotDir Name="Windows Start Menu" Path="C:\Users\chand\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\"/>
+    <HotDir Name="-" Path=""/>
+    <HotDir Name="AppData Local" Path="C:\Users\chand\AppData\Local"/>
+    <HotDir Name="AppData Roaming" Path="C:\Users\chand\AppData\Roaming"/>
+  </DirectoryHotList>
+</doublecmd>

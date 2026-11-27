@@ -19,6 +19,7 @@ htop_history
 !**/doublecmd/doublecmd.xml
 !**/doublecmd/shortcuts.scf
 !**/doublecmd/favoritetabs.xml
+!**/doublecmd/localconfig.xml
 
 # Windows Terminal LocalState (at any depth)
 **/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/*
