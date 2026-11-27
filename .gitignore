@@ -13,3 +13,13 @@ wg0.conf
 
 # htop
 htop_history
+
+# Double Commander (at any depth)
+**/doublecmd/*
+!**/doublecmd/doublecmd.xml
+!**/doublecmd/shortcuts.scf
+!**/doublecmd/favoritetabs.xml
+
+# Windows Terminal LocalState (at any depth)
+**/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/*
+!**/Microsoft.WindowsTerminal_8wekyb3d8bbwe/LocalState/settings.json

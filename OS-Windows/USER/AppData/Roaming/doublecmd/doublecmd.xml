@@ -158,8 +158,8 @@
   </Toolbars>
   <MainWindow>
     <Position Save="True">
-      <Left>285</Left>
-      <Top>48</Top>
+      <Left>1112</Left>
+      <Top>188</Top>
       <Width>1414</Width>
       <Height>766</Height>
       <PixelsPerInch>96</PixelsPerInch>
@@ -698,7 +698,7 @@
     <DfltRightGoTo>1</DfltRightGoTo>
     <DfltKeep>5</DfltKeep>
     <DfltSaveDirHistory>False</DfltSaveDirHistory>
-    <FavTabsLastUniqueID>{3CBD472E-52CA-4E5D-BBFB-B22ABDF350F9}</FavTabsLastUniqueID>
+    <FavTabsLastUniqueID>{1962FA66-CB19-4370-A17F-074022B6A741}</FavTabsLastUniqueID>
   </FavoriteTabsOptions>
   <Lua>
     <PathToLibrary>lua5.1.dll</PathToLibrary>

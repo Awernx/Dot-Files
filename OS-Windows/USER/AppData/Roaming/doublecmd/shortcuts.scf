@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<doublecmd DCVersion="1.1.21 gamma">
-  <Hotkeys Version="63">
+<doublecmd DCVersion="1.2.11 gamma">
+  <Hotkeys Version="71">
     <Form Name="Main">
       <Hotkey>
         <Shortcut>F1</Shortcut>
@@ -400,6 +400,10 @@
         <Command>cm_LoadFavoriteTabs</Command>
       </Hotkey>
       <Hotkey>
+        <Shortcut>Ctrl+K</Shortcut>
+        <Command>cm_MapNetworkDrive</Command>
+      </Hotkey>
+      <Hotkey>
         <Shortcut>Del</Shortcut>
         <Command>cm_Delete</Command>
         <Control>Files Panel</Control>
@@ -700,6 +704,30 @@
       <Hotkey>
         <Shortcut>Alt+Right</Shortcut>
         <Command>cm_CopyLeftToRight</Command>
+      </Hotkey>
+      <Hotkey>
+        <Shortcut>Ctrl+X</Shortcut>
+        <Command>cm_EditCut</Command>
+      </Hotkey>
+      <Hotkey>
+        <Shortcut>Ctrl+C</Shortcut>
+        <Command>cm_EditCopy</Command>
+      </Hotkey>
+      <Hotkey>
+        <Shortcut>Ctrl+Z</Shortcut>
+        <Command>cm_EditUndo</Command>
+      </Hotkey>
+      <Hotkey>
+        <Shortcut>Ctrl+V</Shortcut>
+        <Command>cm_EditPaste</Command>
+      </Hotkey>
+      <Hotkey>
+        <Shortcut>Ctrl+A</Shortcut>
+        <Command>cm_EditSelectAll</Command>
+      </Hotkey>
+      <Hotkey>
+        <Shortcut>Ctrl+Shift+Z</Shortcut>
+        <Command>cm_EditRedo</Command>
       </Hotkey>
     </Form>
     <Form Name="Confirmation">
